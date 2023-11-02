@@ -48,6 +48,7 @@
       <el-table v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="ID" prop="id" min-width="60" />
         <el-table-column label="账号" prop="username" min-width="100" />
+        <el-table-column label="手机号" prop="mobile" min-width="120" />
         <el-table-column label="余额" prop="balanceMoney" min-width="100" />
         <el-table-column label="金额" prop="commissionMoney" min-width="160" />
         <el-table-column label="推荐佣金" prop="referralCommission" min-width="160" />

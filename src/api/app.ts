@@ -9,3 +9,8 @@ export function getConfig() {
 export function getWorkbench() {
     return request.get({ url: '/index/console' })
 }
+
+// 数据统计
+export function statisticsData() {
+    return request.get({ url: '/statistics/count/data' })
+}

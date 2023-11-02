@@ -4,11 +4,65 @@
       <el-card>
         <div class="title">商城统计</div>
         <div class="dataList">
-          <div class="data-item" v-for="(item, index) in showData" :key="index">
-            <p class="dataTitle">{{item.title}}</p>
-            <p class="allNum">{{item.allNum}}</p>
-            <p class="todayNum" >今日首充人数 <span class="todaySpan">{{item.todayNum}}</span></p>
-            <p class="yesterdayNum">昨日首充人数 {{item.yesterday}}</p>
+<!--          <div class="data-item" v-for="(item, index) in showData" :key="index">-->
+<!--            <p class="dataTitle">{{item.title}}</p>-->
+<!--            <p class="allNum">{{item.allNum}}</p>-->
+<!--            <p class="todayNum" >今日首充人数 <span class="todaySpan">{{item.todayNum}}</span></p>-->
+<!--            <p class="yesterdayNum">昨日首充人数 {{item.yesterday}}</p>-->
+<!--          </div>-->
+          <div class="data-item">
+            <p class="dataTitle">首充人数</p>
+            <p class="allNum">{{showData['people']?.initialCharge || 0}}</p>
+            <p class="todayNum" >今日首充人数 <span class="todaySpan">{{showData['people']?.todayInitialCharge || 0}}</span></p>
+            <p class="yesterdayNum">昨日首充人数 {{showData['people']?.yesterdayInitialCharge || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">用户总人数</p>
+            <p class="allNum">{{showData['userTotal']?.userTotal || 0}}</p>
+            <p class="todayNum" >今日新增用户 <span class="todaySpan">{{showData['userTotal']?.todayUserTotal || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增用户 {{showData['userTotal']?.yesterdayUserTotal || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">订单总量</p>
+            <p class="allNum">{{showData['order']?.orderCount || 0}}</p>
+            <p class="todayNum" >今日新增订单 <span class="todaySpan">{{showData['order']?.todayOrderCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增订单 {{showData['order']?.yesterdayOrderCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">订单总金额</p>
+            <p class="allNum">{{showData['orderMoney']?.orderMoneyCount || 0}}</p>
+            <p class="todayNum" >今日新增订单总金额 <span class="todaySpan">{{showData['orderMoney']?.todayOrderMoneyCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增订单总金额 {{showData['orderMoney']?.yesterdayOrderMoneyCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">用户充值</p>
+            <p class="allNum">{{showData['amount']?.rechargeAmountCount || 0}}</p>
+            <p class="todayNum" >今日新增充值 <span class="todaySpan">{{showData['amount']?.todayRechargeAmountCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增充值 {{showData['amount']?.yesterdayRechargeAmountCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">充值人数</p>
+            <p class="allNum">{{showData['userCount']?.rechargeUserCount || 0}}</p>
+            <p class="todayNum" >今日充值人数 <span class="todaySpan">{{showData['userCount']?.todayRechargeUserCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日充值人数 {{showData['userCount']?.yesterdayRechargeUserCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">用户提现</p>
+            <p class="allNum">{{showData['amountCount']?.withdrawalAmountCount || 0}}</p>
+            <p class="todayNum" >今日新增提现 <span class="todaySpan">{{showData['amountCount']?.todayWithdrawalAmountCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增提现 {{showData['amountCount']?.yesterdayWithdrawalAmountCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">提现人数</p>
+            <p class="allNum">{{showData['withdrawalUserCount']?.withdrawalUserCount || 0}}</p>
+            <p class="todayNum" >今日提现人数 <span class="todaySpan">{{showData['withdrawalUserCount']?.todayWithdrawalUserCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日提现人数 {{showData['withdrawalUserCount']?.yesterdayWithdrawalUserCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">抢单佣金</p>
+            <p class="allNum">{{showData['commissionCount']?.rushCommissionCount || 0}}</p>
+            <p class="todayNum" >今日新增佣金 <span class="todaySpan">{{showData['commissionCount']?.todayRushCommissionCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增佣金 {{showData['commissionCount']?.yesterdayRushCommissionCount || 0}}</p>
           </div>
         </div>
       </el-card>
@@ -51,82 +105,15 @@
   import { usePaging } from '@/hooks/usePaging'
   import { getRoutePath } from '@/router'
   import { getUserList } from '@/api/consumer'
+  import { statisticsData } from '@/api/app'
   import { ClientMap } from '@/enums/appEnums'
-  let showData:any = reactive([])
-  showData = [
-    {
-      title: '首充人数',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '用户总量(人)',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '订单总量',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '订单总金额',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '首充人数',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '用户总量(人)',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '订单总量',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '订单总金额',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '首充人数',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '用户总量(人)',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '订单总量',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    },
-    {
-      title: '订单总金额',
-      allNum: 555,
-      todayNum: 155,
-      yesterday: 200
-    }
-  ]
+  let showData:any = ref({})
+  const getShowData = async () => {
+    const res = await statisticsData()
+    showData.value = res
+    console.log('res', showData)
+  }
+  getShowData()
   const queryParams = reactive({
     keyword: '',
     channel: '',

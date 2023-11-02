@@ -2,7 +2,7 @@
     <div>
         <el-card class="!border-none mt-4" shadow="never">
           <div>
-            <el-button type="primary" class="mb-4" @click="handleAdd">
+            <el-button type="primary" class="mb-4" @click="handleOpenAdd">
               <template #icon>
                 <icon name="el-icon-Plus" />
               </template>
@@ -17,11 +17,11 @@
                 <el-table-column label="账号" prop="username" min-width="120" />
                 <el-table-column label="用户昵称" prop="nickname" min-width="100" />
                 <el-table-column label="手机号码" prop="mobile" min-width="100" />
-                <el-table-column label="会员等级" prop="userLevelName" min-width="100" />
+                <el-table-column label="会员等级" prop="userLevel" min-width="100" />
                 <el-table-column label="信誉分" prop="creditScore" min-width="100" />
-                <el-table-column label="已完成订单总数" prop="mobile" min-width="100" />
-                <el-table-column label="全部订单总数" prop="username" min-width="120" />
-                <el-table-column label="已完成订单组数" prop="mobile" min-width="100" />
+                <el-table-column label="已完成订单总数" prop="nowOrderNum" min-width="100" />
+                <el-table-column label="全部订单总数" prop="robOrderNum" min-width="120" />
+                <el-table-column label="已完成订单组数" prop="taskNum" min-width="100" />
                 <el-table-column label="账户余额" prop="balanceMoney" min-width="100" />
                 <el-table-column label="冻结余额" prop="frozenAmount" min-width="120" />
                 <el-table-column label="上级用户" prop="parentName" min-width="100" />
@@ -29,9 +29,9 @@
                 <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
                 <el-table-column label="最后登录ip" prop="lastLoginIp" min-width="100" />
-                <el-table-column label="交易状态" prop="isDisable" min-width="100" >
+                <el-table-column label="交易状态" prop="tradingStatus" min-width="100" >
                   <template #default="{ row }">
-                    {{row.isDisable ? '禁用' : '正常'}}
+                    {{row.tradingStatus ? '正常' : '封禁'}}
                   </template>
                 </el-table-column>
                 <el-table-column label="状态" prop="isDummy" min-width="100" >
@@ -41,52 +41,52 @@
                 </el-table-column>
                 <el-table-column label="操作" width="350" fixed="right">
                     <template #default="{ row }">
-                        <el-button @click="ticketForm(row)" v-perms="['productCate:edit']" type="primary" size="small">连单</el-button>
-                        <el-button v-perms="['productCate:edit']" type="primary" size="small" >重置抢单数量</el-button>
-                        <el-button v-perms="['productCate:edit']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
-                      <el-dropdown>
-                        <span class="el-dropdown-link" style="margin-left: 10px;">
-                          更多操作
-                          <el-icon class="el-icon--right">
-<!--                            <arrow-down />-->
-                          </el-icon>
-                        </span>
-                        <template #dropdown>
-                          <el-dropdown-menu>
-                            <el-dropdown-item @click="handleOpenMoney(row.id, 1)">赠送彩金</el-dropdown-item>
-                            <el-dropdown-item @click="handleEdit(row)">编辑</el-dropdown-item>
-                            <el-dropdown-item @click="handleOpenUsdt(row.walletAddress)">USDT信息</el-dropdown-item>
-                            <el-dropdown-item>
-                              <router-link
-                                  :to="{
-                                    path: getRoutePath('member:team'),
-                                    query: {
-                                        id: row.id,
-                                        isDisable: row.isDisable
-                                    }
-                                }"
-                              >
-                                查看团队
-                              </router-link>
-                            </el-dropdown-item>
-                            <el-dropdown-item>
-                              <router-link
-                                  :to="{
-                                    path: getRoutePath('member:account'),
-                                    query: {
-                                        id: row.id
-                                    }
-                                }"
-                              >
-                                账变
-                              </router-link>
-                            </el-dropdown-item>
-                            <el-dropdown-item @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-dropdown-item>
-                            <el-dropdown-item @click="handleDelete(row.id)">删除</el-dropdown-item>
-                            <el-dropdown-item @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-dropdown-item>
-                          </el-dropdown-menu>
-                        </template>
-                      </el-dropdown>
+                      <el-button @click="ticketForm(row)" v-perms="['productCate:edit']" type="primary" size="small">连单</el-button>
+                      <el-button v-perms="['member:edit']" type="primary" size="small"  @click="handleOpenNum(row.id)">重置抢单数量</el-button>
+                        <el-button v-perms="['member:edit']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
+                        <el-dropdown v-perms="['member:edit']">
+                          <span class="el-dropdown-link" style="margin-left: 10px;">
+                            更多操作
+                            <el-icon class="el-icon--right">
+  <!--                            <arrow-down />-->
+                            </el-icon>
+                          </span>
+                          <template #dropdown>
+                            <el-dropdown-menu>
+                              <el-dropdown-item @click="handleOpenMoney(row.id, 1)">赠送彩金</el-dropdown-item>
+                              <el-dropdown-item @click="handleEdit(row)">编辑</el-dropdown-item>
+                              <el-dropdown-item @click="handleOpenUsdt(row.walletAddress)">USDT信息</el-dropdown-item>
+                              <el-dropdown-item>
+                                <router-link
+                                    :to="{
+                                      path: getRoutePath('member:team'),
+                                      query: {
+                                          id: row.id,
+                                          isDisable: row.isDisable
+                                      }
+                                  }"
+                                >
+                                  查看团队
+                                </router-link>
+                              </el-dropdown-item>
+                              <el-dropdown-item>
+                                <router-link
+                                    :to="{
+                                      path: getRoutePath('member:account'),
+                                      query: {
+                                          id: row.id
+                                      }
+                                  }"
+                                >
+                                  账变
+                                </router-link>
+                              </el-dropdown-item>
+                              <el-dropdown-item @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-dropdown-item>
+                              <el-dropdown-item @click="handleDelete(row.id)">删除</el-dropdown-item>
+                              <el-dropdown-item @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-dropdown-item>
+                            </el-dropdown-menu>
+                          </template>
+                        </el-dropdown>
                     </template>
                 </el-table-column>
             </el-table>
@@ -94,6 +94,72 @@
                 <pagination v-model="pager" @change="getLists" />
             </div>
         </el-card>
+      <div>
+        <el-dialog
+            v-model="dialogAddVisible"
+            title="新增会员"
+            width="50%"
+            :before-close="handleAddClose"
+        >
+          <el-form ref="formRefAdd"
+                   class="ls-form"
+                   :model="formDataAdd"
+                   label-width="85px"
+                   :rules="rulesAdd">
+            <el-form-item label="代理" prop="parentName">
+              <el-select class="w-[280px]" @change="handleProxyChange" v-model="formDataAdd.parentName" placeholder="请选择代理">
+                <el-option
+                    v-for="(item, key) in memberProxyAll"
+                    :key="item.id"
+                    :label="item.username"
+                    :value="item.username"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="用户名称" prop="username">
+              <el-input
+                  v-model="formDataAdd.username"
+                  placeholder="请输入用户名称"
+                  clearable
+              />
+            </el-form-item>
+            <el-form-item label="手机号码" prop="mobile">
+              <el-input
+                  v-model="formDataAdd.mobile"
+                  placeholder="请输入手机号码"
+                  clearable
+              />
+            </el-form-item>
+            <el-form-item label="登录密码" prop="password">
+              <el-input
+                  v-model="formDataAdd.password"
+                  placeholder="留空不修改密码"
+                  clearable
+              />
+            </el-form-item>
+            <el-form-item label="交易密码" prop="tradingPwd">
+              <el-input
+                  v-model="formDataAdd.tradingPwd"
+                  placeholder="留空不修改交易密码"
+                  clearable
+              />
+            </el-form-item>
+            <el-form-item label="邀请码" prop="inviteCode">
+              <el-input
+                  v-model="formDataAdd.inviteCode"
+                  placeholder="邀请码"
+                  clearable
+              />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+                    <el-button @click="handleAddClose">取消</el-button>
+                    <el-button type="primary" @click="handleAddSubmit">确认</el-button>
+            </span>
+          </template>
+        </el-dialog>
+      </div>
         <div>
             <el-dialog
                     v-model="dialogVisible"
@@ -106,39 +172,6 @@
                          :model="formData"
                          label-width="85px"
                          :rules="rules">
-<!--                    <el-form-item label="一级代理" prop="parentAgentName">-->
-<!--                      <el-select class="w-[280px]" v-model="formData.parentAgentName" placeholder="请选择一级代理">-->
-<!--                        <el-option-->
-<!--                            v-for="(item, key) in memberProxyAll"-->
-<!--                            :key="item.id"-->
-<!--                            :label="item.username"-->
-<!--                            :value="item.username"-->
-<!--                        />-->
-<!--                      </el-select>-->
-<!--                    </el-form-item>-->
-<!--                    <el-form-item label="二级代理" prop="secondAgentName">-->
-<!--                        <el-input-->
-<!--                                v-model="formData.secondAgentName"-->
-<!--                                placeholder="请输入二级代理"-->
-<!--                                clearable-->
-<!--                        />-->
-<!--                    </el-form-item> <el-form-item label="一级代理" prop="parentAgentName">-->
-<!--                      <el-select class="w-[280px]" v-model="formData.parentAgentName" placeholder="请选择一级代理">-->
-<!--                        <el-option-->
-<!--                            v-for="(item, key) in memberProxyAll"-->
-<!--                            :key="item.id"-->
-<!--                            :label="item.username"-->
-<!--                            :value="item.username"-->
-<!--                        />-->
-<!--                      </el-select>-->
-<!--                    </el-form-item>-->
-<!--                    <el-form-item label="二级代理" prop="secondAgentName">-->
-<!--                        <el-input-->
-<!--                                v-model="formData.secondAgentName"-->
-<!--                                placeholder="请输入二级代理"-->
-<!--                                clearable-->
-<!--                        />-->
-<!--                    </el-form-item>-->
                     <el-form-item label="用户名称" prop="username">
                         <el-input
                                 v-model="formData.username"
@@ -203,7 +236,7 @@
                                 clearable
                         />
                     </el-form-item>
-                    <el-form-item label="级别任务数" prop="taskNum">
+                    <el-form-item label="级别任务数" label-width="120" prop="taskNum">
                         <el-input
                                 v-model="formData.taskNum"
                                 placeholder="请输入任务级别数"
@@ -219,12 +252,15 @@
                         />
                     </el-form-item>
                     <el-form-item label="上级ID" prop="parentId">
-                        <el-input
-                                v-model="formData.parentId"
-                                placeholder="请输入上级ID"
-                                clearable
+                      <el-select class="w-[280px]" v-model="formData.parentId" placeholder="请选择一级代理">
+                        <el-option
+                            v-for="(item, key) in memberProxyAll"
+                            :key="item.id"
+                            :label="item.username"
+                            :value="item.id"
                         />
-                        <p>无特殊情况，不需要修改</p>
+                      </el-select>
+                        <p style="margin-right: 10px;">无特殊情况，不需要修改</p>
                     </el-form-item>
                 </el-form>
                 <template #footer>
@@ -327,6 +363,49 @@ onActivated(() => {
 getLists()
 
 
+
+// 新增
+const formRefAdd = shallowRef<FormInstance>()
+let formDataAdd  = reactive({
+  parentName: '',
+  username: '',
+  mobile: '',
+  password: '',
+  tradingPwd: '',
+  inviteCode: ''
+})
+const rulesAdd  = reactive({
+  parentName: [{ required: true, message: '一级代理必选', trigger: 'blur' }],
+  username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
+  mobile: [{ required: true, message: '手机号码必填', trigger: 'blur' }],
+  password: [{ required: true, message: '登录密码必填', trigger: 'blur' }],
+  tradingPwd: [{ required: true, message: '交易密码必填', trigger: 'blur' }],
+  inviteCode: [{ required: true, message: '邀请码必填', trigger: 'blur' }]
+})
+const dialogAddVisible = ref(false)
+const handleOpenAdd = () => {
+  dialogAddVisible.value = true
+}
+const handleAddSubmit = async () => {
+  await formRefAdd.value?.validate()
+  await userAdd(formDataAdd)
+  feedback.msgSuccess('新增成功')
+  getLists()
+  handleAddClose()
+}
+const handleAddClose = () => {
+  dialogAddVisible.value = false
+  formDataAdd.parentName = ''
+  formDataAdd.username = ''
+  formDataAdd.mobile = ''
+  formDataAdd.password = ''
+  formDataAdd.tradingPwd = ''
+  formDataAdd.inviteCode = ''
+}
+
+
+
+
 // 获取会员等级
 const memberRankAll = ref([])
 const getMemberRankAll = async () => {
@@ -340,6 +419,13 @@ const getMemberProxyAll = async () => {
 }
 getMemberProxyAll()
 
+
+const handleProxyChange = (e: any) => {
+  const info:any = memberProxyAll.value.filter(item => {
+    return item['username'] === e
+  })
+  formDataAdd.inviteCode = info[0].inviteCode
+}
 const handleOpenNum = async (id: number) => {
   console.log('id', id)
   await feedback.confirm(`确定要重置抢单数量？`)
@@ -402,15 +488,15 @@ let formData = reactive({
   parentId: ''
 })
 const rules = reactive({
-  nickname: [{ required: true, message: '路由地址必填', trigger: 'blur' }],
-  mobile: [{ required: true, message: '图标必传', trigger: 'blur' }],
-  balanceMoney: [{ required: true, message: '菜单状态必选', trigger: 'blur' }],
-  frozenAmount: [{ required: true, message: '菜单名称必填', trigger: 'blur' }],
-  userLevelName: [{ required: true, message: '英文菜单名称必填', trigger: 'blur' }],
-  tradingStatus: [{ required: true, message: '路由地址必填', trigger: 'blur' }],
-  taskNum: [{ required: true, message: '英文菜单名称必填', trigger: 'blur' }],
-  creditScore: [{ required: true, message: '路由地址必填', trigger: 'blur' }],
-  parentId: [{ required: true, message: '图标必传', trigger: 'blur' }],
+  username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
+  mobile: [{ required: true, message: '手机号码必填', trigger: 'blur' }],
+  balanceMoney: [{ required: true, message: '账号余额必填', trigger: 'blur' }],
+  frozenAmount: [{ required: true, message: '冻结金额必填', trigger: 'blur' }],
+  userLevelId: [{ required: true, message: '会员等级必选', trigger: 'blur' }],
+  tradingStatus: [{ required: true, message: '交易状态必选', trigger: 'blur' }],
+  taskNum: [{ required: true, message: '级别任务数必填', trigger: 'blur' }],
+  creditScore: [{ required: true, message: '信用分必填', trigger: 'blur' }],
+  parentId: [{ required: true, message: '上级id必选', trigger: 'blur' }],
 })
 const formRef = shallowRef<FormInstance>()
 const dialogTitle = ref('')
@@ -516,3 +602,8 @@ const handleBeDummy = async (row: any) => {
   getLists()
 }
 </script>
+<style scoped>
+  :deep(.el-select){
+    width: 100%;
+  }
+</style>
