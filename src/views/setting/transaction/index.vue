@@ -228,21 +228,25 @@
               </div>
               <p class="tip">时间由两部分组成，默认都是5秒，总共10秒</p>
             </el-form-item>
-            <el-form-item label="提现时间" prop="withdrawTime">
+            <el-form-item label="开始提现时间" prop="withdrawTimeStart">
               <div class="w-80">
                 <el-input
                     v-model="formDataBase.withdrawTimeStart"
                     placeholder="请输入开始提现时间"
                     show-word-limit
                 ></el-input>
-                -
-                <el-input
-                  v-model="formDataBase.withdrawTimeEnd"
-                  placeholder="请输入结束提现时间"
-                  show-word-limit
-              ></el-input>
               </div>
-              <p class="tip">只支持整点，如8:00-20:00，请直接输入8-20</p>
+              <p class="tip">只支持整点，如8:00，请直接输入8</p>
+            </el-form-item>
+            <el-form-item label="结束提现时间" prop="withdrawTimeEnd">
+              <div class="w-80">
+                <el-input
+                    v-model="formDataBase.withdrawTimeEnd"
+                    placeholder="请输入结束提现时间"
+                    show-word-limit
+                ></el-input>
+              </div>
+              <p class="tip">只支持整点，如8:00，请直接输入8</p>
             </el-form-item>
             <el-form-item label="充值时间" prop="topTime">
               <div class="w-80">
@@ -475,6 +479,13 @@ const formDataBase = reactive({
   versionNumber: ''
 })
 
+const validatePass2 = (rule: any, value: any, callback: any) => {
+  console.log('rule', rule)
+  console.log('value', value)
+  console.log('callback', callback)
+  callback(new Error('Please input the password'))
+}
+
 // 基础设置 表单验证
 const rulesBase = {
   collectionCard: [
@@ -657,7 +668,8 @@ const rulesBase = {
       required: true,
       message: '请输入提现时间',
       trigger: ['blur']
-    }
+    },
+    { validator: validatePass2, trigger: 'blur' }
   ],
   withdrawTimeStart: [
     {

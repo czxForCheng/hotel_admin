@@ -29,9 +29,14 @@
                 <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
                 <el-table-column label="最后登录ip" prop="lastLoginIp" min-width="100" />
+                <el-table-column label="交易状态" prop="isDisable" min-width="100" >
+                  <template #default="{ row }">
+                    {{row.isDisable ? '禁用' : '正常'}}
+                  </template>
+                </el-table-column>
                 <el-table-column label="状态" prop="isDummy" min-width="100" >
                   <template #default="{ row }">
-                    {{row.isDummy ? '真人' : '假人'}}
+                    {{row.isDummy ? '假人' : '真人'}}
                   </template>
                 </el-table-column>
                 <el-table-column label="操作" width="350" fixed="right">
@@ -51,11 +56,34 @@
                             <el-dropdown-item @click="handleOpenMoney(row.id, 1)">赠送彩金</el-dropdown-item>
                             <el-dropdown-item @click="handleEdit(row)">编辑</el-dropdown-item>
                             <el-dropdown-item @click="handleOpenUsdt(row.walletAddress)">USDT信息</el-dropdown-item>
-                            <el-dropdown-item>查看团队</el-dropdown-item>
-                            <el-dropdown-item>账变</el-dropdown-item>
-                            <el-dropdown-item>禁用</el-dropdown-item>
-                            <el-dropdown-item>删除</el-dropdown-item>
-                            <el-dropdown-item>设为假人</el-dropdown-item>
+                            <el-dropdown-item>
+                              <router-link
+                                  :to="{
+                                    path: getRoutePath('member:team'),
+                                    query: {
+                                        id: row.id,
+                                        isDisable: row.isDisable
+                                    }
+                                }"
+                              >
+                                查看团队
+                              </router-link>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                              <router-link
+                                  :to="{
+                                    path: getRoutePath('member:account'),
+                                    query: {
+                                        id: row.id
+                                    }
+                                }"
+                              >
+                                账变
+                              </router-link>
+                            </el-dropdown-item>
+                            <el-dropdown-item @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-dropdown-item>
+                            <el-dropdown-item @click="handleDelete(row.id)">删除</el-dropdown-item>
+                            <el-dropdown-item @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-dropdown-item>
                           </el-dropdown-menu>
                         </template>
                       </el-dropdown>
@@ -259,7 +287,19 @@
 </template>
 <script lang="ts" setup name="consumerLists">
 import { usePaging } from '@/hooks/usePaging'
-import {getUserList, userAdd, userEdit, adjustWallet, getUserLevelAllList, getProxyList} from '@/api/member'
+import { getRoutePath } from '@/router'
+import {
+  getUserList,
+  userAdd,
+  userEdit,
+  adjustWallet,
+  getUserLevelAllList,
+  getProxyList,
+  userManageBeDummy,
+  userManageDel,
+  userManageDisable, userReset
+} from '@/api/member'
+import { ClientMap } from '@/enums/appEnums'
 import type { FormInstance } from 'element-plus'
 import Popup from './dislodge.vue'
 import feedback from "@/utils/feedback";
@@ -267,6 +307,7 @@ import feedback from "@/utils/feedback";
 const isTicket = ref(false)
 const ticketValue = ref('')
 
+import {delProductCate} from "@/api/product";
 const queryParams = reactive({
     keyword: '',
     channel: '',
@@ -298,6 +339,14 @@ const getMemberProxyAll = async () => {
   memberProxyAll.value = await getProxyList()
 }
 getMemberProxyAll()
+
+const handleOpenNum = async (id: number) => {
+  console.log('id', id)
+  await feedback.confirm(`确定要重置抢单数量？`)
+  await userReset({ id })
+  feedback.msgSuccess(`重置抢单数量成功`)
+  getLists()
+}
 
 // 调整余额
 const formRefYue = shallowRef<FormInstance>()
@@ -441,5 +490,29 @@ const closeTicket = (data:any)=>{
     console.log(data)
     sessionStorage.removeItem('goods')
     isTicket.value = false
+}
+
+/* 启用/禁用 */
+const handleDisable = async (row: any) => {
+  await feedback.confirm(`确定要${row.isDisable ? '启用' : '禁用'}这条数据？`)
+  await userManageDisable({ id: row.id })
+  feedback.msgSuccess(`${row.isDisable ? '启用' : '禁用'}成功`)
+  getLists()
+}
+
+/* 删除 */
+const handleDelete = async (id: number) => {
+  await feedback.confirm('确定要删除这条数据？')
+  await userManageDel({ id })
+  feedback.msgSuccess('删除成功')
+  getLists()
+}
+
+/* 设为假人 */
+const handleBeDummy = async (row: any) => {
+  await feedback.confirm(`确定要将其设为${row.isDummy?'真人':'假人'}？`)
+  await userManageBeDummy({ id: row.id })
+  feedback.msgSuccess('操作成功')
+  getLists()
 }
 </script>

@@ -47,12 +47,12 @@
         <el-table-column label="登录次数" prop="" min-width="100" />
         <el-table-column label="使用状态" prop="isDisable" min-width="100" >
           <template #default="{ row }">
-            {{row.agentLevel ? '正常' : '禁用'}}
+            {{row.isDisable ? '正常' : '禁用'}}
           </template>
         </el-table-column>
         <el-table-column label="客服链接" prop="customerServiceLink" min-width="160" />
         <el-table-column label="上级代理" prop="parentAgent" min-width="160" />
-        <el-table-column label="添加时间" prop="createTime" min-width="160" />
+        <el-table-column label="添加时间" prop="createTime" min-width="180" />
         <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
             <el-button v-perms="['productCate:edit']" type="primary" @click="handlePassword(row.id)">密码</el-button>
@@ -156,14 +156,12 @@ let formData = reactive({
   email: '',
   password: ''
 })
-const rule = reactive({
-  password: [{ required: true, message: '密码必填', trigger: 'blur' }]
-})
 const rules = reactive({
   username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
   mobile: [{ required: true, message: '手机号必填', trigger: 'blur' }],
   customerServiceLink: [{ required: true, message: '客服链接必填', trigger: 'blur' }],
-  email: [{ required: true, message: '邮箱必填', trigger: 'blur' }]
+  email: [{ required: true, message: '邮箱必填', trigger: 'blur' }],
+  password: [{ required: true, message: '密码必填', trigger: 'blur' }]
 })
 
 const { pager, getLists, resetPage, resetParams } = usePaging({
@@ -213,7 +211,7 @@ const handlePasswordSubmit = async () => {
   await proxyEditPwd(formDataPassword)
   feedback.msgSuccess('修改密码成功')
   getLists()
-  handleClose()
+  handlePasswordClose()
 }
 /* 修改菜单 */
 const handleEdit = async (row: any) => {

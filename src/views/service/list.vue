@@ -42,8 +42,8 @@
         <el-table-column label="添加时间" prop="addTime" min-width="160" />
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
-            <el-button v-perms="['productCate:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
-            <el-button v-perms="['productCate:delete']" type="primary" @click="handleDelete(row.id)">禁用</el-button>
+            <el-button v-perms="['service:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
+            <el-button v-perms="['service:delete']" type="primary" @click="handleDelete(row.id)">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -15,14 +15,51 @@ export function userEdit(params: any) {
     return request.post({ url: '/userManage/edit', params })
 }
 
+// 重置抢单数量
+export function userReset(params: any) {
+    return request.post({ url: '/userManage/reset', params })
+}
+
 // 余额调整
 export function adjustWallet(params: any) {
     return request.post({ url: '/userManage/addAmount', params })
 }
 
-// 生成邀请码
-export function generateRandomCode(params: any) {
-    return request.post({ url: '/userManage/generateRandomCode', params })
+// 团队列表
+export function userManageTeamList(params: any) {
+    return request.get({ url: '/userManage/teamList', params })
+}
+// 封禁团队
+export function disableTeam(params: any) {
+    return request.post({ url: '/userManage/disableTeam', params })
+}
+// 启用团队
+export function unDisableTeam(params: any) {
+    return request.post({ url: '/userManage/unDisableTeam', params })
+}
+// 启用/封禁
+export function disable(params: any) {
+    return request.post({ url: '/userManage/disable', params })
+}
+
+// 账变列表
+export function userManageBillList(params: any) {
+    return request.get({ url: '/userManage/billList', params })
+}
+
+// 启用/禁用
+export function userManageDisable(params: any) {
+    return request.post({ url: '/userManage/disable', params })
+}
+
+// 删除
+export function userManageDel(params: any) {
+    return request.post({ url: '/userManage/del', params })
+}
+
+// 设为真/假人
+export function userManageBeDummy(params: any) {
+    return request.post({ url: '/userManage/beDummy', params })
 }
 
 // 用户等级列表
