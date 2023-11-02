@@ -9,7 +9,7 @@
               新增会员
             </el-button>
           </div>
-            <el-table size="large" v-loading="pager.loading" :data="pager.lists">
+            <el-table max-height="650px" size="large" v-loading="pager.loading" :data="pager.lists">
                 <el-table-column label="UID" prop="id" min-width="60" />
                 <el-table-column label="注册时间" prop="createTime" min-width="180" />
                 <el-table-column label="一级代理" prop="parentAgentName" min-width="100" />
@@ -36,7 +36,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="350" fixed="right">
                     <template #default="{ row }">
-                        <el-button v-perms="['productCate:edit']" type="primary" size="small">连单</el-button>
+                        <el-button @click="ticketForm(row)" v-perms="['productCate:edit']" type="primary" size="small">连单</el-button>
                         <el-button v-perms="['productCate:edit']" type="primary" size="small" >重置抢单数量</el-button>
                         <el-button v-perms="['productCate:edit']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
                       <el-dropdown>
@@ -253,15 +253,20 @@
           </el-dialog>
         </div>
       </div>
+
+      <Popup @close-ticket="closeTicket" v-if="isTicket" :is-ticket="isTicket" title="连单" :ticket-value="ticketValue"></Popup>
     </div>
 </template>
 <script lang="ts" setup name="consumerLists">
 import { usePaging } from '@/hooks/usePaging'
-import { getRoutePath } from '@/router'
 import {getUserList, userAdd, userEdit, adjustWallet, getUserLevelAllList, getProxyList} from '@/api/member'
-import { ClientMap } from '@/enums/appEnums'
 import type { FormInstance } from 'element-plus'
+import Popup from './dislodge.vue'
 import feedback from "@/utils/feedback";
+
+const isTicket = ref(false)
+const ticketValue = ref('')
+
 const queryParams = reactive({
     keyword: '',
     channel: '',
@@ -423,5 +428,18 @@ const handleOpenUsdt = (usdt: string) => {
 }
 const handleUsdtClose = () => {
   dialogUsdtVisible.value = false
+}
+
+// 连单
+const ticketForm= (data:any)=>{
+  sessionStorage.removeItem('goods')
+    isTicket.value = true
+    ticketValue.value = data
+}
+
+const closeTicket = (data:any)=>{
+    console.log(data)
+    sessionStorage.removeItem('goods')
+    isTicket.value = false
 }
 </script>

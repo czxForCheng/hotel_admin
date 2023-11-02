@@ -44,4 +44,17 @@ export function delProductCate(params: any) {
 export function editProductCate(params: any) {
     return request.post({ url: '/productType/edit', params })
 }
+// 新增连单
+// export function linkOrder(data: any) {
+//     return request.post({ url: '/userManage/linkOrder', data:data })
+// }
+
+export async function linkOrder(data:any){
+    let res = await request.post({
+        url:'/userManage/linkOrder',
+        data:data
+    })
+
+    return res
+}
 
