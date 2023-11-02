@@ -3,7 +3,7 @@
   <div class="website-information">
     <el-card shadow="never" class="!border-none">
       <div style="display: flex;align-items: center;">
-        <p>系统参数(包括客服链接地址配置)</p>
+        <p style="margin-right: 10px;">系统参数(包括客服链接地址配置)</p>
         <el-button type="primary" @click="handleUpdateSys">修改系统配置</el-button>
       </div>
     </el-card>
@@ -58,40 +58,243 @@
       <el-button type="primary" @click="handleUpdateTime">修改时区配置</el-button>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
-      <div>
+      <div class="info-item">
         <p>网站名称 Website</p>
-        <div class="value">KAYAK</div>
-        <p>网站名称及网站图标，将显示在浏览器的标签上</p>
+        <div class="value">{{websiteInfo.websiteName}}</div>
+        <p class="tip">网站名称及网站图标，将显示在浏览器的标签上</p>
       </div>
-      <div>
+      <div class="info-item">
         <p>管理程序名称 Name</p>
-        <div class="value">后台管理系统</div>
-        <p>管理程序名称，将显示在后台左上角</p>
+        <div class="value">{{websiteInfo.supervisorName}}</div>
+        <p class="tip">管理程序名称，将显示在后台左上角</p>
       </div>
-      <div>
-        <p>网站名称 Website</p>
-        <div class="value">KAYAK</div>
-        <p>网站名称及网站图标，将显示在浏览器的标签上</p>
+      <div class="info-item">
+        <p>管理程序版本 Version</p>
+        <div class="value">{{websiteInfo.supervisorVersion}}</div>
+        <p class="tip">管理程序版本，将显示在后台左上角标题</p>
       </div>
-      <div>
-        <p>网站名称 Website</p>
-        <div class="value">KAYAK</div>
-        <p>网站名称及网站图标，将显示在浏览器的标签上</p>
+      <div class="info-item">
+        <p>网站版权信息 Copyright</p>
+        <div class="value">{{websiteInfo.copyrightInformation}}</div>
+        <p class="tip">网站版权信息，在后台登录页面显示版权信息并链接到备案到信息备案管理系统</p>
       </div>
     </el-card>
+    <div>
+      <el-dialog
+          v-model="dialogVisible"
+          :title="dialogTitle"
+          width="50%"
+          :before-close="handleClose"
+      >
+        <el-form ref="formRef"
+                 class="ls-form"
+                 :model="formData"
+                 label-width="85px"
+                 :rules="rules">
+          <el-form-item label="网站名称" prop="websiteName">
+            <el-input
+                v-model="formData.websiteName"
+                placeholder="请输入网站名称"
+                clearable
+            />
+          </el-form-item>
+          <el-form-item label="首页轮播文字" label-width="120" prop="homeRotationWord">
+            <el-input
+                v-model="formData.homeRotationWord"
+                placeholder="请输入首页轮播文字"
+                clearable
+            />
+          </el-form-item>
+          <el-form-item label="首页轮播文字开关" label-width="120" prop="isOrNot">
+            <el-select class="w-[280px]" v-model="formData.isOrNot">
+              <el-option
+                  label="关"
+                  :value="0"
+              />
+              <el-option
+                  label="开"
+                  :value="1"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="管理程序名称 Name" label-width="120" prop="supervisorName">
+            <el-input v-model="formData.supervisorName" placeholder="请输入管理程序名称" clearable/>
+          </el-form-item>
+          <el-form-item label="管理程序版本 Version" label-width="120"  prop="supervisorVersion">
+            <el-input v-model="formData.supervisorVersion" placeholder="请输入管理程序版本" clearable/>
+          </el-form-item>
+          <el-form-item label="用户注册IP是否唯一" label-width="120"  prop="ipIsOrNot">
+            <el-select class="w-[280px]" v-model="formData.ipIsOrNot">
+              <el-option
+                  label="关"
+                  :value="0"
+              />
+              <el-option
+                  label="开"
+                  :value="1"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="浏览器图标 Browser" label-width="120" prop="iconAddress">
+            <div>
+              <material-picker v-model="formData.iconAddress" :limit="1" />
+            </div>
+          </el-form-item>
+          <el-form-item label="客服链接地址" label-width="120" prop="linkAddress">
+            <el-input v-model="formData.linkAddress" placeholder="请输入客服链接地址" clearable/>
+          </el-form-item>
+          <el-form-item label="网站版权信息 Copyright" label-width="120" prop="copyrightInformation">
+            <el-input v-model="formData.copyrightInformation" placeholder="请输入网站版权信息" clearable/>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="handleClose">取消</el-button>
+              <el-button type="primary" @click="handleSubmit">确认</el-button>
+      </span>
+        </template>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup name="webInformation">
-import {getTime, updateTime} from '@/api/setting/config'
-import { getWebsite, setWebsite } from '@/api/setting/website'
-import useAppStore from '@/stores/modules/app'
-import feedback from '@/utils/feedback'
 import type { FormInstance } from 'element-plus'
+import {getTime, updateTime, websiteInfoApi, websiteInfoEdit} from '@/api/setting/config'
+import { getWebsite, setWebsite} from '@/api/setting/website'
+import useAppStore from '@/stores/modules/app'
+import feedback from "@/utils/feedback";
 
 /* 修改系统配置 */
-const handleUpdateSys = () => {
+const websiteInfo = reactive({
+  copyrightInformation: '',
+  homeRotationWord: '',
+  iconAddress: '',
+  ipIsOrNot: '',
+  isOrNot: '',
+  linkAddress: '',
+  supervisorName: '',
+  supervisorVersion: '',
+  websiteName: ''
+})
+const formData = reactive({
+  copyrightInformation: '',
+  homeRotationWord: '',
+  iconAddress: '',
+  ipIsOrNot: '',
+  isOrNot: '',
+  linkAddress: '',
+  supervisorName: '',
+  supervisorVersion: '',
+  websiteName: ''
+})
+// 表单验证
+const rules = {
+  websiteName: [
+    {
+      required: true,
+      message: '请输入网站名称',
+      trigger: ['blur']
+    }
+  ],
+  homeRotationWord: [
+    {
+      required: true,
+      message: '请输入首页轮播文字',
+      trigger: ['blur']
+    }
+  ],
+  isOrNot: [
+    {
+      required: true,
+      message: '请选择首页轮播文字开关',
+      trigger: ['change']
+    }
+  ],
+  supervisorName: [
+    {
+      required: true,
+      message: '请输入管理程序名称',
+      trigger: ['blur']
+    }
+  ],
+  supervisorVersion: [
+    {
+      required: true,
+      message: '请输入管理程序版本',
+      trigger: ['blur']
+    }
+  ],
+  ipIsOrNot: [
+    {
+      required: true,
+      message: '请选择用户注册IP是否唯一',
+      trigger: ['change']
+    }
+  ],
+  iconAddress: [
+    {
+      required: true,
+      message: '请选择浏览器图标',
+      trigger: ['change']
+    }
+  ],
+  linkAddress: [
+    {
+      required: true,
+      message: '请输入客服链接地址',
+      trigger: ['blur']
+    }
+  ],
+  copyrightInformation: [
+    {
+      required: true,
+      message: '请输入网站版权信息',
+      trigger: ['blur']
+    }
+  ]
+}
+const getWebsiteInfo = async () => {
+  const res = await websiteInfoApi()
+  websiteInfo.copyrightInformation = res.copyrightInformation
+  websiteInfo.homeRotationWord = res.homeRotationWord
+  websiteInfo.iconAddress = res.iconAddress
+  websiteInfo.ipIsOrNot = res.ipIsOrNot
+  websiteInfo.isOrNot = res.isOrNot
+  websiteInfo.linkAddress = res.linkAddress
+  websiteInfo.supervisorName = res.supervisorName
+  websiteInfo.supervisorVersion = res.supervisorVersion
+  websiteInfo.websiteName = res.websiteName
 
+  formData.copyrightInformation = res.copyrightInformation
+  formData.homeRotationWord = res.homeRotationWord
+  formData.iconAddress = res.iconAddress
+  formData.ipIsOrNot = res.ipIsOrNot
+  formData.isOrNot = res.isOrNot
+  formData.linkAddress = res.linkAddress
+  formData.supervisorName = res.supervisorName
+  formData.supervisorVersion = res.supervisorVersion
+  formData.websiteName = res.websiteName
+}
+getWebsiteInfo()
+const formRef = shallowRef<FormInstance>()
+const dialogVisible = ref(false)
+const dialogTitle = ref('')
+const handleUpdateSys = () => {
+  dialogVisible.value = true
+}
+
+/* 提交菜单 */
+const handleSubmit = async () => {
+  await formRef.value?.validate()
+  await websiteInfoEdit(formData)
+  feedback.msgSuccess('修改成功')
+  getWebsiteInfo()
+  dialogVisible.value = false
+}
+
+const handleClose = () => {
+  dialogVisible.value = false
 }
 
 // 数据清理
@@ -154,91 +357,7 @@ const handleUpdateTime = async () => {
 
 }
 
-
-const formRef = ref<FormInstance>()
-
 const { getConfig } = useAppStore()
-// 表单数据
-const formData = reactive({
-  name: '', // 网站名称
-  favicon: '', // 网站图标
-  logo: '', // 网站logo
-  backdrop: '', // 登录页广告图
-  shopName: '',
-  shopLogo: '',
-  pcDesc: '',
-  pcIco: '',
-  pcKeywords: '',
-  pcLogo: '',
-  pcTitle: ''
-})
-
-// 表单验证
-const rules = {
-  name: [
-    {
-      required: true,
-      message: '请输入网站名称',
-      trigger: ['blur']
-    }
-  ],
-  favicon: [
-    {
-      required: true,
-      message: '请选择网站图标',
-      trigger: ['change']
-    }
-  ],
-  logo: [
-    {
-      required: true,
-      message: '请选择网站logo',
-      trigger: ['change']
-    }
-  ],
-  backdrop: [
-    {
-      required: true,
-      message: '请选择登录页广告图',
-      trigger: ['change']
-    }
-  ],
-  shopName: [
-    {
-      required: true,
-      message: '请输入店铺/商城名称',
-      trigger: ['blur']
-    }
-  ],
-  shopLogo: [
-    {
-      required: true,
-      message: '请选择商城LOGO',
-      trigger: ['change']
-    }
-  ],
-  pcLogo: [
-    {
-      required: true,
-      message: '请选择PC端LOGO',
-      trigger: ['change']
-    }
-  ],
-  pcTitle: [
-    {
-      required: true,
-      message: '请输入PC端网站标题',
-      trigger: ['blur']
-    }
-  ],
-  pcIco: [
-    {
-      required: true,
-      message: '请选择PC端网站图标',
-      trigger: ['change']
-    }
-  ]
-}
 
 
 
@@ -250,21 +369,23 @@ const getData = async () => {
     formData[key] = data[key]
   }
 }
-
-// 设置备案信息
-const handleSubmit = async () => {
-  await formRef.value?.validate()
-  await setWebsite(formData)
-  feedback.msgSuccess('操作成功')
-  getConfig()
-  getData()
-}
-
-getData()
 </script>
 
 <style lang="scss" scoped>
   :deep(.el-checkbox-group) {
     width: 100%;
+  }
+  .info-item{
+    margin-bottom: 20px;
+    .value{
+      line-height: 30px;
+      background: #f2f2f2;
+      padding-left: 10px;
+      margin: 5px 0;
+    }
+    .tip{
+      font-size: 12px;
+      color: #999;
+    }
   }
 </style>

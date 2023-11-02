@@ -73,10 +73,8 @@
         <el-table-column label="驳回理由" prop="reject" min-width="200" />
         <el-table-column label="操作" width="160" fixed="right">
           <template #default="{ row }">
-            <template v-if="!row.auditStatus">
-              <el-button v-perms="['productCate:edit']" type="primary" @click="handleAgree(row)">同意</el-button>
-              <el-button v-perms="['productCate:delete']" type="primary" @click="handleReject(row)">拒绝</el-button>
-            </template>
+            <el-button v-perms="['productCate:edit']" type="primary" @click="handleAgree(row)">同意</el-button>
+            <el-button v-perms="['productCate:delete']" type="primary" @click="handleReject(row)">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -89,21 +87,12 @@
           v-model="dialogReasonVisible"
           title="驳回理由"
           width="50%"
-          :before-close="handleClose"
+          before-close="handleClose"
       >
-        <el-form ref="formRef"
-                 class="ls-form"
-                 :model="formData"
-                 label-width="85px"
-                 :rules="rules">
-          <el-form-item label="驳回理由" prop="reject">
-            <el-input
-                v-model="formData.reject"
-                placeholder="请输入驳回理由"
-                clearable
-            />
-          </el-form-item>
-        </el-form>
+        <el-input
+            v-model="formData.reason"
+            placeholder="驳回理由"
+        />
         <template #footer>
             <span class="dialog-footer">
               <el-button @click="handleClose">取消</el-button>
@@ -118,7 +107,8 @@
 import { usePaging } from '@/hooks/usePaging'
 import { withdrawalRecord, withdrawalAudit } from '@/api/finance/withdraw'
 import feedback from "@/utils/feedback";
-import type { FormInstance } from 'element-plus'
+import {delProductCate} from "@/api/product";
+import {FormInstance} from "element-plus";
 const queryParams = reactive({
   orderNo: null,
   username: null,
@@ -151,33 +141,29 @@ const handleAgree = async (row: any) => {
 const formRef = shallowRef<FormInstance>()
 const dialogReasonVisible = ref(false)
 const formData = reactive({
-  id: '',
-  userId: '',
-  reject: '',
-  auditStatus: 2,
-  money: 0
+  reason: ''
 })
 const rules = reactive({
-  reject: [{ required: true, message: '驳回理由必填', trigger: 'blur' }]
+  reason: [{ required: true, message: '驳回理由必填', trigger: 'blur' }]
 })
 const handleReject = async (row: any) => {
   dialogReasonVisible.value = true
-  formData.id = row.id
-  formData.userId = row.userId
-  formData.money = row.money
 }
 
 
 const handleClose = () => {
   dialogReasonVisible.value = false
-  formData.id = ''
-  formData.userId = ''
-  formData.reject = ''
-  formData.money = 0
+  formData.reason = ''
 }
-const handleSubmit = async () => {
+const handleSubmit = async (row: any) => {
   await formRef.value?.validate()
-  await withdrawalAudit(formData)
+  await withdrawalAudit({
+    id: row.id,
+    userId: row.userId,
+    reject: formData.reason,
+    auditStatus: 2,
+    money: row.money
+  })
   feedback.msgSuccess('操作成功')
   getLists()
   handleClose()
