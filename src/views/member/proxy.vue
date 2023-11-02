@@ -1,5 +1,29 @@
 <template>
   <div>
+    <el-card class="!border-none" shadow="never">
+      <el-form ref="formRef" class="mb-[-16px]" :model="queryParams" :inline="true">
+        <el-form-item label="用户名称">
+          <el-input
+              class="w-[280px]"
+              v-model="queryParams.username"
+              placeholder="请输入用户名称"
+              clearable
+          />
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input
+              class="w-[280px]"
+              v-model="queryParams.mobile"
+              placeholder="请输入手机号"
+              clearable
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="resetPage">查询</el-button>
+          <el-button @click="resetParams">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
     <el-card class="!border-none mt-4" shadow="never">
       <div>
         <el-button type="primary" class="mb-4" @click="handleAdd">
@@ -9,22 +33,31 @@
           新增代理
         </el-button>
       </div>
-      <el-table size="large" v-loading="pager.loading" :data="pager.lists">
+      <el-table v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="ID" prop="id" min-width="60" />
-        <el-table-column label="绑定用户ID" prop="lvName" min-width="100" />
-        <el-table-column label="级别" prop="lvValue" min-width="100" />
-        <el-table-column label="用户名" min-width="120" />
-        <el-table-column label="手机号" prop="upPrice" min-width="100" />
-        <el-table-column label="邀请码" prop="upNumber" min-width="100" />
-        <el-table-column label="登录次数" prop="commiRatio" min-width="100" />
-        <el-table-column label="使用状态" prop="linkCommiRatio" min-width="120" />
-        <el-table-column label="客服链接" prop="nextCommiRatio" min-width="120" />
-        <el-table-column label="上级代理" prop="balanceLimit" min-width="100" />
-        <el-table-column label="添加时间" prop="orderConfine" min-width="100" />
-        <el-table-column label="操作" width="180" fixed="right">
+        <el-table-column label="绑定用户ID" prop="parentId" min-width="100" />
+        <el-table-column label="级别" prop="agentLevel" min-width="100" >
           <template #default="{ row }">
-            <el-button v-perms="['member:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
-            <el-button v-perms="['member:delete']" type="primary" @click="handleDelete(row.id)">禁用</el-button>
+            {{row.agentLevel === 1 ? '一级代理' : '二级代理'}}
+          </template>
+        </el-table-column>
+        <el-table-column label="用户名" prop="username" min-width="100" />
+        <el-table-column label="手机号" prop="mobile" min-width="160" />
+        <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
+        <el-table-column label="登录次数" prop="" min-width="100" />
+        <el-table-column label="使用状态" prop="isDisable" min-width="100" >
+          <template #default="{ row }">
+            {{row.agentLevel ? '正常' : '禁用'}}
+          </template>
+        </el-table-column>
+        <el-table-column label="客服链接" prop="customerServiceLink" min-width="160" />
+        <el-table-column label="上级代理" prop="parentAgent" min-width="160" />
+        <el-table-column label="添加时间" prop="createTime" min-width="160" />
+        <el-table-column label="操作" width="240" fixed="right">
+          <template #default="{ row }">
+            <el-button v-perms="['productCate:edit']" type="primary" @click="handlePassword(row.id)">密码</el-button>
+            <el-button v-perms="['productCate:delete']" type="primary" @click="handleEdit(row)">编辑</el-button>
+            <el-button v-perms="['productCate:delete']" type="primary" @click="handleBan(row.id)">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -44,52 +77,27 @@
                  :model="formData"
                  label-width="85px"
                  :rules="rules">
-          <el-form-item label="级别" prop="lvValue">
+          <el-form-item label="用户名" prop="username">
             <el-input
-                v-model="formData.lvValue"
-                placeholder="请输入会员等级"
+                v-model="formData.username"
+                placeholder="请输入用户名"
                 clearable
             />
           </el-form-item>
-          <el-form-item label="用户名" prop="lvImage">
-            <div>
-              <material-picker v-model="formData.lvImage" :limit="1" />
-            </div>
+          <el-form-item label="手机号" prop="mobile">
+            <el-input v-model="formData.mobile" placeholder="请输入手机号" clearable/>
           </el-form-item>
-          <el-form-item label="手机号" prop="upPrice">
-            <el-input
-                v-model="formData.upPrice"
-                placeholder="请输入升级价格"
-                clearable
-            />
+          <el-form-item label="密码" prop="password" v-if="dialogTitle === '新增代理'">
+            <el-input v-model="formData.password" placeholder="请输入密码" clearable/>
           </el-form-item>
-          <el-form-item label="邀请码" prop="upNumber">
-            <el-input
-                v-model="formData.upNumber"
-                placeholder="请输入自动升级需邀请人数"
-                clearable
-            />
+          <el-form-item label="邀请码" prop="inviteCode">
+            <el-input v-model="formData.inviteCode" placeholder="请输入邀请码" clearable/>
           </el-form-item>
-          <el-form-item label="使用状态" prop="commiRatio">
-            <el-input
-                v-model="formData.commiRatio"
-                placeholder="请输入佣金比例"
-                clearable
-            />
+          <el-form-item label="客服链接" prop="customerServiceLink">
+            <el-input v-model="formData.customerServiceLink" placeholder="请输入客服链接" clearable/>
           </el-form-item>
-          <el-form-item label="客服链接" prop="linkCommiRatio">
-            <el-input
-                v-model="formData.linkCommiRatio"
-                placeholder="请输入连单佣金比例"
-                clearable
-            />
-          </el-form-item>
-          <el-form-item label="上级代理" prop="nextCommiRatio">
-            <el-input
-                v-model="formData.nextCommiRatio"
-                placeholder="请输入下级佣金比例"
-                clearable
-            />
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="formData.email" placeholder="请输入邮箱" clearable/>
           </el-form-item>
         </el-form>
         <template #footer>
@@ -100,54 +108,66 @@
         </template>
       </el-dialog>
     </div>
+    <div>
+      <el-dialog
+          v-model="dialogPasswordVisible"
+          title="修改密码"
+          width="50%"
+          :before-close="handlePasswordClose"
+      >
+        <el-form ref="formRefPassword"
+                 class="ls-form"
+                 :model="formDataPassword"
+                 label-width="85px"
+                 :rules="rulesPassword">
+          <el-form-item label="新密码" prop="password">
+            <el-input
+                v-model="formDataPassword.password"
+                placeholder="请输入新密码"
+                clearable
+            />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="handlePasswordClose">取消</el-button>
+              <el-button type="primary" @click="handlePasswordSubmit">确认</el-button>
+      </span>
+        </template>
+        </el-dialog>
+  </div>
   </div>
 </template>
-<script lang="ts" setup name="productLists">
+<script lang="ts" setup name="productCateLists">
 import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
-import { getProxyList, userLevelAdd, userLevelEdit, userLevelDel } from '@/api/member'
+import {agentManage, proxyAdd, proxyDel, proxyEdit, proxyEditPwd, proxyDisable} from '@/api/member'
 import feedback from "@/utils/feedback";
-const queryParams = reactive({})
+const queryParams = reactive({
+  username: '',
+  mobile: ''
+})
 let formData = reactive({
   id: '',
-  lvName: '',
-  lvValue: '',
-  lvImage: '',
-  upPrice: '',
-  upNumber: '',
-  commiRatio: '',
-  linkCommiRatio: '',
-  nextCommiRatio: '',
-  balanceLimit: '',
-  orderConfine: '',
-  withdrawNum: '',
-  withdrawMin: '',
-  withdrawMax: '',
-  withdrwaMoney: '',
-  withdrawOrderNum: '',
-  invitationPermiissions: ''
+  username: '',
+  mobile: '',
+  inviteCode: '',
+  customerServiceLink: '',
+  email: '',
+  password: ''
+})
+const rule = reactive({
+  password: [{ required: true, message: '密码必填', trigger: 'blur' }]
 })
 const rules = reactive({
-  lvName: [{ required: true, message: '等级必填', trigger: 'blur' }],
-  lvValue: [{ required: true, message: '会员等级必填', trigger: 'blur' }],
-  lvImage: [{ required: true, message: '等级图标必上传', trigger: 'blur' }],
-  upPrice: [{ required: true, message: '升级价格必填', trigger: 'blur' }],
-  upNumber: [{ required: true, message: '自动升级需邀请人数必填', trigger: 'blur' }],
-  commiRatio: [{ required: true, message: '佣金比例必填', trigger: 'blur' }],
-  linkCommiRatio: [{ required: true, message: '连单佣金比例必填', trigger: 'blur' }],
-  nextCommiRatio: [{ required: true, message: '下级佣金比例必填', trigger: 'blur' }],
-  balanceLimit: [{ required: true, message: '用户余额限制必填', trigger: 'blur' }],
-  orderConfine: [{ required: true, message: '接单限制必填', trigger: 'blur' }],
-  withdrawNum: [{ required: true, message: '提现次数必填', trigger: 'blur' }],
-  withdrawMin: [{ required: true, message: '提现最小金额必填', trigger: 'blur' }],
-  withdrawMax: [{ required: true, message: '提现最大金额必填', trigger: 'blur' }],
-  withdrwaMoney: [{ required: true, message: '提现手续费必填', trigger: 'blur' }],
-  withdrawOrderNum: [{ required: true, message: '请输入提现需要完成的订单数/天必填', trigger: 'blur' }],
-  invitationPermiissions: [{ required: true, message: '邀请权限必选', trigger: 'blur' }]
+  username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
+  mobile: [{ required: true, message: '手机号必填', trigger: 'blur' }],
+  customerServiceLink: [{ required: true, message: '客服链接必填', trigger: 'blur' }],
+  email: [{ required: true, message: '邮箱必填', trigger: 'blur' }]
 })
 
 const { pager, getLists, resetPage, resetParams } = usePaging({
-  fetchFun: getAdminList,
+  fetchFun: agentManage,
   params: queryParams
 })
 onActivated(() => {
@@ -165,34 +185,47 @@ const handleAdd = () => {
   dialogTitle.value = '新增代理'
 }
 // 删除
-const handleDelete = async (id: any) => {
-  await feedback.confirm('确定要禁用这条数据？')
-  await userLevelDel({ id })
-  feedback.msgSuccess('禁用成功')
+const handleDelete = async (id: number) => {
+  await feedback.confirm('确定要删除这条数据？')
+  await proxyDel({ id })
+  feedback.msgSuccess('删除成功')
   getLists()
 }
-
+const formRefPassword = shallowRef<FormInstance>()
+const dialogPasswordVisible = ref(false)
+let formDataPassword = reactive({
+  id: '',
+  password: ''
+})
+const rulesPassword = reactive({
+  password: [{ required: true, message: '新密码必填', trigger: 'blur' }]
+})
+const handlePassword = (id: any) => {
+  dialogPasswordVisible.value = true
+  formDataPassword.id = id
+}
+const handlePasswordClose = () => {
+  dialogPasswordVisible.value = false
+  formDataPassword.password = ''
+}
+const handlePasswordSubmit = async () => {
+  await formRefPassword.value?.validate()
+  await proxyEditPwd(formDataPassword)
+  feedback.msgSuccess('修改密码成功')
+  getLists()
+  handleClose()
+}
 /* 修改菜单 */
 const handleEdit = async (row: any) => {
   dialogTitle.value = '修改代理信息'
+  console.log('row', row)
   // formData = row
   formData.id = row.id
-  formData.lvName = row.lvName
-  formData.lvValue = row.lvValue
-  formData.lvImage = row.lvImage
-  formData.upPrice = row.upPrice
-  formData.upNumber = row.upNumber
-  formData.commiRatio = row.commiRatio
-  formData.linkCommiRatio = row.linkCommiRatio
-  formData.nextCommiRatio = row.nextCommiRatio
-  formData.balanceLimit = row.balanceLimit
-  formData.orderConfine = row.orderConfine
-  formData.withdrawNum = row.withdrawNum
-  formData.withdrawMin = row.withdrawMin
-  formData.withdrawMax = row.withdrawMax
-  formData.withdrwaMoney = row.withdrwaMoney
-  formData.withdrawOrderNum = row.withdrawOrderNum
-  formData.invitationPermiissions = row.invitationPermiissions
+  formData.username = row.username
+  formData.mobile = row.mobile
+  formData.inviteCode = row.inviteCode
+  formData.customerServiceLink = row.customerServiceLink
+  formData.email = row.email
   dialogVisible.value = true
 }
 
@@ -200,35 +233,31 @@ const handleEdit = async (row: any) => {
 const handleSubmit = async () => {
   await formRef.value?.validate()
   if (formData.id) {
-    await userLevelEdit(formData)
+    await proxyEdit(formData)
     feedback.msgSuccess('修改成功')
   } else {
-    await userLevelAdd(formData)
+    await proxyAdd(formData)
     feedback.msgSuccess('新增成功')
   }
   getLists()
-  dialogVisible.value = false
+  handleClose()
 }
 
 const handleClose = () => {
   dialogVisible.value = false
   formData.id = ''
-  formData.lvName = ''
-  formData.lvValue = ''
-  formData.lvImage = ''
-  formData.upPrice = ''
-  formData.upNumber = ''
-  formData.commiRatio = ''
-  formData.linkCommiRatio = ''
-  formData.nextCommiRatio = ''
-  formData.balanceLimit = ''
-  formData.orderConfine = ''
-  formData.withdrawNum = ''
-  formData.withdrawMin = ''
-  formData.withdrawMax = ''
-  formData.withdrwaMoney = ''
-  formData.withdrawOrderNum = ''
-  formData.invitationPermiissions = ''
+  formData.username = ''
+  formData.mobile = ''
+  formData.inviteCode = ''
+  formData.customerServiceLink = ''
+  formData.email = ''
+}
+
+const handleBan = async (id: any) => {
+  await feedback.confirm('确定要禁用这条数据？')
+  await proxyDisable({ id })
+  feedback.msgSuccess('禁用成功')
+  getLists()
 }
 
 </script>

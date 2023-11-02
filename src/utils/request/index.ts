@@ -99,7 +99,7 @@ const defaultOptions: AxiosRequestConfig = {
     // baseURL: 'http://8.210.20.168:8082/',   //胡俊文服务器
     // baseURL: 'http://192.168.2.63:8082/',   //胡俊文本地
     // baseURL: 'http://47.57.241.6:8866/', // 张俊服务器
-    // baseURL: 'http://192.168.2.44:8082/',   // 张俊文本地
+    // baseURL: 'http://192.168.2.44:8082/',   // 张俊本地
     // baseURL: 'http://192.168.2.45:8082/',   // 李红本地
     // baseURL: 'http://192.168.2.61:8082/',   // 陶磊本地
     headers: { 'Content-Type': ContentTypeEnum.JSON, version: configs.version },

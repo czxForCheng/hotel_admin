@@ -55,27 +55,32 @@ export function getProxyList() {
     return request.get({ url: '/agentManage/firstAgentList' })
 }
 
+// 代理列表(没有分页)
+export function agentManage(params: any) {
+    return request.get({ url: '/agentManage/list', params })
+}
+
 // 新增代理
-export function adminAdd(params: any) {
-    return request.post({ url: '/system/admin/add', params })
+export function proxyAdd(params: any) {
+    return request.post({ url: '/agentManage/add', params })
 }
 
 // 删除代理
-export function adminDel(params: any) {
-    return request.post({ url: '/system/admin/del', params })
+export function proxyDel(params: any) {
+    return request.post({ url: '/agentManage/del', params })
 }
 
 // 编辑代理
-export function adminEdit(params: any) {
-    return request.post({ url: '/system/admin/edit', params })
+export function proxyEdit(params: any) {
+    return request.post({ url: '/agentManage/edit', params })
 }
 
-// 当前管理员更新
-export function adminInfo(params: any) {
-    return request.post({ url: '/system/admin/upInfo', params })
+// 修改代理密码
+export function proxyEditPwd(params: any) {
+    return request.post({ url: '/agentManage/editPwd', params })
 }
 
 // 代理状态切换
-export function adminDisable(params: any) {
-    return request.post({ url: '/system/admin/disable', params })
+export function proxyDisable(params: any) {
+    return request.post({ url: '/agentManage/disable', params })
 }

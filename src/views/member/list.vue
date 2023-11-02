@@ -40,7 +40,7 @@
                         <el-button v-perms="['productCate:edit']" type="primary" size="small" >重置抢单数量</el-button>
                         <el-button v-perms="['productCate:edit']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
                       <el-dropdown>
-                        <span class="el-dropdown-link">
+                        <span class="el-dropdown-link" style="margin-left: 10px;">
                           更多操作
                           <el-icon class="el-icon--right">
 <!--                            <arrow-down />-->
