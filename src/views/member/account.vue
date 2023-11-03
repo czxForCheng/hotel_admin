@@ -2,6 +2,14 @@
   <div>
     <el-card class="!border-none" shadow="never">
       <el-form ref="formRef" class="mb-[-16px]" :model="queryParams" :inline="true">
+        <el-form-item label="账号">
+          <el-input
+              class="w-[280px]"
+              v-model="queryParams.username"
+              placeholder="请输入账号"
+              clearable
+          />
+        </el-form-item>
         <el-form-item label="交易类型">
           <el-select class="w-[280px]" v-model="queryParams.fundType" placeholder="请选择交易类型">
             <el-option
@@ -79,6 +87,7 @@ import feedback from "@/utils/feedback";
 const route = useRoute()
 const queryParams = reactive({
   id: '',
+  username: '',
   fundType: '',
   startTime: '',
   endTime: ''

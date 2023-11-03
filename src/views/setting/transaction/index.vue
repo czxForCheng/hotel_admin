@@ -257,7 +257,7 @@
                     show-word-limit
                 ></el-input>
               </div>
-              <p class="tip">只支持整点，如8:00-20:00，请直接输入8-20</p>
+              <p class="tip">只支持整点，如8:00，请直接输入8</p>
             </el-form-item>
             <el-form-item label="结束充值时间" prop="topTimeEnd">
               <div class="w-80">
@@ -267,7 +267,7 @@
                   show-word-limit
               ></el-input>
               </div>
-              <p class="tip">只支持整点，如8:00-20:00，请直接输入8-20</p>
+              <p class="tip">只支持整点，如8:00，请直接输入8</p>
             </el-form-item>
             <el-form-item label="抢单开始时间" prop="orderTimeStart">
               <div class="w-80">
@@ -277,7 +277,7 @@
                     show-word-limit
                 ></el-input>
               </div>
-              <p class="tip">只支持整点，如8:00-20:00，请直接输入8-20</p>
+              <p class="tip">只支持整点，如8:00，请直接输入8</p>
             </el-form-item>
             <el-form-item label="抢单结束时间" prop="orderTimeEnd">
               <div class="w-80">
@@ -287,7 +287,7 @@
                     show-word-limit
                 ></el-input>
               </div>
-              <p class="tip">只支持整点，如8:00-20:00，请直接输入8-20</p>
+              <p class="tip">只支持整点，如8:00，请直接输入8</p>
             </el-form-item>
             <el-form-item label="商城状态" prop="mallStatus">
               <div class="w-80">
@@ -386,7 +386,7 @@
               </div>
               <p class="tip">提现到usdt：1开启 0关闭</p>
             </el-form-item>
-            <el-form-item label="首次提现手升级到级别" prop="upgradeLevel">
+            <el-form-item label="首次提现后升级到级别" prop="upgradeLevel">
               <div class="w-80">
                 <el-input
                     v-model.trim="formDataOther.upgradeLevel"

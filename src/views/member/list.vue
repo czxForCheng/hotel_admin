@@ -445,7 +445,15 @@ onActivated(() => {
 getLists()
 
 
-
+const validatePhone = (rule: any, value: any, callback: any) => {
+  const reg = /^1[3,4,5,6,7,8,9][0-9]{9}$/
+  const result = reg.test(value)
+  if(!result) {
+    callback(new Error('手机号码格式不正确'))
+  }else{
+    callback()
+  }
+}
 // 新增
 const formRefAdd = shallowRef<FormInstance>()
 let formDataAdd  = reactive({
@@ -458,7 +466,10 @@ let formDataAdd  = reactive({
 })
 const rulesAdd  = reactive({
   username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
-  mobile: [{ required: true, message: '手机号码必填', trigger: 'blur' }],
+  mobile: [
+      { required: true, message: '手机号码必填', trigger: 'blur' },
+      { validator: validatePhone, trigger: 'blur' }
+  ],
   password: [{ required: true, message: '登录密码必填', trigger: 'blur' }],
   tradingPwd: [{ required: true, message: '交易密码必填', trigger: 'blur' }],
   inviteCode: [{ required: true, message: '邀请码必填', trigger: 'blur' }]
