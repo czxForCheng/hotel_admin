@@ -8,7 +8,7 @@
                   v-for="(item, key) in memberRankAll"
                   :key="item.id"
                   :label="item.lvName"
-                  :value="item.lvValue"
+                  :value="item.id"
               />
             </el-select>
           </el-form-item>
