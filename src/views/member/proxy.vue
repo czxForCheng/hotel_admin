@@ -26,7 +26,7 @@
     </el-card>
     <el-card class="!border-none mt-4" shadow="never">
       <div>
-        <el-button type="primary" class="mb-4" @click="handleAdd">
+        <el-button v-perms="['member:proxy:add']" type="primary" class="mb-4" @click="handleAdd">
           <template #icon>
             <icon name="el-icon-Plus" />
           </template>
@@ -55,9 +55,9 @@
         <el-table-column label="添加时间" prop="createTime" min-width="180" />
         <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
-            <el-button v-perms="['productCate:edit']" type="primary" @click="handlePassword(row.id)">密码</el-button>
-            <el-button v-perms="['productCate:delete']" type="primary" @click="handleEdit(row)">编辑</el-button>
-            <el-button v-perms="['productCate:delete']" type="primary" @click="handleBan(row)">{{row.isDisable ? '启用' : '禁用'}}</el-button>
+            <el-button v-perms="['member:proxy:password']" type="primary" @click="handlePassword(row.id)">密码</el-button>
+            <el-button v-perms="['member:proxy:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
+            <el-button v-perms="['member:proxy:ban']" type="primary" @click="handleBan(row)">{{row.isDisable ? '启用' : '禁用'}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -135,7 +135,7 @@
   </div>
   </div>
 </template>
-<script lang="ts" setup name="productCateLists">
+<script lang="ts" setup name="proxyLists">
 import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
 import {agentManage, proxyAdd, proxyDel, proxyEdit, proxyEditPwd, proxyDisable} from '@/api/member'
@@ -179,13 +179,13 @@ const handleAdd = () => {
   dialogVisible.value = true
   dialogTitle.value = '新增代理'
 }
-// 删除
-const handleDelete = async (id: number) => {
-  await feedback.confirm('确定要删除这条数据？')
-  await proxyDel({ id })
-  feedback.msgSuccess('删除成功')
-  getLists()
-}
+// // 删除
+// const handleDelete = async (id: number) => {
+//   await feedback.confirm('确定要删除这条数据？')
+//   await proxyDel({ id })
+//   feedback.msgSuccess('删除成功')
+//   getLists()
+// }
 const formRefPassword = shallowRef<FormInstance>()
 const dialogPasswordVisible = ref(false)
 let formDataPassword = reactive({
@@ -199,10 +199,6 @@ const handlePassword = (id: any) => {
   dialogPasswordVisible.value = true
   formDataPassword.id = id
 }
-const handlePasswordClose = () => {
-  dialogPasswordVisible.value = false
-  formDataPassword.password = ''
-}
 const handlePasswordSubmit = async () => {
   await formRefPassword.value?.validate()
   await proxyEditPwd(formDataPassword)
@@ -210,10 +206,14 @@ const handlePasswordSubmit = async () => {
   getLists()
   handlePasswordClose()
 }
-/* 修改菜单 */
+const handlePasswordClose = () => {
+  dialogPasswordVisible.value = false
+  formDataPassword.password = ''
+}
+
+/* 修改 */
 const handleEdit = async (row: any) => {
   dialogTitle.value = '修改代理信息'
-  console.log('row', row)
   // formData = row
   formData.id = row.id
   formData.username = row.username

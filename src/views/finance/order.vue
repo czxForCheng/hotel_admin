@@ -13,7 +13,7 @@
         <el-form-item label="用户名">
           <el-input
               class="w-[280px]"
-              v-model="queryParams.userName"
+              v-model="queryParams.username"
               placeholder="请输入用户名"
               clearable
           />
@@ -81,11 +81,11 @@
         <el-table-column label="操作" width="220" fixed="right">
           <template #default="{ row }">
             <template v-if="row.orderStatus">
-              <el-button v-perms="['productCate:edit']" type="primary" @click="handleView(row)">资金流水</el-button>
+              <el-button v-perms="['finance:order:fund']" type="primary" @click="handleView(row)">资金流水</el-button>
             </template>
             <template v-else>
-              <el-button v-perms="['productCate:delete']" type="primary" @click="handlePay(row.id)">强制付款</el-button>
-              <el-button v-perms="['productCate:delete']" type="primary" @click="handleEdit(row)">取消订单</el-button>
+              <el-button v-perms="['finance:order:force']" type="primary" @click="handlePay(row.id)">强制付款</el-button>
+              <el-button v-perms="['finance:order:cancle']" type="primary" @click="handleEdit(row)">取消订单</el-button>
             </template>
           </template>
         </el-table-column>
@@ -117,9 +117,6 @@
           </el-table-column>
           <el-table-column label="交易时间" prop="addTime" min-width="100" />
         </el-table>
-<!--        <div class="flex justify-end mt-4">-->
-<!--          <pagination v-model="pagerView" @change="getListsView" />-->
-<!--        </div>-->
       </el-dialog>
     </div>
   </div>
@@ -128,10 +125,9 @@
 import { usePaging } from '@/hooks/usePaging'
 import {orderList, orderPay, orderFlow, orderDel} from '@/api/finance/order'
 import feedback from "@/utils/feedback";
-import {isExternal} from "@/utils/validate";
 const queryParams = reactive({
   orderNum: '',
-  userName: '',
+  username: '',
   orderStatus: null,
   mobile: '',
   startTime: '',

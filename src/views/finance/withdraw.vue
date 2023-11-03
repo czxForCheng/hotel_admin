@@ -74,8 +74,8 @@
         <el-table-column label="操作" width="160" fixed="right">
           <template #default="{ row }">
             <template v-if="!row.auditStatus">
-              <el-button v-perms="['productCate:edit']" type="primary" @click="handleAgree(row)">同意</el-button>
-              <el-button v-perms="['productCate:delete']" type="primary" @click="handleReject(row)">拒绝</el-button>
+              <el-button v-perms="['finance:withdraw:agree']" type="primary" @click="handleAgree(row)">同意</el-button>
+              <el-button v-perms="['finance:withdraw:reject']" type="primary" @click="handleReject(row)">拒绝</el-button>
             </template>
           </template>
         </el-table-column>
@@ -107,7 +107,7 @@
         <template #footer>
             <span class="dialog-footer">
               <el-button @click="handleClose">取消</el-button>
-              <el-button @click="handleSubmit">确认</el-button>
+              <el-button type="primary" @click="handleSubmit">确认</el-button>
             </span>
         </template>
       </el-dialog>
@@ -142,6 +142,7 @@ const handleAgree = async (row: any) => {
   await withdrawalAudit({
     id: row.id,
     userId: row.userId,
+    money: row.money,
     auditStatus: 1
   })
   feedback.msgSuccess('操作成功')
@@ -167,6 +168,13 @@ const handleReject = async (row: any) => {
   formData.money = row.money
 }
 
+const handleSubmit = async () => {
+  await formRef.value?.validate()
+  await withdrawalAudit(formData)
+  feedback.msgSuccess('操作成功')
+  getLists()
+  handleClose()
+}
 
 const handleClose = () => {
   dialogReasonVisible.value = false
@@ -174,13 +182,6 @@ const handleClose = () => {
   formData.userId = ''
   formData.reject = ''
   formData.money = 0
-}
-const handleSubmit = async () => {
-  await formRef.value?.validate()
-  await withdrawalAudit(formData)
-  feedback.msgSuccess('操作成功')
-  getLists()
-  handleClose()
 }
 
 </script>

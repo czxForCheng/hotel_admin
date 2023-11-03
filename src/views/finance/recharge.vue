@@ -71,8 +71,7 @@
         </el-table-column>
         <el-table-column label="状态" prop="auditStatus" min-width="160">
           <template #default="{ row }">
-            {{!
-              row.auditStatus ? '未审核' : (row.auditStatus === 1 ? '审核通过' : '审核不通过')}}
+            {{!row.auditStatus ? '未审核' : (row.auditStatus === 1 ? '审核通过' : '审核不通过')}}
           </template>
         </el-table-column>
         <el-table-column label="申请时间" prop="addTime" min-width="200" />
@@ -84,7 +83,7 @@
     </el-card>
   </div>
 </template>
-<script lang="ts" setup name="productCateLists">
+<script lang="ts" setup name="rechargeLists">
 import { usePaging } from '@/hooks/usePaging'
 import { rechargeRecord } from '@/api/finance/recharge'
 const queryParams = reactive({

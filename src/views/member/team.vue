@@ -59,7 +59,7 @@
         <el-table-column label="注册时间" prop="createTime" min-width="180" />
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
-            <el-button v-perms="['member:edit']" type="primary">
+            <el-button type="primary">
               <router-link
                   :to="{
                       path: getRoutePath('member:account'),
@@ -71,7 +71,7 @@
                 账变
               </router-link>
             </el-button>
-            <el-button v-perms="['member:delete']" type="primary" @click="banOne(row)">{{row.isDisable ? '启用' : '封禁'}}</el-button>
+            <el-button type="primary" @click="banOne(row)">{{row.isDisable ? '启用' : '封禁'}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -81,7 +81,7 @@
     </el-card>
   </div>
 </template>
-<script lang="ts" setup name="productCateLists">
+<script lang="ts" setup name="teamLists">
 import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
 import { proxyDel, proxyEditPwd, userManageTeamList, disableTeam, unDisableTeam, disable} from '@/api/member'

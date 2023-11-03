@@ -212,7 +212,7 @@ const handleSubmit = async () => {
     feedback.msgSuccess('新增成功')
   }
   getLists()
-  dialogVisible.value = false
+  handleClose()
 }
 
 const handleClose = () => {
@@ -227,3 +227,8 @@ const handleClose = () => {
 }
 
 </script>
+<style scoped>
+:deep(.el-select){
+  width: 100%;
+}
+</style>

@@ -71,7 +71,7 @@
     </el-card>
   </div>
 </template>
-<script lang="ts" setup name="productCateLists">
+<script lang="ts" setup name="accountLists">
 import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
 import {agentManage, proxyAdd, proxyDel, proxyEdit, proxyEditPwd, proxyDisable, userManageBillList} from '@/api/member'
