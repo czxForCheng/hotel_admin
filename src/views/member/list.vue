@@ -16,7 +16,7 @@
                 <el-table-column label="二级代理" prop="secondAgentName" min-width="120" />
                 <el-table-column label="账号" prop="username" min-width="120" />
                 <el-table-column label="用户昵称" prop="nickname" min-width="100" />
-                <el-table-column label="手机号码" prop="mobile" min-width="100" />
+                <el-table-column label="手机号码" prop="mobile" min-width="150" />
                 <el-table-column label="会员等级" prop="userLevelName" min-width="100" />
                 <el-table-column label="信誉分" prop="creditScore" min-width="100" />
                 <el-table-column label="已完成订单总数" prop="mobile" min-width="100" />
@@ -53,6 +53,7 @@
                         </span>
                         <template #dropdown>
                           <el-dropdown-menu>
+<!--                            <el-dropdown-item @click="userDetail(row.id)">会员详情</el-dropdown-item>-->
                             <el-dropdown-item @click="handleOpenMoney(row.id, 1)">赠送彩金</el-dropdown-item>
                             <el-dropdown-item @click="handleEdit(row)">编辑</el-dropdown-item>
                             <el-dropdown-item @click="handleOpenUsdt(row.walletAddress)">USDT信息</el-dropdown-item>
@@ -297,7 +298,7 @@ import {
   getProxyList,
   userManageBeDummy,
   userManageDel,
-  userManageDisable, userReset
+  userManageDisable, userReset, userManageDetail
 } from '@/api/member'
 import { ClientMap } from '@/enums/appEnums'
 import type { FormInstance } from 'element-plus'
@@ -341,7 +342,6 @@ const getMemberProxyAll = async () => {
 getMemberProxyAll()
 
 const handleOpenNum = async (id: number) => {
-  console.log('id', id)
   await feedback.confirm(`确定要重置抢单数量？`)
   await userReset({ id })
   feedback.msgSuccess(`重置抢单数量成功`)
@@ -480,16 +480,18 @@ const handleUsdtClose = () => {
 }
 
 // 连单
-const ticketForm= (data:any)=>{
-  sessionStorage.removeItem('goods')
+const ticketForm= async (data:any)=>{
+    sessionStorage.removeItem('goods')
     isTicket.value = true
-    ticketValue.value = data
+  ticketValue.value = data
+
+
 }
 
 const closeTicket = (data:any)=>{
-    console.log(data)
     sessionStorage.removeItem('goods')
     isTicket.value = false
+    getLists()
 }
 
 /* 启用/禁用 */
@@ -515,4 +517,8 @@ const handleBeDummy = async (row: any) => {
   feedback.msgSuccess('操作成功')
   getLists()
 }
+
+// 会员详情
+
+
 </script>

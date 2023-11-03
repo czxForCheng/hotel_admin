@@ -3,11 +3,11 @@
     <el-dialog
         v-model="isTicket"
         :title="title"
-        width="70%"
+        :width="formData.isLink===0 ? '500px':'1300px'"
         :before-close="handleClose"
     >
       <el-row>
-        <el-col :span="10">
+        <el-col :span="formData.isLink === 0 ? 24:10">
           <el-form ref="formRef"
                    class="ls-form"
                    :model="formData"
@@ -50,6 +50,15 @@
               />
             </el-form-item>
             <el-form-item prop="beginOrder">
+              <p>是否开始连单</p>
+              <p style="width: 100%;margin-top: 10px">
+                <el-radio-group v-model="formData.isLink">
+                  <el-radio :label="0">未开始连单</el-radio>
+                  <el-radio :label="1">已开始连单</el-radio>
+                </el-radio-group>
+              </p>
+            </el-form-item>
+            <el-form-item v-if="formData.isLink===1" prop="beginOrder">
               <p>几单后开始连单</p>
               <el-input
                   v-model="formData.beginOrder"
@@ -57,7 +66,7 @@
                   clearable
               />
             </el-form-item>
-            <el-form-item prop="goodsIds">
+            <el-form-item v-if="formData.isLink===1" prop="goodsIds">
               <p>连单商品ID</p>
               <el-input
                   v-model="formData.goodsIds"
@@ -65,15 +74,16 @@
                   clearable
               />
             </el-form-item>
-            <el-form-item prop="goods">
+            <el-form-item v-if="formData.isLink===1">
               <p>新的选择商品（请在右侧选择商品）</p>
               <el-input
+                  @change="changeGoods"
                   v-model="formData.goods"
                   placeholder="选择商品"
                   clearable
               />
             </el-form-item>
-            <div style="float:left ;padding: 20px 0">
+            <div v-if="formData.isLink===1" style="float:left ;padding: 20px 0">
               <span class="dialog-footer">
                     <el-button @click="handleClose">取消</el-button>
                     <el-button type="primary" @click="handleSubmit">确认</el-button>
@@ -81,7 +91,7 @@
             </div>
           </el-form>
         </el-col>
-        <el-col :span="14">
+        <el-col  v-if="formData.isLink===1" :span="14">
           <div style="padding: 0 0 0 3%;box-sizing: border-box">
             <el-form style="margin: 20px 0" class="mb-[-16px]" :model="queryParams" :inline="true">
               <el-form-item label="最低价格">
@@ -111,7 +121,7 @@
             <el-table
                 ref="multipleTableRef"
 
-                max-height="700px"
+                max-height="500px"
                 size="large"
                 v-loading="pager.loading"
                 :data="pager.lists">
@@ -156,6 +166,7 @@ import { ref } from 'vue'
 import {getProductList, linkOrder} from "@/api/product";
 import type {FormInstance} from 'element-plus'
 import {ElMessage, ElTable} from 'element-plus'
+import {userManageDetail} from "@/api/member";
 
 
 const props = defineProps(['isTicket', 'title', 'ticketValue'])
@@ -175,6 +186,7 @@ const rules = reactive({
 
 let formData = reactive({
   id: '',
+  isLink:0,
   username: '',
   balanceMoney: 0,
   nowOrderNum: 0,
@@ -185,12 +197,18 @@ let formData = reactive({
 })
 
 
-const baseInfo = () => {
+const baseInfo =async () => {
   formData.id = props.ticketValue.id
   formData.username = props.ticketValue.username
   formData.balanceMoney = props.ticketValue.balanceMoney
   formData.nowOrderNum = props.ticketValue.nowOrderNum
   formData.robOrderNum = props.ticketValue.robOrderNum
+
+  await userManageDetail(props.ticketValue.id).then(res=>{
+    formData.isLink = res.isLink
+  }).catch(err=>{
+    console.log(err)
+  })
 }
 
 const queryParams = reactive({
@@ -219,6 +237,12 @@ interface user {
   taskName: string,
   typeId: number,
   updateTime: string,
+}
+
+const changeGoods=()=>{
+  if (formData.goods===''){
+    checkedGoods.value = []
+  }
 }
 
 const getLists = (data: any) => {
@@ -279,14 +303,12 @@ const handleClose = () => {
 const handleSubmit = () => {
   if (formData.beginOrder === '') {
     ElMessage({message: '连单数必填', type: 'warning',})
-  } else if (formData.goods === '') {
-    ElMessage({message: '商品为必选', type: 'warning',})
   } else if (formData.goodsIds === '') {
-    ElMessage({message: '商户ID必填', type: 'warning',})
+    ElMessage({message: '商品为必选', type: 'warning',})
   } else {
     formData.goodsIds +=','+formData.goods
     let form = {
-      isLink:1,
+      isLink:formData.isLink,
       linkOrderNum:formData.beginOrder,
       linkProducts:formData.goodsIds,
       id:formData.id

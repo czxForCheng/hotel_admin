@@ -24,6 +24,21 @@ export function userReset(params: any) {
 export function adjustWallet(params: any) {
     return request.post({ url: '/userManage/addAmount', params })
 }
+// 会员详情
+// export function userManageDetail(data: any) {
+//     return request.get({ url: '/userManage/detail', params: {id:data} })
+// }
+
+export function userManageDetail(data :any){
+    let res = request.get({
+        url:`/userManage/detail`,
+        params:{id:data}
+    })
+
+    return res
+}
+
+
 
 // 团队列表
 export function userManageTeamList(params: any) {
