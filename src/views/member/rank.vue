@@ -2,7 +2,7 @@
   <div>
     <el-card class="!border-none mt-4" shadow="never">
       <div>
-        <el-button type="primary" class="mb-4" @click="handleAdd">
+        <el-button v-perms="['member:rank:add']" type="primary" class="mb-4" @click="handleAdd">
           <template #icon>
             <icon name="el-icon-Plus" />
           </template>
@@ -11,7 +11,7 @@
       </div>
       <el-table size="large" v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="ID" prop="id" min-width="60" />
-        <el-table-column label="等级名称" prop="lvName" min-width="100" />
+        <el-table-column label="等级名称" prop="lvName" min-width="180" />
         <el-table-column label="会员等级" prop="lvValue" min-width="100" />
         <el-table-column label="等级图标" min-width="120" >
           <template #default="{ row }">
@@ -29,17 +29,17 @@
           </template>
         </el-table-column>
         <el-table-column label="升级价格" prop="upPrice" min-width="100" />
-        <el-table-column label="自动升级需邀请人数" prop="upNumber" min-width="100" />
+        <el-table-column label="自动升级需邀请人数" prop="upNumber" min-width="120" />
         <el-table-column label="佣金比例" prop="commiRatio" min-width="100" />
         <el-table-column label="连单佣金比例" prop="linkCommiRatio" min-width="120" />
         <el-table-column label="下级佣金比例" prop="nextCommiRatio" min-width="120" />
-        <el-table-column label="用户余额限制" prop="balanceLimit" min-width="100" />
+        <el-table-column label="用户余额限制" prop="balanceLimit" min-width="120" />
         <el-table-column label="接单限制" prop="orderConfine" min-width="100" />
         <el-table-column label="提现次数" prop="withdrawNum" min-width="120" />
         <el-table-column label="提现最小金额" prop="withdrawMin" min-width="120" />
-        <el-table-column label="提现最大金额" prop="withdrawMax" min-width="100" />
+        <el-table-column label="提现最大金额" prop="withdrawMax" min-width="120" />
         <el-table-column label="提现手续费" prop="withdrwaMoney" min-width="100" />
-        <el-table-column label="提现需要完成的订单数/天" prop="withdrawOrderNum" min-width="100" />
+        <el-table-column label="提现需要完成的订单数/天" prop="withdrawOrderNum" min-width="150" />
         <el-table-column label="邀请权限" min-width="100" >
           <template #default="{ row }">
             {{row.invitationPermiissions == 1 ? '允许' : '不允许'}}
@@ -47,8 +47,8 @@
         </el-table-column>
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
-            <el-button v-perms="['member:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
-            <el-button v-perms="['member:delete']" type="primary" @click="handleDelete(row.id)">删除</el-button>
+            <el-button v-perms="['member:rank:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
+            <el-button v-perms="['member:rank:delete']" type="primary" @click="handleDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -94,7 +94,7 @@
                 clearable
             />
           </el-form-item>
-          <el-form-item label="自动升级需邀请人数" prop="upNumber">
+          <el-form-item label="自动升级需邀请人数" label-width="120" prop="upNumber">
             <el-input
                 v-model="formData.upNumber"
                 placeholder="请输入自动升级需邀请人数"
@@ -108,21 +108,21 @@
                 clearable
             />
           </el-form-item>
-          <el-form-item label="连单佣金比例" prop="linkCommiRatio">
+          <el-form-item label="连单佣金比例" label-width="120" prop="linkCommiRatio">
             <el-input
                 v-model="formData.linkCommiRatio"
                 placeholder="请输入连单佣金比例"
                 clearable
             />
           </el-form-item>
-          <el-form-item label="下级佣金比例" prop="nextCommiRatio">
+          <el-form-item label="下级佣金比例" label-width="120" prop="nextCommiRatio">
             <el-input
                 v-model="formData.nextCommiRatio"
                 placeholder="请输入下级佣金比例"
                 clearable
             />
           </el-form-item>
-          <el-form-item label="用户余额限制" prop="balanceLimit">
+          <el-form-item label="用户余额限制" label-width="120" prop="balanceLimit">
             <el-input
                 v-model="formData.balanceLimit"
                 placeholder="请输入用户余额限制"
@@ -143,28 +143,28 @@
                 clearable
             />
           </el-form-item>
-          <el-form-item label="提现最小金额" prop="withdrawMin">
+          <el-form-item label="提现最小金额" label-width="120" prop="withdrawMin">
             <el-input
                 v-model="formData.withdrawMin"
                 placeholder="请输入提现最小金额"
                 clearable
             />
           </el-form-item>
-          <el-form-item label="提现最大金额" prop="withdrawMax">
+          <el-form-item label="提现最大金额" label-width="120" prop="withdrawMax">
             <el-input
                 v-model="formData.withdrawMax"
                 placeholder="请输入提现最大金额"
                 clearable
             />
           </el-form-item>
-          <el-form-item label="提现手续费" prop="withdrwaMoney">
+          <el-form-item label="提现手续费" label-width="120" prop="withdrwaMoney">
             <el-input
                 v-model="formData.withdrwaMoney"
                 placeholder="请输入提现手续费"
                 clearable
             />
           </el-form-item>
-          <el-form-item label="提现需要完成的订单数/天" prop="withdrwaMoney">
+          <el-form-item label="提现需要完成的订单数/天" label-width="120" prop="withdrwaMoney">
             <el-input
                 v-model="formData.withdrawOrderNum"
                 placeholder="请输入提现需要完成的订单数/天"
@@ -172,7 +172,7 @@
             />
           </el-form-item>
           <el-form-item label="邀请权限" prop="invitationPermiissions">
-            <el-select class="w-[280px]" v-model="formData.invitationPermiissions" placeholder="请选择任务分类">
+            <el-select class="w-[280px]" v-model="formData.invitationPermiissions" placeholder="请选择邀请权限">
               <el-option
                   label="不允许"
                   :value="0"
@@ -194,7 +194,7 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup name="productLists">
+<script lang="ts" setup name="rankLists">
 import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
 import { getUserLevelList, userLevelAdd, userLevelEdit, userLevelDel } from '@/api/member'
@@ -254,7 +254,7 @@ const dialogTitle = ref('')
 // 新增产品分类
 const handleAdd = () => {
   dialogVisible.value = true
-  dialogTitle.value = '新增产品分类'
+  dialogTitle.value = '新增会员等级'
 }
 // 删除
 const handleDelete = async (id: any) => {
@@ -271,7 +271,7 @@ const handleEdit = async (row: any) => {
   formData.id = row.id
   formData.lvName = row.lvName
   formData.lvValue = row.lvValue
-  formData.lvImage = row.lvImage
+  formData.lvImage = row.lvImage || ''
   formData.upPrice = row.upPrice
   formData.upNumber = row.upNumber
   formData.commiRatio = row.commiRatio
@@ -299,7 +299,7 @@ const handleSubmit = async () => {
     feedback.msgSuccess('新增成功')
   }
   getLists()
-  dialogVisible.value = false
+  handleClose()
 }
 
 const handleClose = () => {
@@ -324,3 +324,8 @@ const handleClose = () => {
 }
 
 </script>
+<style scoped>
+:deep(.el-select){
+  width: 100%;
+}
+</style>

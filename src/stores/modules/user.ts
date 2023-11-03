@@ -3,7 +3,7 @@ import cache from '@/utils/cache'
 import type { RouteRecordRaw } from 'vue-router'
 import { getUserInfo, login, logout, getMenu } from '@/api/user'
 import router, { filterAsyncRoutes } from '@/router'
-import { TOKEN_KEY } from '@/enums/cacheEnums'
+import { TOKEN_KEY, ID_KEY } from '@/enums/cacheEnums'
 import { PageEnum } from '@/enums/pageEnum'
 import { clearAuthInfo, getToken } from '@/utils/auth'
 export interface UserState {
@@ -45,6 +45,7 @@ const useUserStore = defineStore({
                     .then((data) => {
                         this.token = data.token
                         cache.set(TOKEN_KEY, data.token)
+                        cache.set(ID_KEY, data.id)
                         resolve(data)
                     })
                     .catch((error) => {

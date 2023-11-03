@@ -71,12 +71,7 @@ import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
 import {getProducCateList, addProductCate, delProductCate, editProductCate} from '@/api/product'
 import feedback from "@/utils/feedback";
-const queryParams = reactive({
-  keyword: '',
-  channel: '',
-  startTime: '',
-  endTime: ''
-})
+const queryParams = reactive({})
 let formData = reactive({
   id: '',
   name: '',
@@ -137,7 +132,7 @@ const handleSubmit = async () => {
     feedback.msgSuccess('新增成功')
   }
   getLists()
-  dialogVisible.value = false
+  handleClose()
 }
 
 const handleClose = () => {

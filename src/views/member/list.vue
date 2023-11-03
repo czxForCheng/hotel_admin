@@ -8,7 +8,7 @@
                   v-for="(item, key) in memberRankAll"
                   :key="item.id"
                   :label="item.lvName"
-                  :value="item.lvValue"
+                  :value="item.id"
               />
             </el-select>
           </el-form-item>
@@ -35,7 +35,7 @@
           <el-form-item label="邀请码">
             <el-input
                 class="w-[280px]"
-                v-model="queryParams.mobile"
+                v-model="queryParams.inviteCode"
                 placeholder="请输入邀请码"
                 clearable
             />
@@ -56,12 +56,12 @@
                 clearable
             />
           </el-form-item>
-          <el-form-item label="注册时间">
-            <daterange-picker
-                v-model:startTime="queryParams.startTime"
-                v-model:endTime="queryParams.endTime"
-            />
-          </el-form-item>
+<!--          <el-form-item label="注册时间">-->
+<!--            <daterange-picker-->
+<!--                v-model:startTime="queryParams.startTime"-->
+<!--                v-model:endTime="queryParams.endTime"-->
+<!--            />-->
+<!--          </el-form-item>-->
           <el-form-item>
             <el-button type="primary" @click="resetPage">查询</el-button>
             <el-button @click="resetParams">重置</el-button>
@@ -70,7 +70,7 @@
       </el-card>
         <el-card class="!border-none mt-4" shadow="never">
           <div>
-            <el-button type="primary" class="mb-4" @click="handleOpenAdd">
+            <el-button v-perms="['userManage:save']" type="primary" class="mb-4" @click="handleOpenAdd">
               <template #icon>
                 <icon name="el-icon-Plus" />
               </template>
@@ -79,7 +79,7 @@
           </div>
             <el-table max-height="650px" size="large" v-loading="pager.loading" :data="pager.lists">
                 <el-table-column label="UID" prop="id" min-width="60" />
-                <el-table-column label="注册时间" prop="addTime" min-width="180" />
+                <el-table-column label="注册时间" prop="createTime" min-width="180" />
                 <el-table-column label="所属代理" prop="parentAgentName" min-width="100" />
                 <el-table-column label="账号" prop="username" min-width="120" />
                 <el-table-column label="手机号码" prop="mobile" min-width="150" />
@@ -107,19 +107,17 @@
                 </el-table-column>
                 <el-table-column label="操作" width="350" fixed="right">
                     <template #default="{ row }">
-                      <el-button @click="ticketForm(row)" v-perms="['productCate:edit']" type="primary" size="small">连单</el-button>
-                      <el-button v-perms="['member:edit']" type="primary" size="small"  @click="handleOpenNum(row.id)">重置抢单数量</el-button>
-                        <el-button v-perms="['member:edit']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
+                      <el-button v-perms="['userManage:liandan']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
+                      <el-button v-perms="['userManage:order']" type="primary" size="small"  @click="handleOpenNum(row.id)">重置抢单数量</el-button>
+                        <el-button v-perms="['userManage:balance']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
                         <el-dropdown v-perms="['member:edit']">
                           <span class="el-dropdown-link" style="margin-left: 10px;">
                             更多操作
-                            <el-icon class="el-icon--right">
-  <!--                            <arrow-down />-->
-                            </el-icon>
+                           <icon name="el-icon-arrow-down" :size="18"/>
                           </span>
                           <template #dropdown>
                             <el-dropdown-menu>
-                              <el-dropdown-item @click="handleOpenMoney(row.id, 1)">赠送彩金</el-dropdown-item>
+                              <el-dropdown-item v-perms="['userManage:bonus']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-dropdown-item>
                               <el-dropdown-item @click="handleEdit(row)">编辑</el-dropdown-item>
                               <el-dropdown-item @click="handleOpenUsdt(row)">USDT信息</el-dropdown-item>
                               <el-dropdown-item>
@@ -147,9 +145,9 @@
                                   账变
                                 </router-link>
                               </el-dropdown-item>
-                              <el-dropdown-item @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-dropdown-item>
-                              <el-dropdown-item @click="handleDelete(row.id)">删除</el-dropdown-item>
-                              <el-dropdown-item @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-dropdown-item>
+                              <el-dropdown-item v-perms="['userManage:ban']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-dropdown-item>
+                              <el-dropdown-item v-perms="['userManage:delete']" @click="handleDelete(row.id)">删除</el-dropdown-item>
+                              <el-dropdown-item v-perms="['userManage:dummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-dropdown-item>
                             </el-dropdown-menu>
                           </template>
                         </el-dropdown>
@@ -410,10 +408,10 @@ import {
   userManageDel,
   userManageDisable, userReset, usdtUpdate
 } from '@/api/member'
-import { ClientMap } from '@/enums/appEnums'
 import type { FormInstance } from 'element-plus'
 import Popup from './dislodge.vue'
 import feedback from "@/utils/feedback";
+
 
 const isTicket = ref(false)
 const ticketValue = ref('')
@@ -428,7 +426,6 @@ const queryParams = reactive({
   startTime: '',
   endTime: ''
 })
-
 
 const { pager, getLists, resetPage, resetParams } = usePaging({
     fetchFun: getUserList,
@@ -702,5 +699,8 @@ const handleBeDummy = async (row: any) => {
 <style scoped>
   :deep(.el-select){
     width: 100%;
+  }
+  :deep(.el-dropdown-link .el-icon){
+    top: 3px;
   }
 </style>
