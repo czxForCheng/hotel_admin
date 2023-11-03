@@ -2,6 +2,7 @@ const config = {
     terminal: 1, //终端
     title: '后台管理系统', //网站默认标题
     version: '1.4.0', //版本号
+    // baseUrl: '',
     // baseUrl: 'http://8.210.20.168:8082/', // 胡俊文服务器
     baseUrl: 'http://192.168.2.61:8082/', // 陶磊本地
     // baseUrl: 'http://192.168.2.44:8082/', // 张俊本地

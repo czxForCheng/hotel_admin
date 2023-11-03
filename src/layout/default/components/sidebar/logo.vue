@@ -9,7 +9,7 @@
                 :style="{ left: `${szie + 16}px` }"
             >
                 <overflow-tooltip
-                    :content="title || config.webName"
+                    content="KAKAYk开源后台"
                     :teleported="true"
                     placement="bottom"
                     overflo-type="unset"
