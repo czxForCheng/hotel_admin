@@ -54,7 +54,7 @@
               <p style="width: 100%;margin-top: 10px">
                 <el-radio-group v-model="formData.isLink">
                   <el-radio :label="0">未开始连单</el-radio>
-                  <el-radio :label="1">已开始连单</el-radio>
+                  <el-radio :label="1">开始连单</el-radio>
                 </el-radio-group>
               </p>
             </el-form-item>
@@ -166,7 +166,7 @@ import { ref } from 'vue'
 import {getProductList, linkOrder} from "@/api/product";
 import type {FormInstance} from 'element-plus'
 import {ElMessage, ElTable} from 'element-plus'
-import {userManageDetail} from "@/api/member";
+
 
 
 const props = defineProps(['isTicket', 'title', 'ticketValue'])
@@ -197,18 +197,18 @@ let formData = reactive({
 })
 
 
-const baseInfo =async () => {
+const baseInfo = () => {
   formData.id = props.ticketValue.id
   formData.username = props.ticketValue.username
   formData.balanceMoney = props.ticketValue.balanceMoney
   formData.nowOrderNum = props.ticketValue.nowOrderNum
   formData.robOrderNum = props.ticketValue.robOrderNum
-
-  await userManageDetail(props.ticketValue.id).then(res=>{
-    formData.isLink = res.isLink
-  }).catch(err=>{
-    console.log(err)
-  })
+  formData.isLink = props.ticketValue.isLink
+  // await userManageDetail(props.ticketValue.id).then(res=>{
+  //   formData.isLink = res.isLink
+  // }).catch(err=>{
+  //   console.log(err)
+  // })
 }
 
 const queryParams = reactive({

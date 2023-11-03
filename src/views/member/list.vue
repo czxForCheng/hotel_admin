@@ -77,9 +77,8 @@
               新增会员
             </el-button>
           </div>
-            <el-table max-height="650px" size="large" v-loading="pager.loading" :data="pager.lists">
+            <el-table max-height="550px" size="large" v-loading="pager.loading" :data="pager.lists">
                 <el-table-column label="UID" prop="id" min-width="60" />
-                <el-table-column label="注册时间" prop="createTime" min-width="180" />
                 <el-table-column label="所属代理" prop="parentAgentName" min-width="100" />
                 <el-table-column label="账号" prop="username" min-width="120" />
                 <el-table-column label="手机号码" prop="mobile" min-width="150" />
@@ -87,6 +86,12 @@
                 <el-table-column label="信誉分" prop="creditScore" min-width="100" />
                 <el-table-column label="已完成订单总数" prop="nowOrderNum" min-width="100" />
                 <el-table-column label="全部订单总数" prop="robOrderNum" min-width="120" />
+                <el-table-column label="是否连单" min-width="120">
+                    <template #default="{row}">
+                      <el-tag v-if="row.isLink===1" type="success">已连单</el-tag>
+                      <el-tag v-else type="warning">未连单</el-tag>
+                    </template>
+                </el-table-column>
                 <el-table-column label="已完成订单组数" prop="taskNum" min-width="100" />
                 <el-table-column label="账户余额" prop="balanceMoney" min-width="100" />
                 <el-table-column label="冻结余额" prop="frozenAmount" min-width="120" />
@@ -95,7 +100,9 @@
                 <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
                 <el-table-column label="最后登录ip" prop="lastLoginIp" min-width="100" />
+              <el-table-column label="注册时间" prop="addTime" min-width="180" />
                 <el-table-column label="交易状态" prop="tradingStatus" min-width="100" >
+
                   <template #default="{ row }">
                     {{row.tradingStatus ? '正常' : '封禁'}}
                   </template>
