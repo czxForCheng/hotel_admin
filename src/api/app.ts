@@ -14,3 +14,8 @@ export function getWorkbench() {
 export function statisticsData() {
     return request.get({ url: '/statistics/count/data' })
 }
+
+// 统计列表
+export function countAgent() {
+    return request.get({ url: '/statistics/count/agent' })
+}

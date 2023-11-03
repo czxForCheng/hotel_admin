@@ -25,6 +25,11 @@ export function adjustWallet(params: any) {
     return request.post({ url: '/userManage/addAmount', params })
 }
 
+// usdt信息
+export function usdtUpdate(params: any) {
+    return request.post({ url: '/userManage/OSDT', params })
+}
+
 // 团队列表
 export function userManageTeamList(params: any) {
     return request.get({ url: '/userManage/teamList', params })

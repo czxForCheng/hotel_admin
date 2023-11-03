@@ -207,24 +207,25 @@
                 ></el-input>
               </div>
             </el-form-item>
-            <el-form-item label="提交订单延时时间(单位/秒)" label-width="120">
+            提交订单延时时间(单位/秒)
+            <el-form-item label="远程主机分配时间" label-width="120">
               <div class="w-80">
-                <div>
-                  远程主机分配时间
-                  <el-input
-                      v-model="formDataBase.allocateTime"
-                      placeholder="请输入远程主机分配时间"
-                      show-word-limit
-                  ></el-input>
-                </div>
-                <div>
-                  等待商家响应时间
-                  <el-input
-                      v-model="formDataBase.respondTime"
-                      placeholder="请输入等待商家响应时间"
-                      show-word-limit
-                  ></el-input>
-                </div>
+                <el-input
+                    v-model="formDataBase.allocateTime"
+                    placeholder="请输入远程主机分配时间"
+                    show-word-limit
+                ></el-input>
+              </div>
+              <p class="tip">时间由两部分组成，默认都是5秒，总共10秒</p>
+            </el-form-item>
+            提交订单延时时间(单位/秒)
+            <el-form-item label="等待商家响应时间" label-width="120">
+              <div class="w-80">
+                <el-input
+                    v-model="formDataBase.respondTime"
+                    placeholder="请输入等待商家响应时间"
+                    show-word-limit
+                ></el-input>
               </div>
               <p class="tip">时间由两部分组成，默认都是5秒，总共10秒</p>
             </el-form-item>
@@ -248,14 +249,19 @@
               </div>
               <p class="tip">只支持整点，如8:00，请直接输入8</p>
             </el-form-item>
-            <el-form-item label="充值时间" prop="topTime">
+            <el-form-item label="开始充值时间" prop="topTimeStart">
               <div class="w-80">
                 <el-input
                     v-model="formDataBase.topTimeStart"
                     placeholder="请输入开始充值时间"
                     show-word-limit
                 ></el-input>
-                -<el-input
+              </div>
+              <p class="tip">只支持整点，如8:00-20:00，请直接输入8-20</p>
+            </el-form-item>
+            <el-form-item label="结束充值时间" prop="topTimeEnd">
+              <div class="w-80">
+                <el-input
                   v-model="formDataBase.topTimeEnd"
                   placeholder="请输入结束充值时间"
                   show-word-limit
@@ -263,14 +269,18 @@
               </div>
               <p class="tip">只支持整点，如8:00-20:00，请直接输入8-20</p>
             </el-form-item>
-            <el-form-item label="抢单时间" prop="orderTime">
+            <el-form-item label="抢单开始时间" prop="orderTimeStart">
               <div class="w-80">
                 <el-input
                     v-model="formDataBase.orderTimeStart"
                     placeholder="请输入抢单开始时间"
                     show-word-limit
                 ></el-input>
-                -
+              </div>
+              <p class="tip">只支持整点，如8:00-20:00，请直接输入8-20</p>
+            </el-form-item>
+            <el-form-item label="抢单结束时间" prop="orderTimeEnd">
+              <div class="w-80">
                 <el-input
                     v-model="formDataBase.orderTimeEnd"
                     placeholder="请输入抢单结束时间"
@@ -426,7 +436,6 @@
 </template>
 
 <script lang="ts" setup name="transaction">
-import { getWebsite, setWebsite } from '@/api/setting/website'
 import { getBasic, setBasic, getResidual, setResidual } from '@/api/setting/transaction'
 import useAppStore from '@/stores/modules/app'
 import feedback from '@/utils/feedback'
@@ -465,26 +474,16 @@ const formDataBase = reactive({
   numberOfViolations: '',
   allocateTime: '',
   respondTime: '',
-  withdrawTime: ['', ''],
   withdrawTimeStart: '',
   withdrawTimeEnd: '',
-  topTime: ['', ''],
   topTimeStart: '',
   topTimeEnd: '',
-  orderTime: ['', ''],
   orderTimeStart: '',
   orderTimeEnd: '',
   mallStatus: '',
   appDownloadAddress: '',
   versionNumber: ''
 })
-
-const validatePass2 = (rule: any, value: any, callback: any) => {
-  console.log('rule', rule)
-  console.log('value', value)
-  console.log('callback', callback)
-  callback(new Error('Please input the password'))
-}
 
 // 基础设置 表单验证
 const rulesBase = {
@@ -663,14 +662,6 @@ const rulesBase = {
       trigger: ['blur']
     }
   ],
-  withdrawTime: [
-    {
-      required: true,
-      message: '请输入提现时间',
-      trigger: ['blur']
-    },
-    { validator: validatePass2, trigger: 'blur' }
-  ],
   withdrawTimeStart: [
     {
       required: true,
@@ -703,13 +694,6 @@ const rulesBase = {
     {
       required: true,
       message: '请输入自动过期充值订单',
-      trigger: ['blur']
-    }
-  ],
-  orderTime: [
-    {
-      required: true,
-      message: '请输入抢单时间',
       trigger: ['blur']
     }
   ],
@@ -846,9 +830,6 @@ const getDataBase = async () => {
     formDataBase[key] = data[key]
   }
   formDataBase.rangeMatching = [data.rangeMatchingMin, data.rangeMatchingMax]
-  formDataBase.withdrawTime = [data.withdrawTimeStart, data.withdrawTimeEnd]
-  formDataBase.topTime = [data.topTimeStart, data.topTimeEnd]
-  formDataBase.orderTime = [data.orderTimeStart, data.orderTimeEnd]
 }
 
 // 获取 其它配置
@@ -864,23 +845,7 @@ const getDataOther = async () => {
 const handleSubmitBase = async () => {
   formDataBase.rangeMatchingMin = formDataBase.rangeMatching[0].toString()
   formDataBase.rangeMatchingMax = formDataBase.rangeMatching[1].toString()
-  if(!formDataBase.withdrawTimeStart || !formDataBase.withdrawTimeEnd) {
-    formDataBase.withdrawTime = ['', '']
-  }else {
-    formDataBase.withdrawTime = [formDataBase.withdrawTimeStart, formDataBase.withdrawTimeEnd]
-  }
-  if(!formDataBase.topTimeStart || !formDataBase.topTimeEnd) {
-    formDataBase.topTime = ['', '']
-  }else {
-    formDataBase.topTime = [formDataBase.topTimeStart, formDataBase.topTimeEnd]
-  }
-  if(!formDataBase.orderTimeStart || !formDataBase.orderTimeEnd) {
-    formDataBase.orderTime = ['', '']
-  }else {
-    formDataBase.orderTime = [formDataBase.orderTimeStart, formDataBase.orderTimeEnd]
-  }
-  console.log('formDataBase',formDataBase)
-  await formRef.value?.validate()
+  await formRefBase.value?.validate()
   await setBasic(formDataBase)
   feedback.msgSuccess('操作成功')
   getConfig()
@@ -889,7 +854,7 @@ const handleSubmitBase = async () => {
 
 // 提交 其它配置
 const handleSubmitOther = async () => {
-  await formRef.value?.validate()
+  await formRefOther.value?.validate()
   await setResidual(formDataOther)
   feedback.msgSuccess('操作成功')
   getConfig()
