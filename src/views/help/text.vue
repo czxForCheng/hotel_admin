@@ -37,6 +37,7 @@
                 type="textarea"
                 v-model="formData.content"
                 placeholder="请输入文本内容"
+                :rows="10"
                 clearable
             />
           </el-form-item>
@@ -51,9 +52,8 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup name="consumerLists">
+<script lang="ts" setup name="textLists">
 import type { FormInstance } from 'element-plus'
-import { usePaging } from '@/hooks/usePaging'
 import {getHomePage, homeUpdate} from '@/api/help'
 import feedback from "@/utils/feedback";
 const queryParams = reactive({})

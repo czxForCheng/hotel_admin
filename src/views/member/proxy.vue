@@ -35,7 +35,7 @@
       </div>
       <el-table v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="ID" prop="id" min-width="60" />
-        <el-table-column label="绑定用户ID" prop="parentId" min-width="100" />
+<!--        <el-table-column label="绑定用户ID" prop="parentId" min-width="100" />-->
         <el-table-column label="级别" prop="agentLevel" min-width="100" >
           <template #default="{ row }">
             {{row.agentLevel === 1 ? '一级代理' : '二级代理'}}
@@ -44,20 +44,20 @@
         <el-table-column label="用户名" prop="username" min-width="100" />
         <el-table-column label="手机号" prop="mobile" min-width="160" />
         <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
-        <el-table-column label="登录次数" prop="" min-width="100" />
+<!--        <el-table-column label="登录次数" prop="" min-width="100" />-->
         <el-table-column label="使用状态" prop="isDisable" min-width="100" >
           <template #default="{ row }">
-            {{row.isDisable ? '正常' : '禁用'}}
+            {{row.isDisable ? '禁用' : '正常'}}
           </template>
         </el-table-column>
         <el-table-column label="客服链接" prop="customerServiceLink" min-width="160" />
-        <el-table-column label="上级代理" prop="parentAgent" min-width="160" />
+<!--        <el-table-column label="上级代理" prop="parentAgent" min-width="160" />-->
         <el-table-column label="添加时间" prop="createTime" min-width="180" />
         <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
             <el-button v-perms="['productCate:edit']" type="primary" @click="handlePassword(row.id)">密码</el-button>
             <el-button v-perms="['productCate:delete']" type="primary" @click="handleEdit(row)">编辑</el-button>
-            <el-button v-perms="['productCate:delete']" type="primary" @click="handleBan(row.id)">禁用</el-button>
+            <el-button v-perms="['productCate:delete']" type="primary" @click="handleBan(row)">{{row.isDisable ? '启用' : '禁用'}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -89,9 +89,6 @@
           </el-form-item>
           <el-form-item label="密码" prop="password" v-if="dialogTitle === '新增代理'">
             <el-input v-model="formData.password" placeholder="请输入密码" clearable/>
-          </el-form-item>
-          <el-form-item label="邀请码" prop="inviteCode">
-            <el-input v-model="formData.inviteCode" placeholder="请输入邀请码" clearable/>
           </el-form-item>
           <el-form-item label="客服链接" prop="customerServiceLink">
             <el-input v-model="formData.customerServiceLink" placeholder="请输入客服链接" clearable/>
@@ -251,10 +248,11 @@ const handleClose = () => {
   formData.email = ''
 }
 
-const handleBan = async (id: any) => {
-  await feedback.confirm('确定要禁用这条数据？')
-  await proxyDisable({ id })
-  feedback.msgSuccess('禁用成功')
+const handleBan = async (row: any) => {
+  const tipText = row.isDisable ? '启用' : '禁用'
+  await feedback.confirm( `确定要${tipText}这条数据？`)
+  await proxyDisable({ id: row.id })
+  feedback.msgSuccess(`${tipText}成功`)
   getLists()
 }
 

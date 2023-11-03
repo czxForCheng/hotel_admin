@@ -11,10 +11,9 @@
           />
         </el-form-item>
         <el-form-item label="注册时间">
-          <el-date-picker
-              v-model="queryParams.addTime"
-              type="date"
-              placeholder="请选择注册时间"
+          <daterange-picker
+              v-model:startTime="queryParams.startTime"
+              v-model:endTime="queryParams.endTime"
           />
         </el-form-item>
         <el-form-item>
@@ -25,7 +24,7 @@
     </el-card>
     <el-card class="!border-none mt-4" shadow="never">
       <div>
-        <el-button type="primary" class="mb-4" @click="handleAdd">
+        <el-button v-perms="['service:add']" type="primary" class="mb-4" @click="handleAdd">
           <template #icon>
             <icon name="el-icon-Plus" />
           </template>
@@ -102,14 +101,15 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup name="productLists">
+<script lang="ts" setup name="serviceLists">
 import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
 import {getServiceList, addService, delService, editService} from '@/api/service'
 import feedback from "@/utils/feedback";
 const queryParams = reactive({
   userName: '',
-  addTime: ''
+  startTime: '',
+  endTime: ''
 })
 let formData = reactive({
   id: '',
@@ -132,7 +132,6 @@ const { pager, getLists, resetPage, resetParams } = usePaging({
 onActivated(() => {
   getLists()
 })
-
 getLists()
 
 const formRef = shallowRef<FormInstance>()
@@ -174,7 +173,7 @@ const handleSubmit = async () => {
     feedback.msgSuccess('新增成功')
   }
   getLists()
-  dialogVisible.value = false
+  handleClose()
 }
 
 const handleClose = () => {

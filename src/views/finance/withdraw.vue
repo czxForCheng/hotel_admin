@@ -114,7 +114,7 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup name="productCateLists">
+<script lang="ts" setup name="withdrawLists">
 import { usePaging } from '@/hooks/usePaging'
 import { withdrawalRecord, withdrawalAudit } from '@/api/finance/withdraw'
 import feedback from "@/utils/feedback";

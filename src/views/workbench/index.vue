@@ -1,263 +1,161 @@
 <template>
-    <div class="workbench">
-        <div class="md:flex">
-            <el-card class="!border-none mb-4 md:mr-4" shadow="never">
-                <template #header>
-                    <span class="card-title">版本信息</span>
-                </template>
-                <div>
-                    <div class="flex leading-9">
-                        <div class="w-20 flex-none">当前版本</div>
-                        <span> {{ workbenchData.version.version }}</span>
-                    </div>
-                    <div class="flex leading-9">
-                        <div class="w-20 flex-none">基于框架</div>
-                        <span> {{ workbenchData.version.based }}</span>
-                    </div>
-                    <div class="flex leading-9">
-                        <div class="w-20 felx-none">获取渠道</div>
-                        <div>
-                            <a :href="workbenchData.version.channel.website" target="_blank">
-                                <el-button type="success" size="small">官网</el-button>
-                            </a>
-                            <a
-                                class="ml-3"
-                                :href="workbenchData.version.channel.gitee"
-                                target="_blank"
-                            >
-                                <el-button type="danger" size="small">Gitee</el-button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </el-card>
-            <el-card class="!border-none mb-4 flex-1" shadow="never">
-                <template #header>
-                    <div>
-                        <span class="card-title">今日数据</span>
-                        <span class="text-tx-secondary text-xs ml-4">
-                            更新时间：{{ workbenchData.today.time }}
-                        </span>
-                    </div>
-                </template>
-
-                <div class="flex flex-wrap">
-                    <div class="w-1/2 md:w-1/4">
-                        <div class="leading-10">访问量(人)</div>
-                        <div class="text-6xl">{{ workbenchData.today.todayVisits }}</div>
-                        <div class="text-tx-secondary text-xs">
-                            总访问量：{{ workbenchData.today.totalVisits }}
-                        </div>
-                    </div>
-                    <div class="w-1/2 md:w-1/4">
-                        <div class="leading-10">销售额(元)</div>
-                        <div class="text-6xl">{{ workbenchData.today.todaySales }}</div>
-                        <div class="text-tx-secondary text-xs">
-                            总销售额：{{ workbenchData.today.totalSales }}
-                        </div>
-                    </div>
-                    <div class="w-1/2 md:w-1/4">
-                        <div class="leading-10">订单量(笔)</div>
-                        <div class="text-6xl">{{ workbenchData.today.todayOrder }}</div>
-                        <div class="text-tx-secondary text-xs">
-                            总订单量：{{ workbenchData.today.totalOrder }}
-                        </div>
-                    </div>
-                    <div class="w-1/2 md:w-1/4">
-                        <div class="leading-10">新增用户</div>
-                        <div class="text-6xl">{{ workbenchData.today.todayUsers }}</div>
-                        <div class="text-tx-secondary text-xs">
-                            总访用户：{{ workbenchData.today.totalUsers }}
-                        </div>
-                    </div>
-                </div>
-            </el-card>
+  <div class="home">
+    <div style="margin-bottom: 20px;">
+      <el-card>
+        <div class="title">商城统计</div>
+        <div class="dataList">
+          <!--          <div class="data-item" v-for="(item, index) in showData" :key="index">-->
+          <!--            <p class="dataTitle">{{item.title}}</p>-->
+          <!--            <p class="allNum">{{item.allNum}}</p>-->
+          <!--            <p class="todayNum" >今日首充人数 <span class="todaySpan">{{item.todayNum}}</span></p>-->
+          <!--            <p class="yesterdayNum">昨日首充人数 {{item.yesterday}}</p>-->
+          <!--          </div>-->
+          <div class="data-item">
+            <p class="dataTitle">首充人数</p>
+            <p class="allNum">{{showData['people']?.initialCharge || 0}}</p>
+            <p class="todayNum" >今日首充人数 <span class="todaySpan">{{showData['people']?.todayInitialCharge || 0}}</span></p>
+            <p class="yesterdayNum">昨日首充人数 {{showData['people']?.yesterdayInitialCharge || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">用户总人数</p>
+            <p class="allNum">{{showData['userTotal']?.userTotal || 0}}</p>
+            <p class="todayNum" >今日新增用户 <span class="todaySpan">{{showData['userTotal']?.todayUserTotal || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增用户 {{showData['userTotal']?.yesterdayUserTotal || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">订单总量</p>
+            <p class="allNum">{{showData['order']?.orderCount || 0}}</p>
+            <p class="todayNum" >今日新增订单 <span class="todaySpan">{{showData['order']?.todayOrderCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增订单 {{showData['order']?.yesterdayOrderCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">订单总金额</p>
+            <p class="allNum">{{showData['orderMoney']?.orderMoneyCount || 0}}</p>
+            <p class="todayNum" >今日新增订单总金额 <span class="todaySpan">{{showData['orderMoney']?.todayOrderMoneyCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增订单总金额 {{showData['orderMoney']?.yesterdayOrderMoneyCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">用户充值</p>
+            <p class="allNum">{{showData['amount']?.rechargeAmountCount || 0}}</p>
+            <p class="todayNum" >今日新增充值 <span class="todaySpan">{{showData['amount']?.todayRechargeAmountCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增充值 {{showData['amount']?.yesterdayRechargeAmountCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">充值人数</p>
+            <p class="allNum">{{showData['userCount']?.rechargeUserCount || 0}}</p>
+            <p class="todayNum" >今日充值人数 <span class="todaySpan">{{showData['userCount']?.todayRechargeUserCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日充值人数 {{showData['userCount']?.yesterdayRechargeUserCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">用户提现</p>
+            <p class="allNum">{{showData['amountCount']?.withdrawalAmountCount || 0}}</p>
+            <p class="todayNum" >今日新增提现 <span class="todaySpan">{{showData['amountCount']?.todayWithdrawalAmountCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增提现 {{showData['amountCount']?.yesterdayWithdrawalAmountCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">提现人数</p>
+            <p class="allNum">{{showData['withdrawalUserCount']?.withdrawalUserCount || 0}}</p>
+            <p class="todayNum" >今日提现人数 <span class="todaySpan">{{showData['withdrawalUserCount']?.todayWithdrawalUserCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日提现人数 {{showData['withdrawalUserCount']?.yesterdayWithdrawalUserCount || 0}}</p>
+          </div>
+          <div class="data-item">
+            <p class="dataTitle">抢单佣金</p>
+            <p class="allNum">{{showData['commissionCount']?.rushCommissionCount || 0}}</p>
+            <p class="todayNum" >今日新增佣金 <span class="todaySpan">{{showData['commissionCount']?.todayRushCommissionCount || 0}}</span></p>
+            <p class="yesterdayNum">昨日新增佣金 {{showData['commissionCount']?.yesterdayRushCommissionCount || 0}}</p>
+          </div>
         </div>
-        <div class="function mb-4">
-            <el-card class="flex-1 !border-none" shadow="never">
-                <template #header>
-                    <span>常用功能</span>
-                </template>
-                <div class="flex flex-wrap">
-                    <div
-                        v-for="item in workbenchData.menu"
-                        class="md:w-[12.5%] w-1/4 flex flex-col items-center"
-                        :key="item"
-                    >
-                        <router-link :to="item.url" class="mb-3 flex flex-col items-center">
-                            <img width="40" height="40" :src="item.image" />
-                            <div class="mt-2">{{ item.name }}</div>
-                        </router-link>
-                    </div>
-                </div>
-            </el-card>
-        </div>
-        <div class="md:flex">
-            <el-card class="flex-1 !border-none md:mr-4 mb-4" shadow="never">
-                <template #header>
-                    <span>访问量趋势图</span>
-                </template>
-                <div>
-                    <v-charts
-                        style="height: 350px"
-                        :option="workbenchData.visitorOption"
-                        :autoresize="true"
-                    />
-                </div>
-            </el-card>
-            <el-card class="!border-none mb-4" shadow="never">
-                <template #header>
-                    <span>服务支持</span>
-                </template>
-                <div>
-                    <div v-for="(item, index) in workbenchData.support" :key="index">
-                        <div
-                            class="flex items-center pb-10 pt-10"
-                            :class="{
-                                'border-b border-br': index == 0
-                            }"
-                        >
-                            <img width="120" height="120" class="flex-none" :src="item.image" />
-                            <div class="ml-2">
-                                <div>{{ item.title }}</div>
-                                <div class="text-tx-regular text-xs mt-4">{{ item.desc }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </el-card>
-        </div>
+      </el-card>
     </div>
+    <el-card>
+      <div style="margin-bottom: 20px;">
+        <el-form ref="formRef" class="mb-[-16px]" :model="queryParams" :inline="true">
+          <el-form-item label="统计时间">
+            <daterange-picker
+                v-model:startTime="queryParams.startTime"
+                v-model:endTime="queryParams.endTime"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="resetPage">查询</el-button>
+            <el-button @click="resetParams">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <el-table size="large" v-loading="pager.loading" :data="pager.lists">
+        <el-table-column label="姓名" prop="name" min-width="120" />
+        <el-table-column label="客服数量" prop="" min-width="100" />
+        <el-table-column label="累计用户" prop="nickname" min-width="100" />
+        <el-table-column label="团队余额" prop="username" min-width="120" />
+        <el-table-column label="今日充值" prop="mobile" min-width="100" />
+        <el-table-column label="累计充值" prop="channel" min-width="100" />
+        <el-table-column label="手动扣款" prop="createTime" min-width="120" />
+        <el-table-column label="今日提现" prop="channel" min-width="100" />
+        <el-table-column label="累计提现" prop="createTime" min-width="120" />
+      </el-table>
+      <div class="flex justify-end mt-4">
+        <pagination v-model="pager" @change="getLists" />
+      </div>
+    </el-card>
+  </div>
 </template>
 
-<script lang="ts" setup name="workbench">
-import { getWorkbench } from '@/api/app'
-import vCharts from 'vue-echarts'
-import menu_admin from './image/menu_admin.png'
-import menu_role from './image/menu_role.png'
-import menu_dept from './image/menu_dept.png'
-import menu_dict from './image/menu_dict.png'
-import menu_generator from './image/menu_generator.png'
-import menu_file from './image/menu_file.png'
-import menu_auth from './image/menu_auth.png'
-import menu_web from './image/menu_web.png'
-import oa_code from './image/oa_code.png'
-import service_code from './image/service_code.png'
-// 表单数据
-const workbenchData: any = reactive({
-    version: {
-        version: '', // 版本号
-        website: '', // 官网
-        based: '',
-        channel: {
-            gitee: '',
-            website: ''
-        }
-    },
-    support: [
-        {
-            image: oa_code,
-            title: '官方公众号',
-            desc: '关注官方公众号'
-        },
-        {
-            image: service_code,
-            title: '添加企业客服微信',
-            desc: '想了解更多请添加客服'
-        }
-    ],
-    today: {}, // 今日数据
-    menu: [
-        {
-            name: '管理员',
-            image: menu_admin,
-            url: '/permission/admin'
-        },
-        {
-            name: '角色管理',
-            image: menu_role,
-            url: '/permission/role'
-        },
-        {
-            name: '部门管理',
-            image: menu_dept,
-            url: '/organization/department'
-        },
-        {
-            name: '字典管理',
-            image: menu_dict,
-            url: '/dev_tools/dict'
-        },
-        {
-            name: '代码生成器',
-            image: menu_generator,
-            url: '/dev_tools/code'
-        },
-        {
-            name: '素材中心',
-            image: menu_file,
-            url: '/material/index'
-        },
-        {
-            name: '菜单权限',
-            image: menu_auth,
-            url: '/permission/menu'
-        },
-        {
-            name: '网站信息',
-            image: menu_web,
-            url: '/setting/website/information'
-        }
-    ], // 常用功能
-    visitor: [], // 访问量
-    article: [], // 文章阅读量
-
-    visitorOption: {
-        xAxis: {
-            type: 'category',
-            data: [0]
-        },
-        yAxis: {
-            type: 'value'
-        },
-        legend: {
-            data: ['访问量']
-        },
-        itemStyle: {
-            // 点的颜色。
-            color: 'red'
-        },
-        tooltip: {
-            trigger: 'axis'
-        },
-        series: [
-            {
-                name: '访问量',
-                data: [0],
-                type: 'line',
-                smooth: true
-            }
-        ]
-    }
+<script lang="ts" setup name="home">
+import { ref, reactive } from 'vue'
+import { usePaging } from '@/hooks/usePaging'
+import { getRoutePath } from '@/router'
+import { getUserList } from '@/api/consumer'
+import { statisticsData , countAgent} from '@/api/app'
+import { ClientMap } from '@/enums/appEnums'
+let showData:any = ref({})
+const getShowData = async () => {
+  const res = await statisticsData()
+  showData.value = res
+  console.log('res', showData)
+}
+getShowData()
+const queryParams = reactive({
+  keyword: '',
+  channel: '',
+  startTime: '',
+  endTime: ''
 })
 
-// 获取工作台主页数据
-const getData = async () => {
-    const res = await getWorkbench()
-    workbenchData.version = res.version
-    workbenchData.today = res.today
-    workbenchData.visitor = res.visitor
+const { pager, getLists, resetPage, resetParams } = usePaging({
+  fetchFun: countAgent,
+  params: queryParams
+})
+onActivated(() => {
+  getLists()
+})
 
-    // 清空echarts 数据
-    workbenchData.visitorOption.xAxis.data = []
-    workbenchData.visitorOption.series[0].data = []
-
-    // 写入从后台拿来的数据
-    workbenchData.visitorOption.xAxis.data = res.visitor.date
-    workbenchData.visitorOption.series[0].data = res.visitor.list
-}
-
-getData()
+getLists()
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.title{
+  padding-bottom: 20px;
+  font-size: 18px;
+}
+.dataList{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  .data-item{
+    padding: 20px;
+    width: calc(25% - 10px);
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #4073fa;
+    font-size: 16px;
+    color: #fff;
+    &:nth-child(4n) {
+      margin-right: 0px;
+    }
+    p.allNum, span.todaySpan{
+      font-weight: bold;
+      font-size: 18px;
+    }
+  }
+}
+</style>

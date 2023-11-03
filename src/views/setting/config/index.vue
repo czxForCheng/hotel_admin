@@ -4,7 +4,7 @@
     <el-card shadow="never" class="!border-none">
       <div style="display: flex;align-items: center;">
         <p style="margin-right: 10px;">系统参数(包括客服链接地址配置)</p>
-        <el-button type="primary" @click="handleUpdateSys">修改系统配置</el-button>
+        <el-button v-perms="['config:update:system']" type="primary" @click="handleUpdateSys">修改系统配置</el-button>
       </div>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
@@ -55,27 +55,27 @@
           </div>
         </el-form-item>
       </el-form>
-      <el-button type="primary" @click="handleUpdateTime">修改时区配置</el-button>
+      <el-button v-perms="['config:update:time']" type="primary" @click="handleUpdateTime">修改时区配置</el-button>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
       <div class="info-item">
-        <p>网站名称 Website</p>
-        <div class="value">{{websiteInfo.websiteName}}</div>
+        <p class="title">网站名称 Website</p>
+        <div class="value">{{formData.websiteName}}</div>
         <p class="tip">网站名称及网站图标，将显示在浏览器的标签上</p>
       </div>
       <div class="info-item">
-        <p>管理程序名称 Name</p>
-        <div class="value">{{websiteInfo.supervisorName}}</div>
+        <p class="title">管理程序名称 Name</p>
+        <div class="value">{{formData.supervisorName}}</div>
         <p class="tip">管理程序名称，将显示在后台左上角</p>
       </div>
       <div class="info-item">
-        <p>管理程序版本 Version</p>
-        <div class="value">{{websiteInfo.supervisorVersion}}</div>
+        <p class="title">管理程序版本 Version</p>
+        <div class="value">{{formData.supervisorVersion}}</div>
         <p class="tip">管理程序版本，将显示在后台左上角标题</p>
       </div>
       <div class="info-item">
-        <p>网站版权信息 Copyright</p>
-        <div class="value">{{websiteInfo.copyrightInformation}}</div>
+        <p class="title">网站版权信息 Copyright</p>
+        <div class="value">{{formData.copyrightInformation}}</div>
         <p class="tip">网站版权信息，在后台登录页面显示版权信息并链接到备案到信息备案管理系统</p>
       </div>
     </el-card>
@@ -109,11 +109,11 @@
             <el-select class="w-[280px]" v-model="formData.isOrNot">
               <el-option
                   label="关"
-                  :value="0"
+                  value="0"
               />
               <el-option
                   label="开"
-                  :value="1"
+                  value="1"
               />
             </el-select>
           </el-form-item>
@@ -127,11 +127,11 @@
             <el-select class="w-[280px]" v-model="formData.ipIsOrNot">
               <el-option
                   label="关"
-                  :value="0"
+                  value="0"
               />
               <el-option
                   label="开"
-                  :value="1"
+                  value="1"
               />
             </el-select>
           </el-form-item>
@@ -161,33 +161,21 @@
 <script lang="ts" setup name="webInformation">
 import type { FormInstance } from 'element-plus'
 import {getTime, updateTime, websiteInfoApi, websiteInfoEdit} from '@/api/setting/config'
-import { getWebsite, setWebsite} from '@/api/setting/website'
-import useAppStore from '@/stores/modules/app'
 import feedback from "@/utils/feedback";
 
 /* 修改系统配置 */
-const websiteInfo = reactive({
-  copyrightInformation: '',
-  homeRotationWord: '',
-  iconAddress: '',
-  ipIsOrNot: '',
-  isOrNot: '',
-  linkAddress: '',
-  supervisorName: '',
-  supervisorVersion: '',
-  websiteName: ''
-})
 const formData = reactive({
   copyrightInformation: '',
   homeRotationWord: '',
   iconAddress: '',
-  ipIsOrNot: '',
+  ipIsOrNot:'',
   isOrNot: '',
   linkAddress: '',
   supervisorName: '',
   supervisorVersion: '',
   websiteName: ''
 })
+
 // 表单验证
 const rules = {
   websiteName: [
@@ -256,25 +244,10 @@ const rules = {
 }
 const getWebsiteInfo = async () => {
   const res = await websiteInfoApi()
-  websiteInfo.copyrightInformation = res.copyrightInformation
-  websiteInfo.homeRotationWord = res.homeRotationWord
-  websiteInfo.iconAddress = res.iconAddress
-  websiteInfo.ipIsOrNot = res.ipIsOrNot
-  websiteInfo.isOrNot = res.isOrNot
-  websiteInfo.linkAddress = res.linkAddress
-  websiteInfo.supervisorName = res.supervisorName
-  websiteInfo.supervisorVersion = res.supervisorVersion
-  websiteInfo.websiteName = res.websiteName
-
-  formData.copyrightInformation = res.copyrightInformation
-  formData.homeRotationWord = res.homeRotationWord
-  formData.iconAddress = res.iconAddress
-  formData.ipIsOrNot = res.ipIsOrNot
-  formData.isOrNot = res.isOrNot
-  formData.linkAddress = res.linkAddress
-  formData.supervisorName = res.supervisorName
-  formData.supervisorVersion = res.supervisorVersion
-  formData.websiteName = res.websiteName
+  for(const key in res){
+    //@ts-ignore
+    formData[key] = res[key]
+  }
 }
 getWebsiteInfo()
 const formRef = shallowRef<FormInstance>()
@@ -300,7 +273,6 @@ const handleClose = () => {
 // 数据清理
 const clearList = ref([])
 
-
 /* 显示语言 */
 const language = ref('english')
 
@@ -323,12 +295,11 @@ const timeZoneAll = [
   { id: 14, label: '西班牙', value: 'Europe/Madrid' },
   { id: 15, label: '加拿大', value: 'America/Toronto' }
 ]
-
 // 系统时区配置 表单数据
 const formDataZoom = reactive({
   timeZone: ''
 })
-// 系统时区配置 表单验证
+/*系统时区配置 表单验证*/
 const rulesZoom = {
   timeZone: [
     {
@@ -338,37 +309,22 @@ const rulesZoom = {
     }
   ]
 }
-
-/* 系统信息 */
-
-
+/*获取系统时区配置*/
 const handleGetTime = async () => {
   const res = await getTime()
   formDataZoom.timeZone = res.setTimeZone
 }
 handleGetTime()
-
+/*修改系统时区配置*/
 const handleUpdateTime = async () => {
   await formRefZoom.value?.validate()
   await updateTime({
-    setTimeZone: formDataZoom.timeZone
-})
+      setTimeZone: formDataZoom.timeZone
+  })
   feedback.msgSuccess('操作成功')
-
 }
 
-const { getConfig } = useAppStore()
 
-
-
-// 获取备案信息
-const getData = async () => {
-  const data = await getWebsite()
-  for (const key in formData) {
-    //@ts-ignore
-    formData[key] = data[key]
-  }
-}
 </script>
 
 <style lang="scss" scoped>
@@ -377,11 +333,15 @@ const getData = async () => {
   }
   .info-item{
     margin-bottom: 20px;
+    .title{
+      color: rgb(128, 142, 255);
+    }
     .value{
-      line-height: 30px;
+      line-height: 40px;
       background: #f2f2f2;
       padding-left: 10px;
       margin: 5px 0;
+      font-size: 14px;
     }
     .tip{
       font-size: 12px;

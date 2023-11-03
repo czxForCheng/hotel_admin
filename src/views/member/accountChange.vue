@@ -57,9 +57,10 @@
             {{ fundType(row.fundType) }}
           </template>
         </el-table-column>
+<!--        0 -- 收入 1 -- 支出-->
         <el-table-column label="状态" min-width="100" >
           <template #default="{ row }">
-            {{row.status === 1 ? '收入' : '支出'}}
+            {{row.status ? '支出' : '收入'}}
           </template>
         </el-table-column>
         <el-table-column label="发生时间" prop="createTime" min-width="180" />
