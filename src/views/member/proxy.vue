@@ -165,8 +165,17 @@
                 type="textarea"
                 :rows="5"
                 v-model="formData.whiteIp"
-                placeholder="请输入登录白名单(不填默认全部ip,以英文分号隔开，例：127.0.0.1;192.168.2.*;)"
+                placeholder="请输入登录白名单(不填默认全部ip,以英文逗号隔开，例：127.0.0.1,192.168.2.*,)"
                 clearable
+            />
+          </el-form-item>
+          <el-form-item label="谷歌验证码开关" label-width="120">
+            <el-switch
+                v-model="formData.isWhite"
+                active-color="#409EFF"
+                active-value="1"
+                inactive-color="#DCDFE6"
+                inactive-value="0"
             />
           </el-form-item>
         </el-form>
@@ -197,7 +206,7 @@
             />
             <el-button type="primary" @click="handleResetGoogle">重置谷歌验证码</el-button>
           </el-form-item>
-          <el-form-item label="谷歌验证码开关" label-width="120" prop="password">
+          <el-form-item label="谷歌验证码开关" label-width="120">
             <el-switch
                 v-model="formDataGoogle.googleEnable"
                 active-color="#409EFF"
@@ -236,6 +245,7 @@ let formData = reactive({
   email: '',
   password: '',
   whiteIp: '',
+  isWhite: '',
   googleEnable: ''
 })
 const rules = reactive({
@@ -356,6 +366,7 @@ const handleWhiteSubmit = async () => {
   await proxyEdit({
     id: formData.id,
     whiteIp: formData.whiteIp,
+    isWhite: formData.isWhite
   })
   feedback.msgSuccess(`修改白名单成功`)
   handleWhiteClose()

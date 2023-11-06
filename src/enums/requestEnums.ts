@@ -21,6 +21,7 @@ export enum RequestCodeEnum {
     LOGIN_ACCOUNT_ERROR = 330, //登陆账号或密码错误
     GOOGLE_CODE_NULL = 318, //谷歌验证码为空
     GOOGLE_CODE_ERROR = 317, //谷歌验证码错误
+    WHITE_IP_UNALLOW = 319, //当前ip不允许登录
     LOGIN_DISABLE_ERROR = 331, //登陆账号已被禁用
     TOKEN_EMPTY = 332, // TOKEN参数为空
     TOKEN_INVALID = 333, // TOKEN参数无效

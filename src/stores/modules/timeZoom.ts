@@ -26,7 +26,7 @@ const useTimeStore = defineStore({
                 { id: 12, label: '波兰', value: 'Europe/Warsaw', zoomi: 8 },
                 { id: 13, label: '日本', value: 'Asia/Tokyo', zoomi: 9 },
                 { id: 14, label: '西班牙', value: 'Europe/Madrid', zoomi: 1 },
-                { id: 15, label: '加拿大', value: 'America/Toronto', zoomi: -4 }
+                { id: 15, label: '加拿大', value: 'America/Toronto', zoomi: -5 }
             ],
             timeZoomText: '',
             timeZoom: '',

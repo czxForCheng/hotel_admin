@@ -61,6 +61,7 @@ const axiosHooks: AxiosHooks = {
 
             case RequestCodeEnum.GOOGLE_CODE_NULL:
             case RequestCodeEnum.GOOGLE_CODE_ERROR:
+            case RequestCodeEnum.WHITE_IP_UNALLOW:
             case RequestCodeEnum.PARAMS_TYPE_ERROR:
             case RequestCodeEnum.PARAMS_VALID_ERROR:
             case RequestCodeEnum.REQUEST_METHOD_ERROR:
@@ -104,7 +105,10 @@ const defaultOptions: AxiosRequestConfig = {
     // baseURL: 'http://192.168.2.44:8082/',   // 张俊本地
     // baseURL: 'http://192.168.2.45:8082/',   // 李红本地
     // baseURL: 'http://192.168.2.61:8082/',   // 陶磊本地
-    headers: { 'Content-Type': ContentTypeEnum.JSON, version: configs.version },
+    headers: {
+        'Content-Type': ContentTypeEnum.JSON, version: configs.version,
+        'Access-Control-Allow-Credentials': true
+    },
 
     // 处理 axios的钩子函数
     axiosHooks: axiosHooks,

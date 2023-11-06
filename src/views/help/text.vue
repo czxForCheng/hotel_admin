@@ -1,6 +1,14 @@
 <template>
   <div>
     <el-card class="!border-none mt-4" shadow="never">
+      <div>
+        <el-button v-perms="['member:proxy:add']" type="primary" class="mb-4" @click="handleAdd">
+          <template #icon>
+            <icon name="el-icon-Plus" />
+          </template>
+          新增文本
+        </el-button>
+      </div>
       <el-table size="large" v-loading="isLoading" :data="homePage">
         <el-table-column label="ID" prop="id" min-width="120" />
         <el-table-column label="标题" prop="title" min-width="100" />
@@ -44,7 +52,7 @@
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-              <el-button @click="dialogVisible = false">取消</el-button>
+              <el-button @click="handleClose">取消</el-button>
               <el-button type="primary" @click="handleSubmit">确认</el-button>
       </span>
         </template>
@@ -54,8 +62,9 @@
 </template>
 <script lang="ts" setup name="textLists">
 import type { FormInstance } from 'element-plus'
-import {getHomePage, homeUpdate} from '@/api/help'
+import {getHomePage, homeUpdate, homeAdd} from '@/api/help'
 import feedback from "@/utils/feedback";
+import {proxyAdd, proxyEdit} from "@/api/member";
 const queryParams = reactive({})
 let formData = reactive({
   id: '',
@@ -75,10 +84,14 @@ const getHomeData = async () => {
 }
 getHomeData()
 
+
 const formRef = shallowRef<FormInstance>()
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
-
+const handleAdd = () => {
+  dialogVisible.value = true
+  dialogTitle.value = '新增首页文本'
+}
 /* 修改菜单 */
 const handleEdit = async (row: any) => {
   dialogTitle.value = '修改首页文本'
@@ -92,10 +105,15 @@ const handleEdit = async (row: any) => {
 /* 提交菜单 */
 const handleSubmit = async () => {
   await formRef.value?.validate()
-  await homeUpdate(formData)
-  feedback.msgSuccess('修改成功')
+  if (formData.id) {
+    await homeUpdate(formData)
+    feedback.msgSuccess('修改成功')
+  } else {
+    await homeAdd(formData)
+    feedback.msgSuccess('新增成功')
+  }
   getHomeData()
-  dialogVisible.value = false
+  handleClose()
 }
 
 const handleClose = () => {

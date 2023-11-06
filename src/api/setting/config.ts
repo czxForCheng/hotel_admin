@@ -20,3 +20,13 @@ export function websiteInfoEdit(params: any) {
     return request.post({ url: '/configuration/update/save', params })
 }
 
+// 语言回显
+export function nowLanguage() {
+    return request.get({ url: '/configuration/sel/language' })
+}
+
+// 修改语言
+export function setLanguage(params: any) {
+    return request.post({ url: '/configuration/update/language', params })
+}
+

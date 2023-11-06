@@ -18,7 +18,11 @@
                         <el-input v-model="formData.username" disabled />
                     </div>
                 </el-form-item>
-
+              <el-form-item label="邀请码：" prop="inviteCode">
+                <div class="w-80">
+                  <el-input v-model="formData.inviteCode" placeholder="无邀请码" disabled />
+                </div>
+              </el-form-item>
                 <el-form-item label="名称：" prop="nickname">
                     <div class="w-80">
                         <el-input v-model="formData.nickname" placeholder="请输入名称" />
@@ -79,7 +83,8 @@ const formData = reactive({
     nickname: '', // 名称
     currPassword: '', // 当前密码
     password: '', // 新的密码
-    passwordConfirm: '' // 确定密码
+    passwordConfirm: '', // 确定密码
+    inviteCode: ''
 })
 
 // 表单校验规则

@@ -33,12 +33,13 @@
         <el-form-item label="显示选项" prop="timeZone">
           <div class="w-80">
             <el-radio-group v-model="language">
-              <el-radio label="english">英文</el-radio>
+              <el-radio label="0">中文</el-radio>
+              <el-radio label="1">英文</el-radio>
             </el-radio-group>
           </div>
         </el-form-item>
       </el-form>
-<!--      <el-button type="primary" @click="handleUpdateTime">保存语言</el-button>-->
+      <el-button type="primary" @click="handleUpdateLange">保存语言</el-button>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
       <el-form ref="formRefZoom" :rules="rulesZoom" :model="formDataZoom" label-width="120px">
@@ -160,7 +161,7 @@
 
 <script lang="ts" setup name="webInformation">
 import type { FormInstance } from 'element-plus'
-import {getTime, updateTime, websiteInfoApi, websiteInfoEdit} from '@/api/setting/config'
+import {getTime, nowLanguage, setLanguage, updateTime, websiteInfoApi, websiteInfoEdit} from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useTimeStore from '@/stores/modules/timeZoom'
 const timeStore = useTimeStore()
@@ -277,7 +278,21 @@ const handleClose = () => {
 const clearList = ref([])
 
 /* 显示语言 */
-const language = ref('english')
+const formRefLanguage = ref<FormInstance>()
+const language = ref('')
+const handleGetLanguage = async () => {
+  const res = await nowLanguage()
+  language.value = res.language
+}
+handleGetLanguage()
+const handleUpdateLange = async () => {
+  // await formRefLanguage.value?.validate()
+  await setLanguage({
+    language: language.value
+  })
+  feedback.msgSuccess('操作成功')
+  handleGetLanguage()
+}
 
 /* 系统时区 */
 const formRefZoom = ref<FormInstance>()
@@ -296,7 +311,7 @@ const timeZoneAll = [
       { id: 12, label: '波兰', value: 'Europe/Warsaw', zoomi: 8 },
       { id: 13, label: '日本', value: 'Asia/Tokyo', zoomi: 9 },
       { id: 14, label: '西班牙', value: 'Europe/Madrid', zoomi: 1 },
-      { id: 15, label: '加拿大', value: 'America/Toronto', zoomi: -4 }
+      { id: 15, label: '加拿大', value: 'America/Toronto', zoomi: -5 }
     ]
 // 系统时区配置 表单数据
 const formDataZoom = reactive({
@@ -313,11 +328,19 @@ const rulesZoom = {
   ]
 }
 /*获取系统时区配置*/
+const handleGetTime = () => {
+  if(timeZoom.value) {
+    //@ts-ignore
+    formDataZoom.timeZone = timeZoom.value
+  }
+}
+handleGetTime()
 watch(timeZoom,(newvalue, oldvalue) => {
   console.log(newvalue, oldvalue)
   //@ts-ignore
   formDataZoom.timeZone = timeZoom.value
 })
+
 /*修改系统时区配置*/
 const handleUpdateTime = async () => {
   await formRefZoom.value?.validate()

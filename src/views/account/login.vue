@@ -153,8 +153,6 @@ const handleLogin = async () => {
         account: remAccount.value ? formData.account : ''
     })
     try {
-      console.log('formData', formData)
-
         await userStore.login(formData)
     } catch (error) {
         // getLoginCaptcha()

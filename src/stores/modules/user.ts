@@ -35,14 +35,20 @@ const useUserStore = defineStore({
         },
         login(playload: any) {
             const { account, password, code, uuid, googleCode } = playload
+            const arg = googleCode ? {
+                username: account,
+                password,
+                code,
+                uuid,
+                googleCode
+            } : {
+                username: account,
+                password,
+                code,
+                uuid
+            }
             return new Promise((resolve, reject) => {
-                login({
-                    username: account,
-                    password,
-                    code,
-                    uuid,
-                    googleCode
-                })
+                login(arg)
                     .then((data) => {
                         this.token = data.token
                         cache.set(TOKEN_KEY, data.token)
