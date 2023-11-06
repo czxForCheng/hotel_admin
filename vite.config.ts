@@ -39,6 +39,11 @@ export default defineConfig({
         }),
         vueSetupExtend()
     ],
+    //静态资源服务的文件夹
+    publicDir: "public",
+    // 项目部署在主域名的子文件使用,例如http://localhost:3000/myvite/。 不填默认就是 ./
+    // base: VITE_APP_CONTEXT_NAME==='字段名' ? './' : VITE_APP_CONTEXT_NAME, // 例子:env.VITE_APP_BASE_URL || '/'
+    base: '/admin',
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))

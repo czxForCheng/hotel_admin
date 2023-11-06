@@ -70,7 +70,7 @@
       </el-card>
         <el-card class="!border-none mt-4" shadow="never">
           <div>
-            <el-button v-perms="['userManage:save']" type="primary" class="mb-4" @click="handleOpenAdd">
+            <el-button v-perms="['userManage:add']" type="primary" class="mb-4" @click="handleOpenAdd">
               <template #icon>
                 <icon name="el-icon-Plus" />
               </template>
@@ -114,48 +114,81 @@
                 </el-table-column>
                 <el-table-column label="操作" width="350" fixed="right">
                     <template #default="{ row }">
-                      <el-button v-perms="['userManage:liandan']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
-                      <el-button v-perms="['userManage:order']" type="primary" size="small"  @click="handleOpenNum(row.id)">重置抢单数量</el-button>
+                      <el-button v-perms="['userManage:linkOrder']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
+                      <el-button v-perms="['userManage:reset']" type="primary" size="small"  @click="handleOpenNum(row.id)">重置抢单数量</el-button>
                         <el-button v-perms="['userManage:balance']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
-                        <el-dropdown v-perms="['member:edit']">
+                        <el-dropdown>
                           <span class="el-dropdown-link" style="margin-left: 10px;">
                             更多操作
                            <icon name="el-icon-arrow-down" :size="18"/>
                           </span>
                           <template #dropdown>
-                            <el-dropdown-menu>
-                              <el-dropdown-item v-perms="['userManage:bonus']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-dropdown-item>
-                              <el-dropdown-item @click="handleEdit(row)">编辑</el-dropdown-item>
-                              <el-dropdown-item @click="handleOpenUsdt(row)">USDT信息</el-dropdown-item>
-                              <el-dropdown-item>
-                                <router-link
-                                    :to="{
+                            <div style="padding: 5px 20px;">
+                              <el-dropdown-menu>
+                                <!--                              <el-dropdown-item v-perms="['userManage:bonus']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-dropdown-item>-->
+                                <el-button v-perms="['userManage:addAmount']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-button>
+                                <!--                              <el-dropdown-item v-perms="['userManage:edit']" @click="handleEdit(row)">编辑</el-dropdown-item>-->
+                                <el-button v-perms="['userManage:edit']" @click="handleEdit(row)">编辑</el-button>
+                                <!--                              <el-dropdown-item v-perms="['userManage:usdt']" @click="handleOpenUsdt(row)">USDT信息</el-dropdown-item>-->
+                                <el-button v-perms="['userManage:usdt']" @click="handleOpenUsdt(row)">USDT信息</el-button>
+                                <!--                              <el-dropdown-item v-perms="['userManage:team']">-->
+                                <!--                                <router-link-->
+                                <!--                                    :to="{-->
+                                <!--                                      path: getRoutePath('member:team'),-->
+                                <!--                                      query: {-->
+                                <!--                                          id: row.id,-->
+                                <!--                                          isDisable: row.isDisable-->
+                                <!--                                      }-->
+                                <!--                                  }"-->
+                                <!--                                >-->
+                                <!--                                  查看团队-->
+                                <!--                                </router-link>-->
+                                <!--                              </el-dropdown-item>-->
+                                <el-button v-perms="['userManage:team']">
+                                  <router-link
+                                      :to="{
                                       path: getRoutePath('member:team'),
                                       query: {
                                           id: row.id,
                                           isDisable: row.isDisable
                                       }
                                   }"
-                                >
-                                  查看团队
-                                </router-link>
-                              </el-dropdown-item>
-                              <el-dropdown-item>
-                                <router-link
-                                    :to="{
+                                  >
+                                    查看团队
+                                  </router-link>
+                                </el-button>
+                                <!--                              <el-dropdown-item v-perms="['userManage:zhangbian']">-->
+                                <!--                                <router-link-->
+                                <!--                                    :to="{-->
+                                <!--                                      path: getRoutePath('member:account'),-->
+                                <!--                                      query: {-->
+                                <!--                                          id: row.id-->
+                                <!--                                      }-->
+                                <!--                                  }"-->
+                                <!--                                >-->
+                                <!--                                  账变-->
+                                <!--                                </router-link>-->
+                                <!--                              </el-dropdown-item>-->
+                                <el-button v-perms="['userManage:zhangbian']">
+                                  <router-link
+                                      :to="{
                                       path: getRoutePath('member:account'),
                                       query: {
                                           id: row.id
                                       }
                                   }"
-                                >
-                                  账变
-                                </router-link>
-                              </el-dropdown-item>
-                              <el-dropdown-item v-perms="['userManage:ban']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-dropdown-item>
-                              <el-dropdown-item v-perms="['userManage:delete']" @click="handleDelete(row.id)">删除</el-dropdown-item>
-                              <el-dropdown-item v-perms="['userManage:dummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-dropdown-item>
-                            </el-dropdown-menu>
+                                  >
+                                    账变
+                                  </router-link>
+                                </el-button>
+                                <!--                              <el-dropdown-item v-perms="['userManage:ban']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-dropdown-item>-->
+                                <el-button v-perms="['userManage:disable']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-button>
+                                <!--                              <el-dropdown-item v-perms="['userManage:delete']" @click="handleDelete(row.id)">删除</el-dropdown-item>-->
+                                <el-button v-perms="['userManage:del']" @click="handleDelete(row.id)">删除</el-button>
+                                <!--                              <el-dropdown-item v-perms="['userManage:dummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-dropdown-item>-->
+                                <el-button v-perms="['userManage:beDummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-button>
+                              </el-dropdown-menu>
+                            </div>
                           </template>
                         </el-dropdown>
                     </template>
@@ -714,7 +747,7 @@ const handleBeDummy = async (row: any) => {
 
 
 </script>
-<style scoped>
+<style scoped lang="scss">
   :deep(.el-select){
     width: 100%;
   }

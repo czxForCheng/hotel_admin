@@ -19,6 +19,8 @@ export enum RequestCodeEnum {
     ASSERT_ARGUMENT_ERROR = 313, //断言参数错误
     ASSERT_MYBATIS_ERROR = 314, //断言mybatis错误
     LOGIN_ACCOUNT_ERROR = 330, //登陆账号或密码错误
+    GOOGLE_CODE_NULL = 318, //谷歌验证码为空
+    GOOGLE_CODE_ERROR = 317, //谷歌验证码错误
     LOGIN_DISABLE_ERROR = 331, //登陆账号已被禁用
     TOKEN_EMPTY = 332, // TOKEN参数为空
     TOKEN_INVALID = 333, // TOKEN参数无效

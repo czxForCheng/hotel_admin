@@ -79,7 +79,7 @@
                             />
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" width="120" fixed="right">
+                    <el-table-column label="操作" width="240" fixed="right">
                         <template #default="{ row }">
                             <el-button
                                 v-perms="['system:admin:edit']"
@@ -98,6 +98,20 @@
                             >
                                 删除
                             </el-button>
+                          <el-dropdown>
+              <span class="el-dropdown-link" style="margin-left: 10px;">
+                更多操作
+               <icon name="el-icon-arrow-down" :size="18"/>
+              </span>
+                            <template #dropdown>
+                              <div style="padding: 5px 20px;">
+                                <el-dropdown-menu>
+                                  <el-button type="primary" @click="handleWhite(row)">ip白名单设置</el-button>
+                                  <el-button type="primary" @click="handleGlooge(row)">{{row.googleEnable === '0' ? '开启' : '关闭'}}谷歌验证码</el-button>
+                                </el-dropdown-menu>
+                              </div>
+                            </template>
+                          </el-dropdown>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -107,6 +121,71 @@
             </div>
         </el-card>
         <edit-popup v-if="showEdit" ref="editRef" @success="getLists" @close="showEdit = false" />
+      <div>
+        <el-dialog
+            v-model="dialogWhiteVisible"
+            title="修改ip白名单"
+            width="50%"
+        >
+          <el-form ref="formRefWhite"
+                   class="ls-form"
+                   :model="formData"
+                   label-width="85px">
+            <el-form-item label="ip白名单" prop="whiteIp">
+              <el-input
+                  type="textarea"
+                  :rows="5"
+                  v-model="formData.whiteIp"
+                  placeholder="请输入登录白名单(不填默认全部ip,以英文分号隔开，例：127.0.0.1;192.168.2.*;)"
+                  clearable
+              />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="handleWhiteClose">取消</el-button>
+              <el-button type="primary" @click="handleWhiteSubmit">确认</el-button>
+      </span>
+          </template>
+        </el-dialog>
+      </div>
+      <div>
+        <el-dialog
+            v-model="dialogGoogleVisible"
+            title="谷歌验证码信息"
+            width="50%"
+        >
+          <el-form ref="formRefGoogle"
+                   class="ls-form"
+                   :model="formDataGoogle"
+                   label-width="85px">
+            <el-form-item label="谷歌验证码" prop="password">
+              <el-input
+                  v-model="formDataGoogle.googleCode"
+                  placeholder="请输入谷歌验证码"
+                  clearable
+                  disabled
+              />
+              <el-button type="primary" @click="handleResetGoogle">重置谷歌验证码</el-button>
+            </el-form-item>
+            <el-form-item label="谷歌验证码开关" label-width="120" prop="password">
+              <el-switch
+                  v-model="formDataGoogle.googleEnable"
+                  active-color="#409EFF"
+                  active-value="1"
+                  inactive-color="#DCDFE6"
+                  inactive-value="0"
+              />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="handleGoogleClose">取消</el-button>
+              <el-button type="primary" @click="handleGoogleSubmit">确认</el-button>
+      </span>
+          </template>
+        </el-dialog>
+      </div>
     </div>
 </template>
 
@@ -117,12 +196,15 @@ import { useDictOptions } from '@/hooks/useDictOptions'
 import { usePaging } from '@/hooks/usePaging'
 import feedback from '@/utils/feedback'
 import EditPopup from './edit.vue'
+import {googleReset, proxyEdit} from "@/api/member";
 const editRef = shallowRef<InstanceType<typeof EditPopup>>()
 // 表单数据
 const formData = reactive({
     username: '',
     nickname: '',
-    role: ''
+    role: '',
+    id: '',
+    whiteIp: ''
 })
 const showEdit = ref(false)
 const { pager, getLists, resetParams, resetPage } = usePaging({
@@ -171,4 +253,75 @@ const { optionsData } = useDictOptions<{
 onMounted(() => {
     getLists()
 })
+const dialogWhiteVisible = ref(false)
+const handleWhite = (row: any) => {
+  dialogWhiteVisible.value = true
+  formData.id = row.id
+  formData.whiteIp = row.whiteIp
+}
+const handleWhiteClose = () => {
+  dialogWhiteVisible.value = false
+  formData.id = ''
+  formData.whiteIp = ''
+}
+const handleWhiteSubmit = async () => {
+  await proxyEdit({
+    id: formData.id,
+    whiteIp: formData.whiteIp,
+  })
+  feedback.msgSuccess(`修改白名单成功`)
+  handleWhiteClose()
+  getLists()
+}
+
+const dialogGoogleVisible = ref(false)
+const formDataGoogle = reactive({
+  id: '',
+  googleCode: '',
+  googleEnable: ''
+})
+
+const handleGlooge = async (row: any) => {
+  dialogGoogleVisible.value = true
+  formDataGoogle.id = row.id
+  formDataGoogle.googleCode = row.googleCode
+  formDataGoogle.googleEnable = row.googleEnable
+}
+const handleGoogleClose = () => {
+  dialogGoogleVisible.value = false
+  formDataGoogle.id = ''
+  formDataGoogle.googleCode = ''
+  formDataGoogle.googleEnable = ''
+}
+const handleGoogleSubmit = async () => {
+  const tipText = formDataGoogle.googleEnable === '0' ? '关闭' : '开启'
+  await proxyEdit({
+    id: formDataGoogle.id,
+    googleEnable: formDataGoogle.googleEnable,
+  })
+  feedback.msgSuccess(`${tipText}谷歌验证码成功`)
+  handleGoogleClose()
+  getLists()
+}
+const handleResetGoogle = async () => {
+  const res = await googleReset({
+    id: formDataGoogle.id
+  })
+  console.log('res', res)
+  formDataGoogle.googleCode = res
+  feedback.msgSuccess(`重置谷歌验证码成功`)
+  getLists()
+  handleGoogleClose()
+}
 </script>
+<style scoped>
+:deep(.el-form-item__content) {
+  flex-wrap: nowrap !important;
+}
+:deep(.el-form-item__content .el-button) {
+  margin-left: 10px !important;
+}
+:deep(.el-dropdown-link .el-icon){
+  top: 3px;
+}
+</style>

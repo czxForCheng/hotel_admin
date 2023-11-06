@@ -34,13 +34,14 @@ const useUserStore = defineStore({
             this.perms = []
         },
         login(playload: any) {
-            const { account, password, code, uuid } = playload
+            const { account, password, code, uuid, googleCode } = playload
             return new Promise((resolve, reject) => {
                 login({
                     username: account,
                     password,
                     code,
-                    uuid
+                    uuid,
+                    googleCode
                 })
                     .then((data) => {
                         this.token = data.token
@@ -49,6 +50,7 @@ const useUserStore = defineStore({
                         resolve(data)
                     })
                     .catch((error) => {
+                        console.log('error', error)
                         reject(error)
                     })
             })

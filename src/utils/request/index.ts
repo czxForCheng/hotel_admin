@@ -59,6 +59,8 @@ const axiosHooks: AxiosHooks = {
                 }
                 return data
 
+            case RequestCodeEnum.GOOGLE_CODE_NULL:
+            case RequestCodeEnum.GOOGLE_CODE_ERROR:
             case RequestCodeEnum.PARAMS_TYPE_ERROR:
             case RequestCodeEnum.PARAMS_VALID_ERROR:
             case RequestCodeEnum.REQUEST_METHOD_ERROR:

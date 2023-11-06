@@ -34,25 +34,37 @@
                                 </template>
                             </el-input>
                         </el-form-item>
-                        <el-form-item prop="code">
-                            <div class="flex items-center">
-                                <el-input
-                                    v-model="formData.code"
-                                    placeholder="请输入验证码"
-                                    @keyup.enter="handleLogin"
-                                >
-                                    <template #prepend>
-                                        <icon name="local-icon-anquan" />
-                                    </template>
-                                </el-input>
-                                <div
-                                    class="ml-4 w-[100px] flex-none cursor-pointer"
-                                    @click="getLoginCaptcha"
-                                >
-                                    <img class="w-full" :src="codeImg" alt="" />
-                                </div>
-                            </div>
-                        </el-form-item>
+<!--                        <el-form-item prop="code">-->
+<!--                            <div class="flex items-center">-->
+<!--                                <el-input-->
+<!--                                    v-model="formData.glCode"-->
+<!--                                    placeholder="请输入验证码"-->
+<!--                                    @keyup.enter="handleLogin"-->
+<!--                                >-->
+<!--                                    <template #prepend>-->
+<!--                                        <icon name="local-icon-anquan" />-->
+<!--                                    </template>-->
+<!--                                </el-input>-->
+<!--                                <div-->
+<!--                                    class="ml-4 w-[100px] flex-none cursor-pointer"-->
+<!--                                    @click="getLoginCaptcha"-->
+<!--                                >-->
+<!--                                    <img class="w-full" :src="codeImg" alt="" />-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </el-form-item>-->
+                      <el-form-item prop="googleCode">
+                        <el-input
+                            ref="Ref"
+                            v-model="formData.googleCode"
+                            placeholder="请输入谷歌验证码"
+                            @keyup.enter="handleLogin"
+                        >
+                          <template #prepend>
+                            <icon name="el-icon-Lock" />
+                          </template>
+                        </el-input>
+                      </el-form-item>
                     </el-form>
                     <div class="mb-5">
                         <el-checkbox v-model="remAccount" label="记住账号"></el-checkbox>
@@ -72,6 +84,7 @@ import { computed, onMounted, reactive, ref, shallowRef } from 'vue'
 import type { InputInstance, FormInstance } from 'element-plus'
 import LayoutFooter from '@/layout/components/footer.vue'
 import useAppStore from '@/stores/modules/app'
+import useTimeStore from "@/stores/modules/timeZoom";
 import useUserStore from '@/stores/modules/user'
 import cache from '@/utils/cache'
 import { ACCOUNT_KEY } from '@/enums/cacheEnums'
@@ -81,6 +94,7 @@ import { loginCaptcha } from '@/api/user'
 const passwordRef = shallowRef<InputInstance>()
 const formRef = shallowRef<FormInstance>()
 const appStore = useAppStore()
+const timeStore = useTimeStore()
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
@@ -91,7 +105,8 @@ const formData = reactive({
     account: '',
     password: '',
     code: '',
-    uuid: ''
+    uuid: '',
+    googleCode: ''
 })
 const rules = {
     account: [
@@ -138,9 +153,11 @@ const handleLogin = async () => {
         account: remAccount.value ? formData.account : ''
     })
     try {
+      console.log('formData', formData)
+
         await userStore.login(formData)
     } catch (error) {
-        getLoginCaptcha()
+        // getLoginCaptcha()
     }
     const {
         query: { redirect }
@@ -152,7 +169,7 @@ const { isLock, lockFn: lockLogin } = useLockFn(handleLogin)
 
 onMounted(() => {
     const value = cache.get(ACCOUNT_KEY)
-    getLoginCaptcha()
+    // getLoginCaptcha()
     if (value?.remember) {
         remAccount.value = value.remember
         formData.account = value.account

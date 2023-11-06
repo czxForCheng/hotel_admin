@@ -162,6 +162,9 @@
 import type { FormInstance } from 'element-plus'
 import {getTime, updateTime, websiteInfoApi, websiteInfoEdit} from '@/api/setting/config'
 import feedback from "@/utils/feedback";
+import useTimeStore from '@/stores/modules/timeZoom'
+const timeStore = useTimeStore()
+const timeZoom = computed(() => timeStore.timeZoom)
 
 /* 修改系统配置 */
 const formData = reactive({
@@ -279,22 +282,22 @@ const language = ref('english')
 /* 系统时区 */
 const formRefZoom = ref<FormInstance>()
 const timeZoneAll = [
-  { id: 1, label: '中国上海', value: 'Asia/Shanghai' },
-  { id: 2, label: '美国东部', value: 'America/Detroit' },
-  { id: 3, label: '英国', value: 'Europe/London' },
-  { id: 4, label: '巴西', value: 'America/Sao_Paulo' },
-  { id: 5, label: '墨西哥', value: 'America/Mexico_City' },
-  { id: 6, label: '印度尼西亚', value: 'Asia/Jakarta' },
-  { id: 7, label: '越南', value: 'Asia/Ho_Chi_Minh' },
-  { id: 8, label: '土耳其', value: 'Europe/Istanbul' },
-  { id: 9, label: '澳大利亚', value: 'Australia/Sydney' },
-  { id: 10, label: '泰国', value: 'Asia/Bangkok' },
-  { id: 11, label: '俄罗斯', value: 'Europe/Moscow' },
-  { id: 12, label: '波兰', value: 'Europe/Warsaw' },
-  { id: 13, label: '日本', value: 'Asia/Tokyo' },
-  { id: 14, label: '西班牙', value: 'Europe/Madrid' },
-  { id: 15, label: '加拿大', value: 'America/Toronto' }
-]
+      { id: 1, label: '中国上海', value: 'Asia/Shanghai', zoomi: 8 },
+      { id: 2, label: '美国东部', value: 'America/Detroit', zoomi: -5 },
+      { id: 3, label: '英国', value: 'Europe/London', zoomi: 0},
+      { id: 4, label: '巴西', value: 'America/Sao_Paulo', zoomi: -3 },
+      { id: 5, label: '墨西哥', value: 'America/Mexico_City', zoomi: -6 },
+      { id: 6, label: '印度尼西亚', value: 'Asia/Jakarta', zoomi: 7 },
+      { id: 7, label: '越南', value: 'Asia/Ho_Chi_Minh', zoomi: 7 },
+      { id: 8, label: '土耳其', value: 'Europe/Istanbul', zoomi: 2 },
+      { id: 9, label: '澳大利亚', value: 'Australia/Sydney', zoomi: 9 },
+      { id: 10, label: '泰国', value: 'Asia/Bangkok', zoomi: 8 },
+      { id: 11, label: '俄罗斯', value: 'Europe/Moscow', zoomi: 3 },
+      { id: 12, label: '波兰', value: 'Europe/Warsaw', zoomi: 8 },
+      { id: 13, label: '日本', value: 'Asia/Tokyo', zoomi: 9 },
+      { id: 14, label: '西班牙', value: 'Europe/Madrid', zoomi: 1 },
+      { id: 15, label: '加拿大', value: 'America/Toronto', zoomi: -4 }
+    ]
 // 系统时区配置 表单数据
 const formDataZoom = reactive({
   timeZone: ''
@@ -310,17 +313,18 @@ const rulesZoom = {
   ]
 }
 /*获取系统时区配置*/
-const handleGetTime = async () => {
-  const res = await getTime()
-  formDataZoom.timeZone = res.setTimeZone
-}
-handleGetTime()
+watch(timeZoom,(newvalue, oldvalue) => {
+  console.log(newvalue, oldvalue)
+  //@ts-ignore
+  formDataZoom.timeZone = timeZoom.value
+})
 /*修改系统时区配置*/
 const handleUpdateTime = async () => {
   await formRefZoom.value?.validate()
-  await updateTime({
-      setTimeZone: formDataZoom.timeZone
-  })
+  timeStore.setTimeZoom(formDataZoom.timeZone)
+  // await updateTime({
+  //     setTimeZone: formDataZoom.timeZone
+  // })
   feedback.msgSuccess('操作成功')
 }
 

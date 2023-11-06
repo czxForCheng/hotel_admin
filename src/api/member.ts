@@ -141,3 +141,8 @@ export function proxyEditPwd(params: any) {
 export function proxyDisable(params: any) {
     return request.post({ url: '/agentManage/disable', params })
 }
+
+// 重置谷歌验证码
+export function googleReset(params: any) {
+    return request.post({ url: '/agentManage/resetGoogleCode', params })
+}

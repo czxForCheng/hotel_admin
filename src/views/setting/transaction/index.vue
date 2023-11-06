@@ -103,7 +103,7 @@
             </el-form-item>
             <el-form-item label="匹配范围" prop="rangeMatching">
               <div class="w-80">
-                <el-slider v-model="formDataBase.rangeMatching" range />
+                <el-slider v-model="formDataBase.rangeMatching" range :max="1" :step="0.1" />
               </div>
               <p class="tip">系统自动给用户派单的金额范围，计算公式：用户余额x（最小～最大随机值），如果用户加入了叠加组或有打针的订单情况，则不受这个控制</p>
             </el-form-item>
