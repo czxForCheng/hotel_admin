@@ -5,7 +5,7 @@
         <el-form-item label="用户名称">
           <el-input
               class="w-[280px]"
-              v-model="queryParams.username"
+              v-model.trim="queryParams.username"
               placeholder="请输入用户名称"
               clearable
           />
@@ -13,7 +13,7 @@
         <el-form-item label="手机号">
           <el-input
               class="w-[280px]"
-              v-model="queryParams.mobile"
+              v-model.trim="queryParams.mobile"
               placeholder="请输入手机号"
               clearable
           />

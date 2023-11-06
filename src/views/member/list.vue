@@ -27,7 +27,7 @@
           <el-form-item label="用户名称">
             <el-input
                 class="w-[280px]"
-                v-model="queryParams.username"
+                v-model.trim="queryParams.username"
                 placeholder="请输入用户名称"
                 clearable
             />
@@ -35,7 +35,7 @@
           <el-form-item label="邀请码">
             <el-input
                 class="w-[280px]"
-                v-model="queryParams.inviteCode"
+                v-model.trim="queryParams.inviteCode"
                 placeholder="请输入邀请码"
                 clearable
             />
@@ -43,7 +43,7 @@
           <el-form-item label="ip">
             <el-input
                 class="w-[280px]"
-                v-model="queryParams.lastLoginIp"
+                v-model.trim="queryParams.lastLoginIp"
                 placeholder="请输入最后登录ip"
                 clearable
             />
@@ -51,7 +51,7 @@
           <el-form-item label="手机号">
             <el-input
                 class="w-[280px]"
-                v-model="queryParams.mobile"
+                v-model.trim="queryParams.mobile"
                 placeholder="请输入手机号"
                 clearable
             />

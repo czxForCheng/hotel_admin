@@ -10,12 +10,12 @@
               clearable
           />
         </el-form-item>
-        <el-form-item label="注册时间">
-          <daterange-picker
-              v-model:startTime="queryParams.startTime"
-              v-model:endTime="queryParams.endTime"
-          />
-        </el-form-item>
+<!--        <el-form-item label="注册时间">-->
+<!--          <daterange-picker-->
+<!--              v-model:startTime="queryParams.startTime"-->
+<!--              v-model:endTime="queryParams.endTime"-->
+<!--          />-->
+<!--        </el-form-item>-->
         <el-form-item>
           <el-button type="primary" @click="resetPage">查询</el-button>
           <el-button @click="resetParams">重置</el-button>
@@ -108,8 +108,8 @@ import {getServiceList, addService, delService, editService} from '@/api/service
 import feedback from "@/utils/feedback";
 const queryParams = reactive({
   userName: '',
-  startTime: '',
-  endTime: ''
+  // startTime: '',
+  // endTime: ''
 })
 let formData = reactive({
   id: '',

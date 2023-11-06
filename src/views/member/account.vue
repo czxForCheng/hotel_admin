@@ -2,10 +2,10 @@
   <div>
     <el-card class="!border-none" shadow="never">
       <el-form ref="formRef" class="mb-[-16px]" :model="queryParams" :inline="true">
-        <el-form-item label="账号">
+        <el-form-item label="账号" v-if="!id">
           <el-input
               class="w-[280px]"
-              v-model="queryParams.username"
+              v-model.trim="queryParams.username"
               placeholder="请输入账号"
               clearable
           />
