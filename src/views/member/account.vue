@@ -40,6 +40,10 @@
                 label="佣金"
                 :value="6"
             />
+            <el-option
+                label="首充获利"
+                :value="7"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="发生时间">
@@ -57,9 +61,11 @@
     <el-card class="!border-none mt-4" shadow="never">
       <el-table v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="ID" prop="id" min-width="60" />
-        <el-table-column label="账号" prop="username" min-width="100" />
-        <el-table-column label="订单编号" prop="orderNo" min-width="100" />
-        <el-table-column label="金额" prop="changeAmount" min-width="160" />
+        <el-table-column label="账号" prop="username" min-width="120" />
+        <el-table-column label="订单编号" prop="orderNo" min-width="120" />
+        <el-table-column label="金额" prop="changeAmount" min-width="100" />
+        <el-table-column label="资金变动前" prop="changeAmountBefore" min-width="100" />
+        <el-table-column label="资金变动后" prop="changeAmountAfter" min-width="100" />
         <el-table-column label="交易类型" min-width="100" >
           <template #default="{ row }">
             {{ fundType(row.fundType) }}
@@ -134,6 +140,9 @@ const fundType = computed(() => {
         break
       case 6:
         type = '佣金'
+        break
+      case 7:
+        type = '首充获利'
         break
     }
     return type

@@ -232,7 +232,7 @@
             <el-form-item label="开始提现时间" prop="withdrawTimeStart">
               <div class="w-80">
                 <el-input
-                    v-model="formDataBase.withdrawTimeStart"
+                    v-model.number="formDataBase.withdrawTimeStart"
                     placeholder="请输入开始提现时间"
                     show-word-limit
                 ></el-input>
@@ -242,7 +242,7 @@
             <el-form-item label="结束提现时间" prop="withdrawTimeEnd">
               <div class="w-80">
                 <el-input
-                    v-model="formDataBase.withdrawTimeEnd"
+                    v-model.number="formDataBase.withdrawTimeEnd"
                     placeholder="请输入结束提现时间"
                     show-word-limit
                 ></el-input>
@@ -252,7 +252,7 @@
             <el-form-item label="开始充值时间" prop="topTimeStart">
               <div class="w-80">
                 <el-input
-                    v-model="formDataBase.topTimeStart"
+                    v-model.number="formDataBase.topTimeStart"
                     placeholder="请输入开始充值时间"
                     show-word-limit
                 ></el-input>
@@ -262,7 +262,7 @@
             <el-form-item label="结束充值时间" prop="topTimeEnd">
               <div class="w-80">
                 <el-input
-                  v-model="formDataBase.topTimeEnd"
+                  v-model.number="formDataBase.topTimeEnd"
                   placeholder="请输入结束充值时间"
                   show-word-limit
               ></el-input>
@@ -272,7 +272,7 @@
             <el-form-item label="抢单开始时间" prop="orderTimeStart">
               <div class="w-80">
                 <el-input
-                    v-model="formDataBase.orderTimeStart"
+                    v-model.number="formDataBase.orderTimeStart"
                     placeholder="请输入抢单开始时间"
                     show-word-limit
                 ></el-input>
@@ -282,7 +282,7 @@
             <el-form-item label="抢单结束时间" prop="orderTimeEnd">
               <div class="w-80">
                 <el-input
-                    v-model="formDataBase.orderTimeEnd"
+                    v-model.number="formDataBase.orderTimeEnd"
                     placeholder="请输入抢单结束时间"
                     show-word-limit
                 ></el-input>

@@ -16,6 +16,9 @@
               <div class="navbar-item">
                 <time-zoom />
               </div>
+              <div class="navbar-item">
+                <withdraw-number/>
+              </div>
                 <div class="navbar-item" v-if="!isMobile">
                     <full-screen />
                 </div>
@@ -37,12 +40,13 @@ import Fold from './fold.vue'
 import Refresh from './refresh.vue'
 import Breadcrumb from './breadcrumb.vue'
 import TimeZoom from './time-zoom.vue'
+import WithdrawNumber from "./withdraw-number.vue"
 import FullScreen from './full-screen.vue'
 import UserDropDown from './user-drop-down.vue'
 import Setting from '../setting/index.vue'
 import MultipleTabs from './multiple-tabs.vue'
-
 import useSettingStore from '@/stores/modules/setting'
+
 const appStore = useAppStore()
 const isMobile = computed(() => appStore.isMobile)
 const settingStore = useSettingStore()

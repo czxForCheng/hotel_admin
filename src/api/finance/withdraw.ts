@@ -9,3 +9,8 @@ export function withdrawalRecord(params: any) {
 export function withdrawalAudit(params: any) {
     return request.post({ url: '/withdrawalRecord/withdrawal/audit', params })
 }
+
+// 待提现数量
+export function processWithdrawal(params: any) {
+    return request.get({ url: '/statistics/processWithdrawal', params })
+}

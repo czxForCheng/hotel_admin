@@ -168,6 +168,9 @@ const fundType = computed(() => {
       case 6:
         type = '佣金'
         break
+      case 7:
+        type = '首充获利'
+        break
     }
     return type
   }

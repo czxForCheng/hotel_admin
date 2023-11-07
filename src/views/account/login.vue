@@ -8,7 +8,7 @@
                 <div
                     class="login-form bg-body flex flex-col justify-center px-10 py-10 md:w-[400px] w-[375px] flex-none mx-auto"
                 >
-                    <div class="text-center text-3xl font-medium mb-8">KAKAYk开源后台</div>
+                    <div class="text-center text-3xl font-medium mb-8">KAKAYK后台</div>
                     <el-form ref="formRef" :model="formData" size="large" :rules="rules">
                         <el-form-item prop="account">
                             <el-input

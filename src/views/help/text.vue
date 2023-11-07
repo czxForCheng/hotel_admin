@@ -41,13 +41,14 @@
             />
           </el-form-item>
           <el-form-item label="文本内容" prop="content">
-            <el-input
-                type="textarea"
-                v-model="formData.content"
-                placeholder="请输入文本内容"
-                :rows="10"
-                clearable
-            />
+<!--            <el-input-->
+<!--                type="textarea"-->
+<!--                v-model="formData.content"-->
+<!--                placeholder="请输入文本内容"-->
+<!--                :rows="10"-->
+<!--                clearable-->
+<!--            />-->
+            <editor class="mb-10" v-model="formData.content" height="500"></editor>
           </el-form-item>
         </el-form>
         <template #footer>

@@ -9,10 +9,8 @@ import useTimeStore from '@/stores/modules/timeZoom'
 const timeStore = useTimeStore()
 const timeZoomText = computed(() => timeStore.timeZoomText)
 const timeZoomI:any = computed(() => timeStore.timeZoomI)
-console.log(timeZoomI)
 const timeStr = ref('')
 let timer:any = null
-console.log(11111111111111)
 const getLocalTime = (i: number) => {
   //参数i为时区值数字，比如北京为东八区则输进8,西5输入-5
   var d = new Date();

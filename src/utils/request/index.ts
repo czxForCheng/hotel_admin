@@ -106,8 +106,7 @@ const defaultOptions: AxiosRequestConfig = {
     // baseURL: 'http://192.168.2.45:8082/',   // 李红本地
     // baseURL: 'http://192.168.2.61:8082/',   // 陶磊本地
     headers: {
-        'Content-Type': ContentTypeEnum.JSON, version: configs.version,
-        'Access-Control-Allow-Credentials': true
+        'Content-Type': ContentTypeEnum.JSON, version: configs.version
     },
 
     // 处理 axios的钩子函数

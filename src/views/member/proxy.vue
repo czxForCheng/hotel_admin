@@ -169,7 +169,7 @@
                 clearable
             />
           </el-form-item>
-          <el-form-item label="谷歌验证码开关" label-width="120">
+          <el-form-item label="ip白名单开关" label-width="120">
             <el-switch
                 v-model="formData.isWhite"
                 active-color="#409EFF"
