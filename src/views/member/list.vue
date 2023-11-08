@@ -82,7 +82,7 @@
                 <el-table-column label="所属代理" prop="parentAgentName" min-width="100" />
                 <el-table-column label="账号" prop="username" min-width="120" />
                 <el-table-column label="手机号码" prop="mobile" min-width="150" />
-                <el-table-column label="会员等级" prop="userLevel" min-width="100" />
+                <el-table-column :show-overflow-tooltip="true" label="会员等级" prop="userLevel" min-width="120" />
                 <el-table-column label="信誉分" prop="creditScore" min-width="100" />
                 <el-table-column label="已完成订单总数" prop="nowOrderNum" min-width="100" />
                 <el-table-column label="全部订单总数" prop="robOrderNum" min-width="120" />
@@ -708,7 +708,7 @@ const handleUsdtClose = () => {
 const ticketForm= async (data:any)=>{
     sessionStorage.removeItem('goods')
     isTicket.value = true
-  ticketValue.value = data
+   ticketValue.value = data
 
 
 }

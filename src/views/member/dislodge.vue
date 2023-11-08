@@ -74,7 +74,7 @@
                   clearable
               />
             </el-form-item>
-            <el-form-item v-if="formData.isLink===1">
+            <el-form-item v-if="formData.isLink===2">
               <p>新的选择商品（请在右侧选择商品）</p>
               <el-input
                   @change="changeGoods"
@@ -120,20 +120,20 @@
 
             <el-table
                 ref="multipleTableRef"
-
                 max-height="500px"
                 size="large"
                 v-loading="pager.loading"
                 :data="pager.lists">
               <el-table-column width="55">
                 <template #default="{ row }">
-                    <el-checkbox @click="handleSelectionChange(row,row.id)" v-model="row.checked"/>
+                    <el-checkbox @click.stop="handleSelectionMethod($event,row,row.id)" v-model="row.checked"/>
+
                 </template>
               </el-table-column>>
-              <el-table-column label="商品ID" prop="id" min-width="60"/>
-              <el-table-column label="商品名称" show-overflow-tooltip prop="taskName" width="300"/>
-              <el-table-column label="商品价格" prop="productPrice" min-width="100"/>
-              <el-table-column label="操作" width="100" fixed="right">
+              <el-table-column label="商品ID" align="center" prop="id" min-width="60"/>
+              <el-table-column label="商品名称" show-overflow-tooltip prop="taskName" width="400"/>
+              <el-table-column label="商品价格" align="center" prop="productPrice" min-width="100"/>
+              <el-table-column v-if="false" label="操作" width="100" fixed="right">
                 <template #default="{ row }">
                   <el-button @click="nextTicket(row,row.id)" type="primary" size="small">替换下一单</el-button>
                 </template>
@@ -197,18 +197,21 @@ let formData = reactive({
 })
 
 
-const baseInfo = () => {
+const baseInfo = async () => {
   formData.id = props.ticketValue.id
   formData.username = props.ticketValue.username
   formData.balanceMoney = props.ticketValue.balanceMoney
   formData.nowOrderNum = props.ticketValue.nowOrderNum
   formData.robOrderNum = props.ticketValue.robOrderNum
   formData.isLink = props.ticketValue.isLink
-  // await userManageDetail(props.ticketValue.id).then(res=>{
-  //   formData.isLink = res.isLink
-  // }).catch(err=>{
-  //   console.log(err)
-  // })
+  if (props.ticketValue.isLink === 1){
+    formData.beginOrder = props.ticketValue.linkOrderNum
+    formData.goodsIds= props.ticketValue.linkProducts
+    let list = props.ticketValue.linkProducts.split(',')
+    getUserChecked(list)
+  }else{
+    getLists(queryParams)
+  }
 }
 
 const queryParams = reactive({
@@ -245,6 +248,32 @@ const changeGoods=()=>{
   }
 }
 
+
+const getUserChecked = (array:any) =>{
+  multipleSelection.value=[]
+  getProductList(queryParams).then(res => {
+    pager.loading = false
+    pager.pageSize = res.pageSize
+    pager.page = res.paegNo
+    pager.total = res.count
+    res.lists.forEach((val: any) => {
+      const index =  array.findIndex((item:any)=> parseInt(item) === val.id)
+      if (index === -1){
+        val.checked = false
+      }else{
+        val.checked = true
+      }
+    })
+    multipleSelection.value=array
+    pager.lists = res.lists
+  }).catch(err => {
+    pager.loading = false
+    pager.lists = []
+  })
+}
+
+
+
 const getLists = (data: any) => {
   let goods =JSON.parse(<any> sessionStorage.getItem('goods')) ? JSON.parse(<any> sessionStorage.getItem('goods')) :[]
   getProductList(data).then(res => {
@@ -253,7 +282,7 @@ const getLists = (data: any) => {
     pager.page = res.paegNo
     pager.total = res.count
     res.lists.forEach((val: any) => {
-      const index =   goods.findIndex((item:any)=> item === val.id)
+      const index =  goods.findIndex((item:any)=> item === val.id)
       if (index === -1){
         val.checked = false
       }else{
@@ -270,13 +299,14 @@ const getLists = (data: any) => {
 const handleCurrentChange = (data: any) => {
   pager.loading = true
   queryParams.pageNo = data
-  getLists(queryParams)
+  // getLists(queryParams)
+  getUserChecked(multipleSelection.value)
 }
 
 const handleSizeChange = (data: any) => {
   pager.loading = true
   queryParams.pageSize = data
-  getLists(queryParams)
+  getUserChecked(multipleSelection.value)
 }
 
 const resetPage = () => {
@@ -306,14 +336,13 @@ const handleSubmit = () => {
   } else if (formData.goodsIds === '') {
     ElMessage({message: '商品为必选', type: 'warning',})
   } else {
-    formData.goodsIds +=','+formData.goods
+    // formData.goodsIds +=','+formData.goods
     let form = {
       isLink:formData.isLink,
       linkOrderNum:formData.beginOrder,
       linkProducts:formData.goodsIds,
       id:formData.id
     }
-    console.log(form)
     linkOrder(form).then(res=>{
       ElMessage({message: '操作成功', type: 'success',})
       handleClose()
@@ -335,19 +364,21 @@ const nextTicket = (data: any,id:number) => {
 }
 
 // 多选
-const handleSelectionChange = (val: any,id:any) => {
-  if (val.checked){
-    const index = multipleSelection.value.findIndex((item:any)=> item === id)
-    multipleSelection.value.splice(index,1)
-  }else{
-    multipleSelection.value.push(id)
+const handleSelectionMethod = (e:any,val: any,id:any) => {
+  if (e.target.tagName !== 'INPUT'){
+    if (val.checked){
+      const index = multipleSelection.value.findIndex((item:any)=> parseInt(item) === id)
+      multipleSelection.value.splice(index,1)
+    }else{
+      multipleSelection.value.push(id)
+    }
+    sessionStorage.setItem('goods',JSON.stringify( [...new Set(multipleSelection.value)]))
+    formData.goodsIds =[...new Set(multipleSelection.value)].toString()
   }
-  sessionStorage.setItem('goods',JSON.stringify( [...new Set(multipleSelection.value)]))
-  formData.goodsIds =[...new Set(multipleSelection.value)].toString()
 }
 
 
-getLists(queryParams)
+// getLists(queryParams)
 baseInfo()
 </script>
 
