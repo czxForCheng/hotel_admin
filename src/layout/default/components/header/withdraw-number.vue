@@ -1,5 +1,5 @@
 <template>
-  <div class="withdraw-number">
+  <div class="withdraw-number" @click="toWithdraw">
     <el-badge :value="number" class="item">
       提现
     </el-badge>
@@ -8,12 +8,16 @@
 
 <script setup lang="ts">
 import { processWithdrawal } from '@/api/finance/withdraw'
+const router = useRouter()
   const number = ref(0)
 const getProcessWithdrawal = async () => {
   const res = await processWithdrawal({})
   number.value = res.msgNum
 }
 getProcessWithdrawal()
+const toWithdraw = () => {
+  router.push('/finance/withdraw')
+}
 </script>
 <style scoped>
   .withdraw-number{

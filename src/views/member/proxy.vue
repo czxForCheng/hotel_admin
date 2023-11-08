@@ -86,11 +86,22 @@
           width="50%"
           :before-close="handleClose"
       >
+
         <el-form ref="formRef"
                  class="ls-form"
                  :model="formData"
                  label-width="85px"
                  :rules="rules">
+          <el-form-item label="代理" prop="parentId">
+            <el-select class="w-[280px]" @change="handleProxyChange" v-model="formData.parentId" placeholder="请选择代理">
+              <el-option
+                  v-for="(item, key) in memberProxyAll"
+                  :key="item.id"
+                  :label="item.username"
+                  :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="用户名" prop="username">
             <el-input
                 v-model="formData.username"
@@ -229,7 +240,7 @@
 <script lang="ts" setup name="proxyLists">
 import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
-import {agentManage, proxyAdd, proxyDel, proxyEdit, proxyEditPwd, proxyDisable, googleReset} from '@/api/member'
+import {agentManage, proxyAdd, getProxyList, proxyEdit, proxyEditPwd, proxyDisable, googleReset} from '@/api/member'
 import feedback from "@/utils/feedback";
 import {getRoutePath} from "@/router";
 const queryParams = reactive({
@@ -246,7 +257,9 @@ let formData = reactive({
   password: '',
   whiteIp: '',
   isWhite: '',
-  googleEnable: ''
+  googleEnable: '',
+  parentId: '',
+  parentName: ''
 })
 const rules = reactive({
   username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
@@ -273,6 +286,18 @@ const dialogTitle = ref('')
 const handleAdd = () => {
   dialogVisible.value = true
   dialogTitle.value = '新增代理'
+}
+// 获取所有代理
+const memberProxyAll = ref([])
+const getMemberProxyAll = async () => {
+  memberProxyAll.value = await getProxyList()
+}
+getMemberProxyAll()
+const handleProxyChange = () => {
+  const info:any = memberProxyAll.value.filter(item => {
+    return item['id'] === formData.parentId
+  })
+  formData.parentName = info[0].username
 }
 // // 删除
 // const handleDelete = async (id: number) => {
@@ -341,6 +366,8 @@ const handleClose = () => {
   formData.inviteCode = ''
   formData.customerServiceLink = ''
   formData.email = ''
+  formData.parentId = ''
+  formData.parentName = ''
 }
 
 const handleBan = async (row: any) => {
@@ -415,6 +442,9 @@ const handleResetGoogle = async () => {
 
 </script>
 <style scoped>
+:deep(.el-select){
+  width: 100%;
+}
   :deep(.el-form-item__content) {
     flex-wrap: nowrap !important;
   }
