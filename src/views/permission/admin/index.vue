@@ -36,12 +36,12 @@
             </el-form>
         </el-card>
         <el-card v-loading="pager.loading" class="mt-4 !border-none" shadow="never">
-            <el-button v-perms="['system:admin:add']" type="primary" @click="handleAdd">
-                <template #icon>
-                    <icon name="el-icon-Plus" />
-                </template>
-                新增
-            </el-button>
+<!--            <el-button v-perms="['system:admin:add']" type="primary" @click="handleAdd">-->
+<!--                <template #icon>-->
+<!--                    <icon name="el-icon-Plus" />-->
+<!--                </template>-->
+<!--                新增-->
+<!--            </el-button>-->
             <div class="mt-4">
                 <el-table :data="pager.lists" size="large">
                     <el-table-column label="ID" prop="id" min-width="60" />

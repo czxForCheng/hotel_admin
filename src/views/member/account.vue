@@ -77,7 +77,7 @@
             {{row.status ? '支出' : '收入'}}
           </template>
         </el-table-column>
-        <el-table-column label="发生时间" prop="createTime" min-width="180" />
+        <el-table-column label="发生时间" prop="addTime" min-width="180" />
       </el-table>
       <div class="flex justify-end mt-4">
         <pagination v-model="pager" @change="getLists" />
