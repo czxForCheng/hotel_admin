@@ -331,13 +331,6 @@
                                 clearable
                         />
                     </el-form-item>
-                  <el-form-item label="比例" prop="writingRatio">
-                    <el-input
-                        v-model="formData.writingRatio"
-                        placeholder="请输入比例"
-                        clearable
-                    />
-                  </el-form-item>
                     <el-form-item label="上级ID" prop="parentId">
                       <el-select class="w-[280px]" v-model="formData.parentId" placeholder="请选择一级代理">
                         <el-option
@@ -594,7 +587,6 @@ let formData = reactive({
   tradingPwd: '',
   taskNum: 0,
   creditScore: '',
-  writingRatio: '',
   parentId: ''
 })
 const rules = reactive({
@@ -631,7 +623,6 @@ const handleEdit = async (row: any) => {
   formData.tradingPwd = row.tradingPwd
   formData.taskNum = row.taskNum
   formData.creditScore = row.creditScore
-  formData.writingRatio = row.writingRatio
   formData.parentId = row.parentId
   dialogVisible.value = true
 }
@@ -663,7 +654,6 @@ const handleClose = () => {
   formData.tradingPwd = ''
   formData.taskNum = 0
   formData.creditScore = ''
-  formData.writingRatio = ''
   formData.parentId = ''
 }
 
