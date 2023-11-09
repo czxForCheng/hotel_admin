@@ -2,7 +2,7 @@
   <div>
     <el-card class="!border-none mt-4" shadow="never">
       <div>
-        <el-button type="primary" class="mb-4" @click="handleAdd">
+        <el-button v-perms="['help:home:create']" type="primary" class="mb-4" @click="handleAdd">
           <template #icon>
             <icon name="el-icon-Plus" />
           </template>
@@ -16,7 +16,7 @@
         <el-table-column label="最后编辑" prop="updateName" min-width="100" />
         <el-table-column label="操作" width="100" fixed="right">
           <template #default="{ row }">
-            <el-button v-perms="['text:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
+            <el-button v-perms="['help:home:update']" type="primary" @click="handleEdit(row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>

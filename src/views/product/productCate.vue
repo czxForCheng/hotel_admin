@@ -2,7 +2,7 @@
   <div>
     <el-card class="!border-none mt-4" shadow="never">
       <div>
-        <el-button type="primary" class="mb-4" @click="handleAdd">
+        <el-button v-perms="['productType:add']" type="primary" class="mb-4" @click="handleAdd">
           <template #icon>
             <icon name="el-icon-Plus" />
           </template>
@@ -17,8 +17,8 @@
         <el-table-column label="添加时间" prop="addTime" min-width="160" />
         <el-table-column label="操作" width="160" fixed="right">
           <template #default="{ row }">
-            <el-button v-perms="['productCate:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
-            <el-button v-perms="['productCate:delete']" type="primary" @click="handleDelete(row.id)">删除</el-button>
+            <el-button v-perms="['productType:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
+            <el-button v-perms="['productType:del']" type="primary" @click="handleDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

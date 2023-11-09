@@ -79,7 +79,12 @@
           </div>
             <el-table max-height="550px" size="large" v-loading="pager.loading" :data="pager.lists">
                 <el-table-column label="UID" prop="id" min-width="60" />
-                <el-table-column label="所属代理" prop="parentAgentName" min-width="100" />
+                <el-table-column label="一级代理/二级代理" min-width="180" >
+                  <template #default="{ row }">
+                    <p>{{row.firstAgentName}}</p>
+                    <p>{{row.parentAgentName}}</p>
+                  </template>
+                </el-table-column>
                 <el-table-column label="账号" prop="username" min-width="120" />
                 <el-table-column label="手机号码" prop="mobile" min-width="150" />
                 <el-table-column :show-overflow-tooltip="true" label="会员等级" prop="userLevel" min-width="120" />
@@ -98,6 +103,7 @@
                 <el-table-column label="上级用户" prop="parentName" min-width="100" />
                 <el-table-column label="彩金" prop="colorMoney" min-width="100" />
                 <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
+                <el-table-column label="总存款" prop="sumMoney" min-width="120" />
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
                 <el-table-column label="最后登录ip" prop="lastLoginIp" min-width="100" />
               <el-table-column label="注册时间" prop="addTime" min-width="180" />
@@ -116,7 +122,7 @@
                     <template #default="{ row }">
                       <el-button v-perms="['userManage:linkOrder']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
                       <el-button v-perms="['userManage:reset']" type="primary" size="small"  @click="handleOpenNum(row.id)">重置抢单数量</el-button>
-                        <el-button v-perms="['userManage:balance']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
+                        <el-button v-perms="['userManage:addAmount']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
                         <el-dropdown>
                           <span class="el-dropdown-link" style="margin-left: 10px;">
                             更多操作
@@ -125,29 +131,14 @@
                           <template #dropdown>
                             <div style="padding: 5px 20px;">
                               <el-dropdown-menu>
-                                <!--                              <el-dropdown-item v-perms="['userManage:bonus']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-dropdown-item>-->
                                 <el-button v-perms="['userManage:addAmount']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-button>
-                                <!--                              <el-dropdown-item v-perms="['userManage:edit']" @click="handleEdit(row)">编辑</el-dropdown-item>-->
+                                <el-button v-perms="['userManage:sendDeposit']" @click="handleOpenMoney(row.id, 2)">赠送存款</el-button>
                                 <el-button v-perms="['userManage:edit']" @click="handleEdit(row)">编辑</el-button>
-                                <!--                              <el-dropdown-item v-perms="['userManage:usdt']" @click="handleOpenUsdt(row)">USDT信息</el-dropdown-item>-->
-                                <el-button v-perms="['userManage:usdt']" @click="handleOpenUsdt(row)">USDT信息</el-button>
-                                <!--                              <el-dropdown-item v-perms="['userManage:team']">-->
-                                <!--                                <router-link-->
-                                <!--                                    :to="{-->
-                                <!--                                      path: getRoutePath('member:team'),-->
-                                <!--                                      query: {-->
-                                <!--                                          id: row.id,-->
-                                <!--                                          isDisable: row.isDisable-->
-                                <!--                                      }-->
-                                <!--                                  }"-->
-                                <!--                                >-->
-                                <!--                                  查看团队-->
-                                <!--                                </router-link>-->
-                                <!--                              </el-dropdown-item>-->
-                                <el-button v-perms="['userManage:team']">
+                                <el-button v-perms="['userManage:OSDT']" @click="handleOpenUsdt(row)">USDT信息</el-button>
+                                <el-button v-perms="['userManage:teamList']">
                                   <router-link
                                       :to="{
-                                      path: getRoutePath('member:team'),
+                                      path: getRoutePath('userManage:teamList'),
                                       query: {
                                           id: row.id,
                                           isDisable: row.isDisable
@@ -157,22 +148,10 @@
                                     查看团队
                                   </router-link>
                                 </el-button>
-                                <!--                              <el-dropdown-item v-perms="['userManage:zhangbian']">-->
-                                <!--                                <router-link-->
-                                <!--                                    :to="{-->
-                                <!--                                      path: getRoutePath('member:account'),-->
-                                <!--                                      query: {-->
-                                <!--                                          id: row.id-->
-                                <!--                                      }-->
-                                <!--                                  }"-->
-                                <!--                                >-->
-                                <!--                                  账变-->
-                                <!--                                </router-link>-->
-                                <!--                              </el-dropdown-item>-->
-                                <el-button v-perms="['userManage:zhangbian']">
+                                <el-button v-perms="['userManage:billList']">
                                   <router-link
                                       :to="{
-                                      path: getRoutePath('member:account'),
+                                      path: getRoutePath('userManage:billList'),
                                       query: {
                                           id: row.id
                                       }
@@ -181,11 +160,8 @@
                                     账变
                                   </router-link>
                                 </el-button>
-                                <!--                              <el-dropdown-item v-perms="['userManage:ban']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-dropdown-item>-->
                                 <el-button v-perms="['userManage:disable']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-button>
-                                <!--                              <el-dropdown-item v-perms="['userManage:delete']" @click="handleDelete(row.id)">删除</el-dropdown-item>-->
                                 <el-button v-perms="['userManage:del']" @click="handleDelete(row.id)">删除</el-button>
-                                <!--                              <el-dropdown-item v-perms="['userManage:dummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-dropdown-item>-->
                                 <el-button v-perms="['userManage:beDummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-button>
                               </el-dropdown-menu>
                             </div>
@@ -310,7 +286,7 @@
                             v-for="(item, key) in memberRankAll"
                             :key="item.id"
                             :label="item.lvName"
-                            :value="item.lvValue"
+                            :value="item.id"
                         />
                       </el-select>
                     </el-form-item>
@@ -355,6 +331,13 @@
                                 clearable
                         />
                     </el-form-item>
+                  <el-form-item label="比例" prop="writingRatio">
+                    <el-input
+                        v-model="formData.writingRatio"
+                        placeholder="请输入比例"
+                        clearable
+                    />
+                  </el-form-item>
                     <el-form-item label="上级ID" prop="parentId">
                       <el-select class="w-[280px]" v-model="formData.parentId" placeholder="请选择一级代理">
                         <el-option
@@ -387,10 +370,10 @@
                    :model="formDataYue"
                    label-width="85px"
                    :rules="rulesYue">
-            <el-form-item :label="formDataYue.action ? '彩金金额' : '余额金额'" prop="amount">
+            <el-form-item :label="!formDataYue.action ? '余额金额' : (formDataYue.action === 1 ? '彩金金额' : '存款金额')" prop="amount">
               <el-input
                   v-model="formDataYue.amount"
-                  :placeholder="formDataYue.action ? '请输入彩金金额' : '请输入余额金额'"
+                  :placeholder="!formDataYue.action ? '请输入余额金额' : (formDataYue.action === 1 ? '请输入彩金金额' : '请输入存款金额')"
                   clearable
               />
             </el-form-item>
@@ -573,7 +556,8 @@ const dialogYueTitle = ref('')
 const isYueLoading = ref(false)
 const handleOpenMoney = (id: any, action: number) => {
   dialogYueVisible.value = true
-  dialogYueTitle.value = action ? '赠送彩金' : '调整余额'
+  // dialogYueTitle.value = action ? '赠送彩金' : '调整余额'
+  dialogYueTitle.value = !action ? '调整余额' : (action === 1 ? '赠送彩金' : '赠送存款')
   formDataYue.userId = id
   formDataYue.action = action
   console.log(formDataYue.action)
@@ -582,7 +566,7 @@ const handleYueSubmit = async () => {
   await formRefYue.value?.validate()
   isYueLoading.value = true
   await adjustWallet(formDataYue)
-  const tipText = formDataYue.action ? '赠送彩金成功' : '调整余额成功'
+  const tipText = !formDataYue.action ? '赠送余额成功' : (formDataYue.action === 1 ? '调整彩金成功' : '调整存款成功')
   feedback.msgSuccess(tipText)
   getLists()
   handleYueClose()
@@ -610,6 +594,7 @@ let formData = reactive({
   tradingPwd: '',
   taskNum: 0,
   creditScore: '',
+  writingRatio: '',
   parentId: ''
 })
 const rules = reactive({
@@ -646,6 +631,7 @@ const handleEdit = async (row: any) => {
   formData.tradingPwd = row.tradingPwd
   formData.taskNum = row.taskNum
   formData.creditScore = row.creditScore
+  formData.writingRatio = row.writingRatio
   formData.parentId = row.parentId
   dialogVisible.value = true
 }
@@ -677,6 +663,7 @@ const handleClose = () => {
   formData.tradingPwd = ''
   formData.taskNum = 0
   formData.creditScore = ''
+  formData.writingRatio = ''
   formData.parentId = ''
 }
 
@@ -754,5 +741,15 @@ const handleBeDummy = async (row: any) => {
   }
   :deep(.el-dropdown-link .el-icon){
     top: 3px;
+  }
+  :deep(.el-button > span){
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  :deep(.el-button a, .el-button span){
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 </style>

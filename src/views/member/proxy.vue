@@ -26,7 +26,7 @@
     </el-card>
     <el-card class="!border-none mt-4" shadow="never">
       <div>
-        <el-button v-perms="['member:proxy:add']" type="primary" class="mb-4" @click="handleAdd">
+        <el-button v-perms="['agentManage:add']" type="primary" class="mb-4" @click="handleAdd">
           <template #icon>
             <icon name="el-icon-Plus" />
           </template>
@@ -55,9 +55,9 @@
         <el-table-column label="添加时间" prop="createTime" min-width="180" />
         <el-table-column label="操作" width="320" fixed="right">
           <template #default="{ row }">
-            <el-button v-perms="['member:proxy:password']" type="primary" @click="handlePassword(row.id)">密码</el-button>
-            <el-button v-perms="['member:proxy:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
-            <el-button v-perms="['member:proxy:ban']" type="primary" @click="handleBan(row)">{{row.isDisable ? '启用' : '禁用'}}</el-button>
+            <el-button v-perms="['agentManage:editPwd']" type="primary" @click="handlePassword(row.id)">密码</el-button>
+            <el-button v-perms="['agentManage:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
+            <el-button v-perms="['agentManage:disable']" type="primary" @click="handleBan(row)">{{row.isDisable ? '启用' : '禁用'}}</el-button>
             <el-dropdown>
               <span class="el-dropdown-link" style="margin-left: 10px;">
                 更多操作
@@ -336,6 +336,7 @@ const handleEdit = async (row: any) => {
   dialogTitle.value = '修改代理信息'
   // formData = row
   formData.id = row.id
+  formData.parentId = row.parentId
   formData.username = row.username
   formData.mobile = row.mobile
   formData.inviteCode = row.inviteCode

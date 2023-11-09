@@ -81,11 +81,11 @@
         <el-table-column label="操作" width="220" fixed="right">
           <template #default="{ row }">
             <template v-if="row.orderStatus">
-              <el-button v-perms="['finance:order:fund']" type="primary" @click="handleView(row)">资金流水</el-button>
+              <el-button v-perms="['log:flow']" type="primary" @click="handleView(row)">资金流水</el-button>
             </template>
             <template v-else>
-              <el-button v-perms="['finance:order:force']" type="primary" @click="handlePay(row.id)">强制付款</el-button>
-              <el-button v-perms="['finance:order:cancle']" type="primary" @click="handleEdit(row)">取消订单</el-button>
+              <el-button v-perms="['order:force']" type="primary" @click="handlePay(row.id)">强制付款</el-button>
+              <el-button v-perms="['order:del']" type="primary" @click="handleEdit(row)">取消订单</el-button>
             </template>
           </template>
         </el-table-column>
@@ -170,6 +170,9 @@ const fundType = computed(() => {
         break
       case 7:
         type = '首充获利'
+        break
+      case 8:
+        type = '赠送存款'
         break
     }
     return type

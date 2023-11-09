@@ -44,6 +44,10 @@
                 label="首充获利"
                 :value="7"
             />
+            <el-option
+                label="赠送存款"
+                :value="8"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="发生时间">
@@ -143,6 +147,9 @@ const fundType = computed(() => {
         break
       case 7:
         type = '首充获利'
+        break
+      case 8:
+        type = '赠送存款'
         break
     }
     return type

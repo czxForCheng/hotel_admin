@@ -16,6 +16,6 @@ export function statisticsData() {
 }
 
 // 统计列表
-export function countAgent() {
-    return request.get({ url: '/statistics/count/agent' })
+export function countAgent(params: any) {
+    return request.get({ url: '/statistics/count/agent', params })
 }

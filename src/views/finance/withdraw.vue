@@ -82,8 +82,8 @@
         <el-table-column label="操作" width="160" fixed="right">
           <template #default="{ row }">
             <template v-if="!row.auditStatus">
-              <el-button v-perms="['finance:withdraw:agree']" type="primary" @click="handleAgree(row)">同意</el-button>
-              <el-button v-perms="['finance:withdraw:reject']" type="primary" @click="handleReject(row)">拒绝</el-button>
+              <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleAgree(row)">同意</el-button>
+              <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleReject(row)">拒绝</el-button>
             </template>
           </template>
         </el-table-column>
