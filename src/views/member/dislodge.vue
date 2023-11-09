@@ -53,7 +53,7 @@
               <p>是否开始连单</p>
               <p style="width: 100%;margin-top: 10px">
                 <el-radio-group v-model="formData.isLink">
-                  <el-radio :label="0">未开始连单</el-radio>
+                  <el-radio :label="0">关闭连单</el-radio>
                   <el-radio :label="1">开始连单</el-radio>
                 </el-radio-group>
               </p>
@@ -83,7 +83,7 @@
                   clearable
               />
             </el-form-item>
-            <div v-if="formData.isLink===1" style="float:left ;padding: 20px 0">
+            <div  style="float:left ;padding: 20px 0">
               <span class="dialog-footer">
                     <el-button @click="handleClose">取消</el-button>
                     <el-button type="primary" @click="handleSubmit">确认</el-button>
@@ -331,16 +331,9 @@ const handleClose = () => {
 }
 
 const handleSubmit = () => {
-  if (formData.beginOrder === '') {
-    ElMessage({message: '连单数必填', type: 'warning',})
-  } else if (formData.goodsIds === '') {
-    ElMessage({message: '商品为必选', type: 'warning',})
-  } else {
-    // formData.goodsIds +=','+formData.goods
+  if (formData.isLink===0){
     let form = {
       isLink:formData.isLink,
-      linkOrderNum:formData.beginOrder,
-      linkProducts:formData.goodsIds,
       id:formData.id
     }
     linkOrder(form).then(res=>{
@@ -349,7 +342,28 @@ const handleSubmit = () => {
     }).catch(err=>{
       ElMessage({message:err.msg, type: 'error',})
     })
+  }else{
+    if (formData.beginOrder === '') {
+      ElMessage({message: '连单数必填', type: 'warning',})
+    } else if (formData.goodsIds === '') {
+      ElMessage({message: '商品为必选', type: 'warning',})
+    } else {
+      // formData.goodsIds +=','+formData.goods
+      let form = {
+        isLink:formData.isLink,
+        linkOrderNum:formData.beginOrder,
+        linkProducts:formData.goodsIds,
+        id:formData.id
+      }
+      linkOrder(form).then(res=>{
+        ElMessage({message: '操作成功', type: 'success',})
+        handleClose()
+      }).catch(err=>{
+        ElMessage({message:err.msg, type: 'error',})
+      })
+    }
   }
+
 }
 
 const nextTicket = (data: any,id:number) => {
