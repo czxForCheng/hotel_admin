@@ -74,12 +74,12 @@
                   clearable
               />
             </el-form-item>
-            <el-form-item v-if="formData.isLink===2">
-              <p>新的选择商品（请在右侧选择商品）</p>
+            <el-form-item v-if="formData.isLink===1">
+              <p>请设置连单比例</p>
               <el-input
                   @change="changeGoods"
-                  v-model="formData.goods"
-                  placeholder="选择商品"
+                  v-model="formData.writingRatio"
+                  placeholder="填写连单比例（如：0.6）"
                   clearable
               />
             </el-form-item>
@@ -193,7 +193,7 @@ let formData = reactive({
   robOrderNum: 0,
   beginOrder: '',
   goodsIds: '',
-  goods: ''
+  writingRatio: ''
 })
 
 
@@ -204,6 +204,7 @@ const baseInfo = async () => {
   formData.nowOrderNum = props.ticketValue.nowOrderNum
   formData.robOrderNum = props.ticketValue.robOrderNum
   formData.isLink = props.ticketValue.isLink
+  formData.writingRatio=props.ticketValue.writingRatio
   if (props.ticketValue.isLink === 1){
     formData.beginOrder = props.ticketValue.linkOrderNum
     formData.goodsIds= props.ticketValue.linkProducts
@@ -243,9 +244,9 @@ interface user {
 }
 
 const changeGoods=()=>{
-  if (formData.goods===''){
-    checkedGoods.value = []
-  }
+  // if (formData.goods===''){
+  //   checkedGoods.value = []
+  // }
 }
 
 
@@ -325,7 +326,7 @@ const handleClose = () => {
   formData.username =''
   formData.beginOrder = ''
   formData.goodsIds = ''
-  formData.goods = ''
+  formData.writingRatio = ''
   emit('closeTicket', true)
   sessionStorage.removeItem('goods')
 }
@@ -353,6 +354,7 @@ const handleSubmit = () => {
         isLink:formData.isLink,
         linkOrderNum:formData.beginOrder,
         linkProducts:formData.goodsIds,
+        writingRatio:formData.writingRatio,
         id:formData.id
       }
       linkOrder(form).then(res=>{
@@ -374,7 +376,7 @@ const nextTicket = (data: any,id:number) => {
       checkedGoods.value.push(data.id)
     }
 
-    formData.goods = checkedGoods.value.toString()
+    // formData.goods = checkedGoods.value.toString()
 }
 
 // 多选
