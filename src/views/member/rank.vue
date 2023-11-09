@@ -80,6 +80,7 @@
                 v-model="formData.lvValue"
                 placeholder="请输入会员等级"
                 clearable
+                :disabled="!!formData.id"
             />
           </el-form-item>
           <el-form-item label="等级图标" prop="lvImage">

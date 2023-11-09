@@ -398,7 +398,7 @@
           <template #footer>
             <span class="dialog-footer">
                     <el-button @click="handleYueClose">取消</el-button>
-                    <el-button type="primary" @click="handleYueSubmit">确认</el-button>
+                    <el-button type="primary" :loading="isYueLoading" @click="handleYueSubmit">确认</el-button>
             </span>
           </template>
         </el-dialog>
@@ -566,32 +566,33 @@ let formDataYue = reactive({
   action: 0
 })
 const rulesYue = reactive({
-  amount: [{ required: true, message: '调整余额必填', trigger: 'blur' }]
+  amount: [{ required: true, message: `金额必填`, trigger: 'blur' }]
 })
 const dialogYueVisible = ref(false)
 const dialogYueTitle = ref('')
+const isYueLoading = ref(false)
 const handleOpenMoney = (id: any, action: number) => {
   dialogYueVisible.value = true
   dialogYueTitle.value = action ? '赠送彩金' : '调整余额'
   formDataYue.userId = id
   formDataYue.action = action
+  console.log(formDataYue.action)
 }
 const handleYueSubmit = async () => {
   await formRefYue.value?.validate()
+  isYueLoading.value = true
   await adjustWallet(formDataYue)
-  dialogYueVisible.value = false
   const tipText = formDataYue.action ? '赠送彩金成功' : '调整余额成功'
   feedback.msgSuccess(tipText)
-  formDataYue.userId = ''
-  formDataYue.amount = ''
-  formDataYue.action = 0
   getLists()
+  handleYueClose()
 }
 const handleYueClose = () => {
   dialogYueVisible.value = false
   formDataYue.userId = ''
   formDataYue.amount = ''
   formDataYue.action = 0
+  isYueLoading.value = false
 }
 
 /* 修改用户 */

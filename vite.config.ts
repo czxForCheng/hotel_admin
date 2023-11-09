@@ -1,5 +1,7 @@
 import { fileURLToPath, URL } from 'url'
-
+// @ts-ignore
+// import Base from './public/js/config'
+import Base from './public/js/config'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -13,7 +15,16 @@ import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 export default defineConfig({
     // base: '/admin/',
     server: {
-        host: '0.0.0.0'
+        host: '0.0.0.0',
+        cors: true,
+        open: true,
+        proxy: {
+            '/api': {
+                target: Base.URL,   //代理接口
+                changeOrigin: true,
+                // rewrite: (path) => path.replace(/^\/api/, '')
+            }
+        }
     },
     plugins: [
         vue(),
@@ -43,7 +54,7 @@ export default defineConfig({
     publicDir: "public",
     // 项目部署在主域名的子文件使用,例如http://localhost:3000/myvite/。 不填默认就是 ./
     // base: VITE_APP_CONTEXT_NAME==='字段名' ? './' : VITE_APP_CONTEXT_NAME, // 例子:env.VITE_APP_BASE_URL || '/'
-    base: '/admin',
+    // base: '/admin',
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))

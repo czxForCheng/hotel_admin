@@ -34,7 +34,7 @@
       <el-table size="large" v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="ID" prop="id" min-width="60" />
         <el-table-column label="用户名" prop="userName" min-width="100" />
-        <el-table-column label="代理ID" prop="agentId" min-width="100" />
+        <el-table-column label="代理" prop="agentName" min-width="100" />
         <el-table-column label="链接" prop="linkUrl" min-width="100" />
         <el-table-column label="上班时间" prop="workStartTime" min-width="100" />
         <el-table-column label="下班时间" prop="workEndTime" min-width="100" />
@@ -57,11 +57,22 @@
           width="50%"
           :before-close="handleClose"
       >
+
         <el-form ref="formRef"
                  class="ls-form"
                  :model="formData"
                  label-width="85px"
                  :rules="rules">
+          <el-form-item label="代理" prop="agentId">
+            <el-select class="w-[280px]" v-model="formData.agentId" placeholder="请选择代理">
+              <el-option
+                  v-for="(item, key) in memberProxyAll"
+                  :key="item.id"
+                  :label="item.username"
+                  :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="用户名称" prop="userName">
             <el-input
                 v-model="formData.userName"
@@ -105,6 +116,7 @@
 import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
 import {getServiceList, addService, delService, editService} from '@/api/service'
+import { getProxyList } from '@/api/member'
 import feedback from "@/utils/feedback";
 const queryParams = reactive({
   userName: '',
@@ -115,10 +127,12 @@ let formData = reactive({
   id: '',
   userName: '',
   linkUrl: '',
+  agentId: '',
   workStartTime: '',
   workEndTime: ''
 })
 const rules = reactive({
+  agentId: [{ required: true, message: '代理必选', trigger: 'blur' }],
   userName: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
   linkUrl: [{ required: true, message: '链接必填', trigger: 'blur' }],
   workStartTime: [{ required: true, message: '上班时间必填', trigger: 'blur' }],
@@ -133,7 +147,12 @@ onActivated(() => {
   getLists()
 })
 getLists()
-
+// 获取所有代理
+const memberProxyAll = ref([])
+const getMemberProxyAll = async () => {
+  memberProxyAll.value = await getProxyList()
+}
+getMemberProxyAll()
 const formRef = shallowRef<FormInstance>()
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
@@ -186,3 +205,8 @@ const handleClose = () => {
 }
 
 </script>
+<style scoped lang="scss">
+:deep(.el-select){
+  width: 100%;
+}
+</style>

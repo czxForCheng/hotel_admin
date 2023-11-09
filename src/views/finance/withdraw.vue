@@ -49,11 +49,17 @@
     <el-card class="!border-none mt-4" shadow="never">
       <el-table v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="订单号" prop="orderNo" min-width="180" />
-        <el-table-column label="用户信息" prop="userId" min-width="180" >
+        <el-table-column label="用户信息" min-width="180" >
           <template #default="{ row }">
             <p>用户id：{{row.userId}}</p>
             <p>用户名：{{row.username}}</p>
             <p>手机号：{{row.mobile}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="一级代理/二级代理" min-width="180" >
+          <template #default="{ row }">
+            <p>{{row.firstAgentName}}</p>
+            <p>{{row.secondaryAgentName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="提现金额" prop="money" min-width="100" />
@@ -62,6 +68,8 @@
           <template #default="{ row }">
             <p>发起时间 {{row.addTime}}</p>
             <p>处理时间 {{row.auditTime}}</p>
+<!--            <p>发起时间 {{formatterTime(row.addTime)}}</p>-->
+<!--            <p>处理时间 {{formatterTime(row.auditTime)}}</p>-->
             <p>回调时间 -</p>
           </template>
         </el-table-column>
@@ -125,6 +133,12 @@ const queryParams = reactive({
   auditStatus: null,
   startTime: '',
   endTime: ''
+})
+
+const formatterTime = computed(() => {
+  return (time: string) => {
+    return time && time.slice(0, time.length)
+  }
 })
 
 const { pager, getLists, resetPage, resetParams } = usePaging({
