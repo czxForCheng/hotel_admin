@@ -319,7 +319,7 @@
             </el-form-item>
           </el-card>
         </el-form>
-        <footer-btns v-perms="['setting:website:save']">
+        <footer-btns v-perms="['trading:basic:save']">
           <el-button type="primary" @click="handleSubmitBase">保存</el-button>
         </footer-btns>
       </el-tab-pane>
@@ -427,7 +427,7 @@
             </el-form-item>
           </el-card>
         </el-form>
-        <footer-btns v-perms="['setting:website:save']">
+        <footer-btns v-perms="['trading:residual:save']">
           <el-button type="primary" @click="handleSubmitOther">保存</el-button>
         </footer-btns>
       </el-tab-pane>

@@ -62,6 +62,20 @@
       </el-card>
     </div>
     <el-card>
+      <div style="margin-bottom: 15px;">
+        <el-form ref="formRef" class="mb-[-16px]" :model="queryParams" :inline="true">
+          <el-form-item label="统计时间">
+            <daterange-picker
+                v-model:startTime="queryParams.startTime"
+                v-model:endTime="queryParams.endTime"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="resetPage">查询</el-button>
+            <el-button @click="resetParams">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
       <el-table size="large" v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="姓名" prop="agentName" min-width="120" />
         <el-table-column label="客服数量" prop="customerNum" min-width="100" />
@@ -84,6 +98,8 @@
 import { ref, reactive } from 'vue'
 import { usePaging } from '@/hooks/usePaging'
 import { statisticsData , countAgent} from '@/api/app'
+import type { FormInstance } from 'element-plus'
+const formRef = shallowRef<FormInstance>()
 let showData:any = ref({})
 const isLoading = ref(false)
 const getShowData = async () => {
@@ -94,8 +110,8 @@ const getShowData = async () => {
 }
 getShowData()
 const queryParams = reactive({
-  keyword: '',
-  channel: '',
+  pageNo: 1,
+  pageSize: 15,
   startTime: '',
   endTime: ''
 })

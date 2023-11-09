@@ -1,7 +1,7 @@
 import { fileURLToPath, URL } from 'url'
 // @ts-ignore
 // import Base from './public/js/config'
-import Base from './public/js/config'
+// import Base from './public/js/config'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -16,15 +16,15 @@ export default defineConfig({
     // base: '/admin/',
     server: {
         host: '0.0.0.0',
-        cors: true,
-        open: true,
-        proxy: {
-            '/api': {
-                target: Base.URL,   //代理接口
-                changeOrigin: true,
-                // rewrite: (path) => path.replace(/^\/api/, '')
-            }
-        }
+        // cors: true,
+        // open: true,
+        // proxy: {
+        //     '/api': {
+        //         target: Base.URL,   //代理接口
+        //         changeOrigin: true,
+        //         // rewrite: (path) => path.replace(/^\/api/, '')
+        //     }
+        // }
     },
     plugins: [
         vue(),
