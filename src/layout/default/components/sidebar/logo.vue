@@ -1,6 +1,7 @@
 <template>
     <div class="logo">
-        <image-contain :width="szie" :height="szie" :src="config.webLogo" />
+<!--        <image-contain :width="szie" :height="szie" :src="config.webLogo" />-->
+      <img src="../../../../assets/images/backend_logo.png" style="height: 34px" alt="">
         <transition name="title-width">
             <div
                 v-show="showTitle"

@@ -3,7 +3,9 @@
         <div class="flex-1 flex items-center justify-center">
             <div class="login-card flex rounded-md">
                 <div class="flex-1 h-full hidden md:inline-block">
-                    <image-contain :src="config.webBackdrop" :width="400" height="100%" />
+<!--                    <image-contain :src="config.webBackdrop" :width="400" height="100%" />-->
+<!--                  <image-contain src="../../assets/images/backend_backdrop.png" :width="400" height="100%"/>-->
+                  <img src="../../assets/images/backend_backdrop.png" style="width: 400px;height: 100%" alt="">
                 </div>
                 <div
                     class="login-form bg-body flex flex-col justify-center px-10 py-10 md:w-[400px] w-[375px] flex-none mx-auto"

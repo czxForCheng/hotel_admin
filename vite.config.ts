@@ -16,11 +16,11 @@ export default defineConfig({
     // base: '/admin/',
     server: {
         host: '0.0.0.0',
-        // cors: true,
-        // open: true,
+        cors: true,
+        open: true,
         // proxy: {
         //     '/api': {
-        //         target: Base.URL,   //代理接口
+        //         target: process.env.,   //代理接口
         //         changeOrigin: true,
         //         // rewrite: (path) => path.replace(/^\/api/, '')
         //     }
