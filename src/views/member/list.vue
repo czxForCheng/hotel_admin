@@ -468,6 +468,7 @@ const validatePhone = (rule: any, value: any, callback: any) => {
 // 新增
 const formRefAdd = shallowRef<FormInstance>()
 let formDataAdd  = reactive({
+  agentId: '',
   parentName: '',
   username: '',
   mobile: '',
@@ -524,10 +525,11 @@ getMemberProxyAll()
 
 
 const handleProxyChange = (e: any) => {
-  const info:any = memberProxyAll.value.filter(item => {
+  const info:any = memberProxyAll.value.find(item => {
     return item['username'] === e
   })
-  formDataAdd.inviteCode = info[0].inviteCode
+  formDataAdd.agentId = info.id
+  formDataAdd.inviteCode = info.inviteCode
 }
 const handleOpenNum = async (id: number) => {
   await feedback.confirm(`确定要重置抢单数量？`)
