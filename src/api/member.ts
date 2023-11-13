@@ -24,6 +24,10 @@ export function userReset(params: any) {
 export function adjustWallet(params: any) {
     return request.post({ url: '/userManage/addAmount', params })
 }
+// 冻结余额
+export function frozenAmount(params: any) {
+    return request.post({ url: '/userManage/frozenAmount', params })
+}
 // 会员详情
 // export function userManageDetail(data: any) {
 //     return request.get({ url: '/userManage/detail', params: {id:data} })

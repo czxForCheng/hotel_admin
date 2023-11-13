@@ -133,6 +133,7 @@
                               <el-dropdown-menu>
                                 <el-button v-perms="['userManage:addAmount']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-button>
                                 <el-button v-perms="['userManage:sendDeposit']" @click="handleOpenMoney(row.id, 2)">赠送存款</el-button>
+                                <el-button v-perms="['userManage:frozenAmount']" @click="handleOpenMoney(row.id, 3)">冻结余额</el-button>
                                 <el-button v-perms="['userManage:edit']" @click="handleEdit(row)">编辑</el-button>
                                 <el-button v-perms="['userManage:OSDT']" @click="handleOpenUsdt(row)">USDT信息</el-button>
                                 <el-button v-perms="['userManage:teamList']">
@@ -273,13 +274,13 @@
                                 clearable
                         />
                     </el-form-item>
-                    <el-form-item label="冻结金额" prop="frozenAmount">
-                        <el-input
-                                v-model="formData.frozenAmount"
-                                placeholder="请输入冻结金额"
-                                clearable
-                        />
-                    </el-form-item>
+<!--                    <el-form-item label="冻结金额" prop="frozenAmount">-->
+<!--                        <el-input-->
+<!--                                v-model="formData.frozenAmount"-->
+<!--                                placeholder="请输入冻结金额"-->
+<!--                                clearable-->
+<!--                        />-->
+<!--                    </el-form-item>-->
                     <el-form-item label="会员等级" prop="userLevelId">
                       <el-select class="w-[280px]" v-model="formData.userLevelId" placeholder="请选择会员等级">
                         <el-option
@@ -363,10 +364,10 @@
                    :model="formDataYue"
                    label-width="85px"
                    :rules="rulesYue">
-            <el-form-item :label="!formDataYue.action ? '余额金额' : (formDataYue.action === 1 ? '彩金金额' : '存款金额')" prop="amount">
+            <el-form-item :label="moneyLabel" prop="amount">
               <el-input
                   v-model="formDataYue.amount"
-                  :placeholder="!formDataYue.action ? '请输入余额金额' : (formDataYue.action === 1 ? '请输入彩金金额' : '请输入存款金额')"
+                  :placeholder="moneyPlaceholder"
                   clearable
               />
             </el-form-item>
@@ -399,8 +400,8 @@
             </el-form>
             <template #footer>
             <span class="dialog-footer">
-                    <el-button @click="handleUsdtClose">取消</el-button>
-                    <el-button type="primary" @click="handleUstdEdit">确认</el-button>
+               <el-button @click="handleUsdtClose">取消</el-button>
+               <el-button type="primary" @click="handleUstdEdit">确认</el-button>
             </span>
             </template>
           </el-dialog>
@@ -422,7 +423,8 @@ import {
   getProxyList,
   userManageBeDummy,
   userManageDel,
-  userManageDisable, userReset, usdtUpdate
+  userManageDisable, userReset, usdtUpdate,
+  frozenAmount
 } from '@/api/member'
 import type { FormInstance } from 'element-plus'
 import Popup from './dislodge.vue'
@@ -477,7 +479,7 @@ const rulesAdd  = reactive({
   username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
   mobile: [
       { required: true, message: '手机号码必填', trigger: 'blur' },
-      { validator: validatePhone, trigger: 'blur' }
+      // { validator: validatePhone, trigger: 'blur' }
   ],
   password: [{ required: true, message: '登录密码必填', trigger: 'blur' }],
   tradingPwd: [{ required: true, message: '交易密码必填', trigger: 'blur' }],
@@ -547,10 +549,59 @@ const rulesYue = reactive({
 const dialogYueVisible = ref(false)
 const dialogYueTitle = ref('')
 const isYueLoading = ref(false)
+const moneyLabel = computed(() => {
+  let label = ''
+  switch(formDataYue.action) {
+    case 0:
+      label = '调整余额'
+      break
+    case 1:
+      label = '赠送彩金'
+      break
+    case 2:
+      label = '赠送存款'
+      break
+    case 3:
+      label = '冻结余额'
+      break
+  }
+  return label
+})
+const moneyPlaceholder = computed(() => {
+  let label = ''
+  switch(formDataYue.action) {
+    case 0:
+      label = '请输入余额金额'
+      break
+    case 1:
+      label = '请输入彩金金额'
+      break
+    case 2:
+      label = '请输入存款金额'
+      break
+    case 3:
+      label = '请输入冻结金额'
+      break
+  }
+  return label
+})
 const handleOpenMoney = (id: any, action: number) => {
   dialogYueVisible.value = true
-  // dialogYueTitle.value = action ? '赠送彩金' : '调整余额'
-  dialogYueTitle.value = !action ? '调整余额' : (action === 1 ? '赠送彩金' : '赠送存款')
+  // dialogYueTitle.value = !action ? '调整余额' : (action === 1 ? '赠送彩金' : '赠送存款')
+  switch(action) {
+    case 0:
+      dialogYueTitle.value = '调整余额'
+      break
+    case 1:
+      dialogYueTitle.value = '赠送彩金'
+      break
+    case 2:
+      dialogYueTitle.value = '赠送存款'
+      break
+    case 3:
+      dialogYueTitle.value = '冻结余额'
+      break
+  }
   formDataYue.userId = id
   formDataYue.action = action
   console.log(formDataYue.action)
@@ -558,8 +609,30 @@ const handleOpenMoney = (id: any, action: number) => {
 const handleYueSubmit = async () => {
   await formRefYue.value?.validate()
   isYueLoading.value = true
-  await adjustWallet(formDataYue)
-  const tipText = !formDataYue.action ? '赠送余额成功' : (formDataYue.action === 1 ? '调整彩金成功' : '调整存款成功')
+  if(formDataYue.action === 3) {
+    await frozenAmount({
+      id: formDataYue.userId,
+      frozenAmount: formDataYue.amount
+    })
+  }else{
+    await adjustWallet(formDataYue)
+  }
+  // const tipText = !formDataYue.action ? '赠送余额成功' : (formDataYue.action === 1 ? '调整彩金成功' : '调整存款成功')
+  let tipText = ''
+  switch(formDataYue.action ) {
+    case 0:
+      tipText = '赠送余额成功'
+      break
+    case 1:
+      tipText = '赠送彩金成功'
+      break
+    case 2:
+      tipText = '赠送存款成功'
+      break
+    case 3:
+      tipText = '冻结余额成功'
+      break
+  }
   feedback.msgSuccess(tipText)
   getLists()
   handleYueClose()

@@ -10,8 +10,18 @@
         </el-button>
       </div>
       <el-table size="large" v-loading="isLoading" :data="homePage">
-        <el-table-column label="ID" prop="id" min-width="120" />
+        <el-table-column label="ID" prop="id" min-width="60" />
         <el-table-column label="标题" prop="title" min-width="100" />
+        <el-table-column label="类型" prop="type" min-width="100" >
+          <template #default="{ row }">
+            {{row.type === 0 ? '公告' : '首页文本'}}
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" prop="status" min-width="120" >
+          <template #default="{ row }">
+            {{row.status === 0 ? '开启' : (row.status === 1 ? '关闭' : '')}}
+          </template>
+        </el-table-column>
         <el-table-column label="更新时间" prop="updateTime" min-width="120" />
         <el-table-column label="最后编辑" prop="updateName" min-width="100" />
         <el-table-column label="操作" width="100" fixed="right">
@@ -40,14 +50,14 @@
                 clearable
             />
           </el-form-item>
+          <el-form-item label="公告状态" prop="status" v-if="formData.type === 0">
+            <el-switch
+                v-model="formData.status"
+                :active-value="0"
+                :inactive-value="1"
+            />
+          </el-form-item>
           <el-form-item label="文本内容" prop="content">
-<!--            <el-input-->
-<!--                type="textarea"-->
-<!--                v-model="formData.content"-->
-<!--                placeholder="请输入文本内容"-->
-<!--                :rows="10"-->
-<!--                clearable-->
-<!--            />-->
             <editor class="mb-10" v-model="formData.content" height="500"></editor>
           </el-form-item>
         </el-form>
@@ -70,6 +80,8 @@ const queryParams = reactive({})
 let formData = reactive({
   id: '',
   title: '',
+  type: null,
+  status: null,
   content: ''
 })
 const rules = reactive({
@@ -100,6 +112,8 @@ const handleEdit = async (row: any) => {
   formData.id = row.id
   formData.title = row.title
   formData.content = row.content
+  formData.type = row.type
+  formData.status = row.status
   dialogVisible.value = true
 }
 
@@ -122,5 +136,7 @@ const handleClose = () => {
   formData.id = ''
   formData.title = ''
   formData.content = ''
+  formData.status = null
+  formData.type = null
 }
 </script>

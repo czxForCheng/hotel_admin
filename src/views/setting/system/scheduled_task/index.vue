@@ -2,7 +2,7 @@
     <div>
         <el-card shadow="never" class="!border-none">
             <router-link
-                v-perms="['crontab/add', 'crontab/add:edit']"
+                v-perms="['crontab:add']"
                 :to="getRoutePath('crontab/add:edit')"
             >
                 <el-button type="primary" class="mb-[16px]">
@@ -56,7 +56,7 @@
                         <div class="flex">
                             <el-button type="primary" link>
                                 <router-link
-                                    v-perms="['crontab/edit', 'crontab/add:edit']"
+                                    v-perms="['crontab:edit']"
                                     :to="{
                                         path: getRoutePath('crontab/add:edit'),
                                         query: {
@@ -68,7 +68,7 @@
                                 </router-link>
                             </el-button>
                             <el-button
-                                v-perms="['crontab/delete']"
+                                v-perms="['crontab:del']"
                                 type="danger"
                                 link
                                 @click="handleDelete(row.id)"
