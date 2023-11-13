@@ -48,6 +48,14 @@
                 label="赠送存款"
                 :value="8"
             />
+            <el-option
+                label="冻结余额"
+                :value="9"
+            />
+            <el-option
+                label="冻结返还"
+                :value="10"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="发生时间">
@@ -150,6 +158,12 @@ const fundType = computed(() => {
         break
       case 8:
         type = '赠送存款'
+        break
+      case 9:
+        type = '冻结余额'
+        break
+      case 10:
+        type = '冻结返还'
         break
     }
     return type

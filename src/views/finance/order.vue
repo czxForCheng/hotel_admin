@@ -174,6 +174,12 @@ const fundType = computed(() => {
       case 8:
         type = '赠送存款'
         break
+      case 9:
+        type = '冻结余额'
+        break
+      case 10:
+        type = '冻结返还'
+        break
     }
     return type
   }
