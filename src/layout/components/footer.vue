@@ -8,7 +8,7 @@
                 v-for="item in copyright"
                 :key="item.name"
             >
-                {{ item.name }}
+                {{ item.name }} {{config.version}}
             </a>
         </div>
     </footer>
@@ -16,7 +16,8 @@
 
 <script setup lang="ts">
 import useAppStore from '@/stores/modules/app'
-
+import configs from '@/config'
+const config = configs
 const appStore = useAppStore()
 const copyright = computed(() => appStore.config.copyright || [])
 </script>

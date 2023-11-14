@@ -14,16 +14,15 @@
 </template>
 
 <script setup lang="ts">
-import { processWithdrawal } from '@/api/finance/withdraw'
-import { rechargeRecord } from '@/api/finance/recharge'
+import useWithdrawStore from '@/stores/modules/withdraw'
+const withdrawStore = useWithdrawStore()
+const withdrawNumber = computed(() => withdrawStore.withdrawNumber)
 const router = useRouter()
-  const rechargeNumber = ref(0)
-  const withdrawNumber = ref(0)
-const getProcessWithdrawal = async () => {
-  const res = await processWithdrawal({})
-  withdrawNumber.value = res.msgNum
+const rechargeNumber = ref(0)
+const getWithdrawNumber = async () => {
+  await withdrawStore.getWithdraeNumber()
 }
-getProcessWithdrawal()
+getWithdrawNumber()
 const toWithdraw = () => {
   router.push('/finance/withdraw')
 }

@@ -1,7 +1,7 @@
 <template>
     <template v-if="!route.meta?.hidden">
         <app-link v-if="!hasShowChild" :to="`${routePath}?${queryStr}`">
-            <el-menu-item :index="routePath">
+            <el-menu-item :index="routePath" @click="handlePageJump">
                 <icon
                     class="menu-item-icon"
                     :size="16"
@@ -35,6 +35,8 @@
 </template>
 
 <script lang="ts" setup>
+import useWithdrawStore from '@/stores/modules/withdraw'
+const withdrawStore = useWithdrawStore()
 import { getNormalPath, objectToQuery } from '@/utils/util'
 import { isExternal } from '@/utils/validate'
 import type { RouteRecordRaw } from 'vue-router'
@@ -73,6 +75,10 @@ const queryStr = computed<string>(() => {
         return query
     }
 })
+const handlePageJump = () => {
+  console.log(11111111111)
+  withdrawStore.getWithdraeNumber()
+}
 </script>
 <style lang="scss" scoped>
 .el-menu-item,

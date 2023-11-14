@@ -311,9 +311,10 @@
             <el-form-item label="版本号" prop="versionNumber">
               <div class="w-80">
                 <el-input
-                    v-model="formDataBase.versionNumber"
+                    v-model="versionNumber"
                     placeholder="请输入版本号"
                     show-word-limit
+                    disabled
                 ></el-input>
               </div>
             </el-form-item>
@@ -440,6 +441,7 @@ import { getBasic, setBasic, getResidual, setResidual } from '@/api/setting/tran
 import useAppStore from '@/stores/modules/app'
 import feedback from '@/utils/feedback'
 import type { FormInstance } from 'element-plus'
+import configs from '@/config'
 const formRef = ref<FormInstance>()
 const formRefBase = ref<FormInstance>()
 const formRefOther = ref<FormInstance>()
@@ -481,10 +483,9 @@ const formDataBase = reactive({
   orderTimeStart: '',
   orderTimeEnd: '',
   mallStatus: '',
-  appDownloadAddress: '',
-  versionNumber: ''
+  appDownloadAddress: ''
 })
-
+const versionNumber = configs.version
 // 基础设置 表单验证
 const rulesBase = {
   collectionCard: [
@@ -722,13 +723,6 @@ const rulesBase = {
     {
       required: true,
       message: '请输入app下载地址',
-      trigger: ['blur']
-    }
-  ],
-  versionNumber: [
-    {
-      required: true,
-      message: '请输入版本号',
       trigger: ['blur']
     }
   ]

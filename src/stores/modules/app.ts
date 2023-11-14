@@ -1,4 +1,5 @@
 import { getConfig } from '@/api/app'
+import {  websiteInfoApi } from '@/api/setting/config'
 import { defineStore } from 'pinia'
 interface AppSate {
     config: Record<string, any>

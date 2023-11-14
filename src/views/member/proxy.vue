@@ -67,7 +67,8 @@
                 <div style="padding: 5px 20px;">
                   <el-dropdown-menu>
                     <el-button type="primary" @click="handleWhite(row)">ip白名单设置</el-button>
-                    <el-button type="primary" @click="handleGlooge(row)">{{row.googleEnable === '0' ? '开启' : '关闭'}}谷歌验证码</el-button>
+                    <el-button type="primary" @click="handleGlooge(row)" v-if="row.googleEnable === '1'">关闭谷歌验证码</el-button>
+<!--                    <el-button type="primary" @click="handleGlooge(row)">{{row.googleEnable === '0' ? '开启' : '关闭'}}谷歌验证码</el-button>-->
                   </el-dropdown-menu>
                 </div>
               </template>
@@ -409,10 +410,17 @@ const formDataGoogle = reactive({
 })
 
 const handleGlooge = async (row: any) => {
-  dialogGoogleVisible.value = true
-  formDataGoogle.id = row.id
-  formDataGoogle.googleCode = row.googleCode
-  formDataGoogle.googleEnable = row.googleEnable
+  await feedback.confirm( `确定要关闭他的谷歌验证码？`)
+  await proxyEdit({
+    id: row.id,
+    googleEnable: '0',
+  })
+  feedback.msgSuccess(`关闭成功`)
+  getLists()
+  // dialogGoogleVisible.value = true
+  // formDataGoogle.id = row.id
+  // formDataGoogle.googleCode = row.googleCode
+  // formDataGoogle.googleEnable = row.googleEnable
 }
 const handleGoogleClose = () => {
   dialogGoogleVisible.value = false

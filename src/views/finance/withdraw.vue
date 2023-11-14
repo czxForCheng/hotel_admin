@@ -125,8 +125,10 @@
 <script lang="ts" setup name="withdrawLists">
 import { usePaging } from '@/hooks/usePaging'
 import { withdrawalRecord, withdrawalAudit } from '@/api/finance/withdraw'
+import useWithdrawStore from '@/stores/modules/withdraw'
 import feedback from "@/utils/feedback";
 import type { FormInstance } from 'element-plus'
+const withdrawStore = useWithdrawStore()
 const queryParams = reactive({
   orderNo: null,
   username: null,
@@ -161,6 +163,7 @@ const handleAgree = async (row: any) => {
   })
   feedback.msgSuccess('操作成功')
   getLists()
+  await withdrawStore.getWithdraeNumber()
 }
 
 const formRef = shallowRef<FormInstance>()
@@ -188,6 +191,7 @@ const handleSubmit = async () => {
   feedback.msgSuccess('操作成功')
   getLists()
   handleClose()
+  await withdrawStore.getWithdraeNumber()
 }
 
 const handleClose = () => {

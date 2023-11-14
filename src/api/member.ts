@@ -150,3 +150,8 @@ export function proxyDisable(params: any) {
 export function googleReset(params: any) {
     return request.post({ url: '/agentManage/resetGoogleCode', params })
 }
+
+// 获取谷歌验证码二维码
+export function googleQrCode(params: any) {
+    return request.post({ url: '/agentManage/createGoogleQrCode', params })
+}

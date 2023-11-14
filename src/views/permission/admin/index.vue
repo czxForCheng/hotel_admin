@@ -107,7 +107,7 @@
                               <div style="padding: 5px 20px;">
                                 <el-dropdown-menu>
                                   <el-button type="primary" @click="handleWhite(row)">ip白名单设置</el-button>
-                                  <el-button type="primary" @click="handleGlooge(row)">{{row.googleEnable === '0' ? '开启' : '关闭'}}谷歌验证码</el-button>
+<!--                                  <el-button type="primary" @click="handleGlooge(row)">{{row.googleEnable === '0' ? '开启' : '关闭'}}谷歌验证码</el-button>-->
                                 </el-dropdown-menu>
                               </div>
                             </template>
