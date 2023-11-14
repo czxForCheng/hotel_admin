@@ -66,7 +66,7 @@
         </el-table-column>
         <el-table-column label="类型" prop="type" min-width="160">
           <template #default="{ row }">
-            {{row.type ? '彩金' : '会员充值'}}
+            {{row.type === 0 ? '会员充值' : (row.type === 1 ? '彩金' : '赠送存款')}}
           </template>
         </el-table-column>
         <el-table-column label="状态" prop="auditStatus" min-width="160">

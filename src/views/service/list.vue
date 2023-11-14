@@ -174,6 +174,7 @@ const handleEdit = async (row: any) => {
   dialogTitle.value = '修改客服'
   // formData = row
   formData.id = row.id
+  formData.agentId = row.agentId
   formData.userName = row.userName
   formData.linkUrl = row.linkUrl
   formData.workStartTime = row.workStartTime
@@ -198,6 +199,7 @@ const handleSubmit = async () => {
 const handleClose = () => {
   dialogVisible.value = false
   formData.id = ''
+  formData.agentId = ''
   formData.userName = ''
   formData.linkUrl = ''
   formData.workStartTime = ''
