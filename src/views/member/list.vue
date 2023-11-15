@@ -214,14 +214,14 @@
             <el-form-item label="登录密码" prop="password">
               <el-input
                   v-model="formDataAdd.password"
-                  placeholder="留空不修改密码"
+                  placeholder="请输入登录密码"
                   clearable
               />
             </el-form-item>
             <el-form-item label="交易密码" prop="tradingPwd">
               <el-input
                   v-model="formDataAdd.tradingPwd"
-                  placeholder="留空不修改交易密码"
+                  placeholder="请输入交易密码"
                   clearable
               />
             </el-form-item>
@@ -455,12 +455,33 @@ onActivated(() => {
 
 getLists()
 
-
+const validateUsername = (rule: any, value: any, callback: any) => {
+  if(value.length < 5) {
+    callback(new Error('用户名至少5位'))
+  }else{
+    callback()
+  }
+}
 const validatePhone = (rule: any, value: any, callback: any) => {
   const reg = /^1[3,4,5,6,7,8,9][0-9]{9}$/
   const result = reg.test(value)
   if(!result) {
     callback(new Error('手机号码格式不正确'))
+  }else{
+    callback()
+  }
+}
+const validatePassword = (rule: any, value: any, callback: any) => {
+  var reg =/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/
+  if (!reg.test(value)) {
+    callback(new Error('登录密码至少6位以上，包含数字和字母'))
+  }else{
+    callback()
+  }
+}
+const validateTrading = (rule: any, value: any, callback: any) => {
+  if(value.length < 6) {
+    callback(new Error('交易密码至少6位'))
   }else{
     callback()
   }
@@ -477,13 +498,22 @@ let formDataAdd  = reactive({
   inviteCode: ''
 })
 const rulesAdd  = reactive({
-  username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
+  username: [
+      { required: true, message: '用户名称必填', trigger: 'blur' },
+      { validator: validateUsername, trigger: 'blur' }
+  ],
   mobile: [
       { required: true, message: '手机号码必填', trigger: 'blur' },
       // { validator: validatePhone, trigger: 'blur' }
   ],
-  password: [{ required: true, message: '登录密码必填', trigger: 'blur' }],
-  tradingPwd: [{ required: true, message: '交易密码必填', trigger: 'blur' }],
+  password: [
+      { required: true, message: '登录密码必填', trigger: 'blur' },
+      { validator: validatePassword, trigger: 'blur' }
+  ],
+  tradingPwd: [
+      { required: true, message: '交易密码必填', trigger: 'blur' },
+      { validator: validateTrading, trigger: 'blur' }
+  ],
   inviteCode: [{ required: true, message: '邀请码必填', trigger: 'blur' }]
 })
 const dialogAddVisible = ref(false)
