@@ -14,3 +14,8 @@ export function withdrawalAudit(params: any) {
 export function processWithdrawal(params: any) {
     return request.get({ url: '/statistics/processWithdrawal', params })
 }
+
+// 删除提现
+export function withdrawalDelete(params: any) {
+    return request.post({ url: '/withdrawalRecord/del', params })
+}

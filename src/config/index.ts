@@ -7,7 +7,6 @@ const config = {
     // baseUrl: 'http://192.168.2.63:8082',
     // baseUrl: 'http://192.168.2.61:8082',
     // baseUrl: 'http://192.168.2.44:8082',
-    // baseUrl: import.meta.env.VITE_APP_BASE_URL,
     urlPrefix: 'api', //请求默认前缀
     timeout: 20 * 1000 //请求超时时长
 }

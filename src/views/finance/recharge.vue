@@ -76,6 +76,11 @@
         </el-table-column>
         <el-table-column label="申请时间" prop="addTime" min-width="200" />
         <el-table-column label="处理时间" prop="auditTime" min-width="200" />
+        <el-table-column label="操作" width="150" fixed="right">
+          <template #default="{ row }">
+            <el-button v-perms="['rechargeRecord:del']" type="primary" @click="handleDelete(row.id)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="flex justify-end mt-4">
         <pagination v-model="pager" @change="getLists" />
@@ -85,7 +90,9 @@
 </template>
 <script lang="ts" setup name="rechargeLists">
 import { usePaging } from '@/hooks/usePaging'
-import { rechargeRecord } from '@/api/finance/recharge'
+import { rechargeRecord, rechargeDelete } from '@/api/finance/recharge'
+import feedback from "@/utils/feedback";
+import {userManageDel} from "@/api/member";
 const queryParams = reactive({
   orderNo: '',
   userName: '',
@@ -102,4 +109,10 @@ onActivated(() => {
 
 getLists()
 
+const handleDelete = async (id: number) => {
+  await feedback.confirm('确定要删除这条数据？')
+  await rechargeDelete({ id })
+  feedback.msgSuccess('删除成功')
+  getLists()
+}
 </script>

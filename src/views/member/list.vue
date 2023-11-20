@@ -105,7 +105,8 @@
                 <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
                 <el-table-column label="总存款" prop="sumMoney" min-width="120" />
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
-                <el-table-column label="最后登录ip" prop="lastLoginIp" min-width="100" />
+                <el-table-column label="注册ip" prop="registerIp" min-width="150" />
+                <el-table-column label="最后登录ip" prop="lastLoginIp" min-width="150" />
               <el-table-column label="注册时间" prop="addTime" min-width="180" />
                 <el-table-column label="交易状态" prop="tradingStatus" min-width="100" >
 
@@ -122,7 +123,12 @@
                     <template #default="{ row }">
                       <el-button v-perms="['userManage:linkOrder']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
                       <el-button v-perms="['userManage:reset']" type="primary" size="small"  @click="handleOpenNum(row.id)">重置抢单数量</el-button>
-                        <el-button v-perms="['userManage:addAmount']" type="primary" size="small" @click="handleOpenMoney(row.id, 0)" >余额</el-button>
+                        <el-button
+                            v-perms="['userManage:addAmount']"
+                            type="primary"
+                            size="small" @click="handleOpenMoney(row.id, 0)"
+                            v-if="!(userInfo.isAgent===1&&!row.isDummy)"
+                        >余额</el-button>
                         <el-dropdown>
                           <span class="el-dropdown-link" style="margin-left: 10px;">
                             更多操作
@@ -267,13 +273,13 @@
                                 clearable
                         />
                     </el-form-item>
-                    <el-form-item label="账号余额" prop="balanceMoney">
-                        <el-input
-                                v-model="formData.balanceMoney"
-                                placeholder="请输入账户余额"
-                                clearable
-                        />
-                    </el-form-item>
+<!--                    <el-form-item label="账号余额" prop="balanceMoney">-->
+<!--                        <el-input-->
+<!--                                v-model="formData.balanceMoney"-->
+<!--                                placeholder="请输入账户余额"-->
+<!--                                clearable-->
+<!--                        />-->
+<!--                    </el-form-item>-->
 <!--                    <el-form-item label="冻结金额" prop="frozenAmount">-->
 <!--                        <el-input-->
 <!--                                v-model="formData.frozenAmount"-->
@@ -393,15 +399,16 @@
               <el-form-item label="usdt信息" prop="walletAddress">
                 <el-input
                     v-model="formDataUsdt.walletAddress"
-                    placeholder="请输入usdt"
+                    placeholder="暂无usdt"
                     clearable
+                    :disabled="!!userInfo.isAgent"
                 />
               </el-form-item>
             </el-form>
             <template #footer>
             <span class="dialog-footer">
                <el-button @click="handleUsdtClose">取消</el-button>
-               <el-button type="primary" @click="handleUstdEdit">确认</el-button>
+               <el-button type="primary" @click="handleUstdEdit" v-if="userInfo.isAgent === 0">确认</el-button>
             </span>
             </template>
           </el-dialog>
@@ -412,6 +419,7 @@
     </div>
 </template>
 <script lang="ts" setup name="consumerLists">
+import useUserStore from '@/stores/modules/user'
 import { usePaging } from '@/hooks/usePaging'
 import { getRoutePath } from '@/router'
 import {
@@ -430,7 +438,11 @@ import type { FormInstance } from 'element-plus'
 import Popup from './dislodge.vue'
 import feedback from "@/utils/feedback";
 
-
+const userStore = useUserStore()
+const userInfo = reactive({
+  isAgent: 0
+})
+userInfo.isAgent = userStore.userInfo.isAgent
 const isTicket = ref(false)
 const ticketValue = ref('')
 
@@ -472,7 +484,7 @@ const validatePhone = (rule: any, value: any, callback: any) => {
   }
 }
 const validatePassword = (rule: any, value: any, callback: any) => {
-  var reg =/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/
+  var reg =/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$/
   if (!reg.test(value)) {
     callback(new Error('登录密码至少6位以上，包含数字和字母'))
   }else{
@@ -481,6 +493,21 @@ const validatePassword = (rule: any, value: any, callback: any) => {
 }
 const validateTrading = (rule: any, value: any, callback: any) => {
   if(value.length < 6) {
+    callback(new Error('交易密码至少6位'))
+  }else{
+    callback()
+  }
+}
+const validatePassword1 = (rule: any, value: any, callback: any) => {
+  var reg =/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$/
+  if (value && !reg.test(value)) {
+    callback(new Error('登录密码至少6位以上，包含数字和字母'))
+  }else{
+    callback()
+  }
+}
+const validateTrading1 = (rule: any, value: any, callback: any) => {
+  if(value && value.length < 6) {
     callback(new Error('交易密码至少6位'))
   }else{
     callback()
@@ -704,6 +731,12 @@ const rules = reactive({
   taskNum: [{ required: true, message: '级别任务数必填', trigger: 'blur' }],
   creditScore: [{ required: true, message: '信用分必填', trigger: 'blur' }],
   parentId: [{ required: true, message: '上级id必选', trigger: 'blur' }],
+  password: [
+    { validator: validatePassword1, trigger: 'blur' }
+  ],
+  tradingPwd: [
+    { validator: validateTrading1, trigger: 'blur' }
+  ],
 })
 const formRef = shallowRef<FormInstance>()
 const dialogTitle = ref('')

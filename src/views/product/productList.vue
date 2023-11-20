@@ -167,7 +167,6 @@ getLists()
 const productCateAll = ref([])
 const getAllProductcate = async () => {
   productCateAll.value = await getProducCateAll()
-  console.log('productCateAll.value', productCateAll.value)
 }
 getAllProductcate()
 
@@ -186,7 +185,6 @@ const handleDelete = async (id: number) => {
   feedback.msgSuccess('删除成功')
   getLists()
 }
-
 /* 修改菜单 */
 const handleEdit = async (row: any) => {
   dialogTitle.value = '修改产品分类'
@@ -204,6 +202,11 @@ const handleEdit = async (row: any) => {
 /* 提交菜单 */
 const handleSubmit = async () => {
   await formRef.value?.validate()
+  const reg = /^\/api/
+  if(!reg.test(formData.productImage)){
+    const arr = formData.productImage.split('/api')
+    formData.productImage = '/api' + arr[1]
+  }
   if (formData.id) {
     await editProduct(formData)
     feedback.msgSuccess('修改成功')

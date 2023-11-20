@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import Draggable from 'vuedraggable'
+import   Draggable from 'vuedraggable'
 import Popup from '@/components/popup/index.vue'
 import FileItem from './file.vue'
 import Material from './index.vue'

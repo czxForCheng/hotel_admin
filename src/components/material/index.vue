@@ -197,7 +197,7 @@
                         >
                             <del-wrap @close="batchFileDelete([item.id])">
                                 <file-item
-                                    :uri="item.uri"
+                                    :uri="'/'+item.path"
                                     :file-size="fileSize"
                                     :type="type"
                                     @click="selectFile(item)"
@@ -366,7 +366,7 @@
                             <div class="select-item">
                                 <del-wrap @close="cancelSelete(item.id)">
                                     <file-item
-                                        :uri="item.uri"
+                                        :uri="'/'+item.path"
                                         file-size="100px"
                                         :type="type"
                                     ></file-item>

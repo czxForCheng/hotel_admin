@@ -141,6 +141,16 @@
               <material-picker v-model="formData.iconAddress" :limit="1" />
             </div>
           </el-form-item>
+          <el-form-item label="网站大图标" label-width="120" prop="websiteBigLogo">
+            <div>
+              <material-picker v-model="formData.websiteBigLogo" :limit="1" />
+            </div>
+          </el-form-item>
+          <el-form-item label="网站小图标" label-width="120" prop="websiteSmallLogo">
+            <div>
+              <material-picker v-model="formData.websiteSmallLogo" :limit="1" />
+            </div>
+          </el-form-item>
           <el-form-item label="客服链接地址" label-width="120" prop="linkAddress">
             <el-input v-model="formData.linkAddress" placeholder="请输入客服链接地址" clearable/>
           </el-form-item>
@@ -172,6 +182,8 @@ const formData = reactive({
   copyrightInformation: '',
   homeRotationWord: '',
   iconAddress: '',
+  websiteBigLogo: '',
+  websiteSmallLogo: '',
   ipIsOrNot:'',
   isOrNot: '',
   linkAddress: '',
@@ -231,6 +243,20 @@ const rules = {
       trigger: ['change']
     }
   ],
+  websiteBigLogo: [
+    {
+      required: true,
+      message: '请选择网站大图标',
+      trigger: ['change']
+    }
+  ],
+  websiteSmallLogo: [
+    {
+      required: true,
+      message: '请选择网站小图标',
+      trigger: ['change']
+    }
+  ],
   linkAddress: [
     {
       required: true,
@@ -250,7 +276,7 @@ const getWebsiteInfo = async () => {
   const res = await websiteInfoApi()
   for(const key in res){
     //@ts-ignore
-    formData[key] = res[key]
+    formData[key] = res[key] || ''
   }
 }
 getWebsiteInfo()
@@ -264,6 +290,19 @@ const handleUpdateSys = () => {
 /* 提交菜单 */
 const handleSubmit = async () => {
   await formRef.value?.validate()
+  const reg = /^\/api/
+  if(!reg.test(formData.iconAddress)){
+    const arr = formData.iconAddress.split('/api')
+    formData.iconAddress = '/api' + arr[1]
+  }
+  if(!reg.test(formData.websiteBigLogo)){
+    const arr = formData.websiteBigLogo.split('/api')
+    formData.websiteBigLogo = '/api' + arr[1]
+  }
+  if(!reg.test(formData.websiteSmallLogo)){
+    const arr = formData.websiteSmallLogo.split('/api')
+    formData.websiteSmallLogo = '/api' + arr[1]
+  }
   await websiteInfoEdit(formData)
   feedback.msgSuccess('修改成功')
   getWebsiteInfo()
