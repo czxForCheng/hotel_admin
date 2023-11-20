@@ -395,11 +395,13 @@ const handleWhite = (row: any) => {
   dialogWhiteVisible.value = true
   formData.id = row.id
   formData.whiteIp = row.whiteIp
+  formData.isWhite = row.isWhite
 }
 const handleWhiteClose = () => {
   dialogWhiteVisible.value = false
   formData.id = ''
   formData.whiteIp = ''
+  formData.isWhite = ''
 }
 const handleWhiteSubmit = async () => {
   await proxyEdit({

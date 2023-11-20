@@ -155,3 +155,8 @@ export function googleReset(params: any) {
 export function googleQrCode(params: any) {
     return request.post({ url: '/agentManage/createGoogleQrCode', params })
 }
+
+// 开启/关闭谷歌验证码
+export function googleEdit(params: any) {
+    return request.post({ url: '/agentManage/editGoogle', params })
+}

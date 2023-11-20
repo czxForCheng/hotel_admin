@@ -125,7 +125,7 @@ import { setUserInfo } from '@/api/user'
 import useUserStore from '@/stores/modules/user'
 import feedback from '@/utils/feedback'
 import type { FormInstance } from 'element-plus'
-import {googleReset, proxyEdit, googleQrCode} from "@/api/member";
+import {googleReset, proxyEdit, googleQrCode, googleEdit} from "@/api/member";
 const formRef = ref<FormInstance>()
 const userStore = useUserStore()
 // 表单数据
@@ -258,7 +258,7 @@ const handleGoogleClose = () => {
 const handleGoogleSubmit = async () => {
   //@ts-ignore
   if(userInfo.value.googleEnable === '1') {
-    await proxyEdit({
+    await googleEdit({
       //@ts-ignore
       id: userInfo.value.id,
       googleEnable: '0',
@@ -266,7 +266,7 @@ const handleGoogleSubmit = async () => {
       googleCode: userStore.userInfo.googleCode
     })
   }else{
-    await proxyEdit({
+    await googleEdit({
       //@ts-ignore
       id: userInfo.value.id,
       googleEnable: '1',

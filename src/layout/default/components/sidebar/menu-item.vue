@@ -76,7 +76,6 @@ const queryStr = computed<string>(() => {
     }
 })
 const handlePageJump = () => {
-  console.log(11111111111)
   withdrawStore.getWithdraeNumber()
 }
 </script>

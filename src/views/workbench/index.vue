@@ -79,6 +79,11 @@
       </div>
       <el-table size="large" v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="姓名" prop="agentName" min-width="120" />
+        <el-table-column label="代理等级" prop="agentName" min-width="120" >
+          <template #default="{ row }">
+            {{row.agentLevel === 1 ? '一级' : '二级'}}
+          </template>
+        </el-table-column>
         <el-table-column label="客服数量" prop="customerNum" min-width="100" />
         <el-table-column label="累计用户" prop="cumulativeUser" min-width="100" />
         <el-table-column label="团队余额" prop="teamBalance" min-width="120" />

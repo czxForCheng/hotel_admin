@@ -17,12 +17,17 @@
             {{row.type === 0 ? '公告' : '首页文本'}}
           </template>
         </el-table-column>
+        <el-table-column label="语言" prop="languageType" min-width="120" >
+          <template #default="{ row }">
+            {{getLanguageText(row.languageType)}}
+          </template>
+        </el-table-column>
         <el-table-column label="状态" prop="status" min-width="120" >
           <template #default="{ row }">
             {{row.status === 0 ? '开启' : (row.status === 1 ? '关闭' : '')}}
           </template>
         </el-table-column>
-        <el-table-column label="更新时间" prop="updateTime" min-width="120" />
+        <el-table-column label="更新时间" prop="updateTime" min-width="150" />
         <el-table-column label="最后编辑" prop="updateName" min-width="100" />
         <el-table-column label="操作" width="100" fixed="right">
           <template #default="{ row }">
@@ -43,6 +48,16 @@
            :model="formData"
            label-width="85px"
            :rules="rules">
+          <el-form-item label="语言类型" prop="languageType" v-if="formData.type === null">
+            <el-select v-model="formData.languageType">
+              <el-option
+                  v-for="item in languageDict"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="文本标题" prop="title">
             <el-input
                 v-model="formData.title"
@@ -74,17 +89,20 @@
 <script lang="ts" setup name="textLists">
 import type { FormInstance } from 'element-plus'
 import {getHomePage, homeUpdate, homeAdd} from '@/api/help'
+import { useDictOptions } from '@/hooks/useDictOptions'
 import feedback from "@/utils/feedback";
-import {proxyAdd, proxyEdit} from "@/api/member";
+import {dictDataAll} from "@/api/setting/dict";
 const queryParams = reactive({})
 let formData = reactive({
   id: '',
+  languageType: null,
   title: '',
   type: null,
   status: null,
   content: ''
 })
 const rules = reactive({
+  languageType: [{ required: true, message: '语言类型必选', trigger: 'blur' }],
   title: [{ required: true, message: '文本标题必填', trigger: 'blur' }],
   content: [{ required: true, message: '文本内容必填', trigger: 'blur' }]
 })
@@ -96,8 +114,22 @@ const getHomeData = async () => {
   isLoading.value = false
 }
 getHomeData()
-
-
+const languageDict = ref([])
+const getLanguageDict = async () => {
+  languageDict.value = await dictDataAll({ dictType: 'yuyan' })
+  console.log(languageDict)
+}
+getLanguageDict()
+const getLanguageText = computed(() => {
+  return (type: any) => {
+    const itemInfo = languageDict.value.find(item => {
+      // @ts-ignore
+      return item.value === type
+    })
+    // @ts-ignore
+    return itemInfo && itemInfo.name
+  }
+})
 const formRef = shallowRef<FormInstance>()
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
@@ -110,6 +142,7 @@ const handleEdit = async (row: any) => {
   dialogTitle.value = '修改首页文本'
   // formData = row
   formData.id = row.id
+  formData.languageType = row.languageType
   formData.title = row.title
   formData.content = row.content
   formData.type = row.type
@@ -135,8 +168,14 @@ const handleClose = () => {
   dialogVisible.value = false
   formData.id = ''
   formData.title = ''
+  formData.languageType = null
   formData.content = ''
   formData.status = null
   formData.type = null
 }
 </script>
+<style scoped>
+:deep(.el-select){
+  width: 100%;
+}
+</style>
