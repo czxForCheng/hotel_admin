@@ -193,16 +193,16 @@
                    :model="formDataAdd"
                    label-width="85px"
                    :rules="rulesAdd">
-            <el-form-item label="代理" prop="parentName">
-              <el-select class="w-[280px]" @change="handleProxyChange" v-model="formDataAdd.parentName" placeholder="请选择代理">
-                <el-option
-                    v-for="(item, key) in memberProxyAll"
-                    :key="item.id"
-                    :label="item.username"
-                    :value="item.username"
-                />
-              </el-select>
-            </el-form-item>
+<!--            <el-form-item label="代理" prop="parentName">-->
+<!--              <el-select class="w-[280px]" @change="handleProxyChange" v-model="formDataAdd.parentName" placeholder="请选择代理">-->
+<!--                <el-option-->
+<!--                    v-for="(item, key) in memberProxyAll"-->
+<!--                    :key="item.id"-->
+<!--                    :label="item.username"-->
+<!--                    :value="item.username"-->
+<!--                />-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
             <el-form-item label="用户名称" prop="username">
               <el-input
                   v-model="formDataAdd.username"
@@ -517,7 +517,6 @@ const validateTrading1 = (rule: any, value: any, callback: any) => {
 const formRefAdd = shallowRef<FormInstance>()
 let formDataAdd  = reactive({
   agentId: '',
-  parentName: '',
   username: '',
   mobile: '',
   password: '',
@@ -556,7 +555,6 @@ const handleAddSubmit = async () => {
 }
 const handleAddClose = () => {
   dialogAddVisible.value = false
-  formDataAdd.parentName = ''
   formDataAdd.username = ''
   formDataAdd.mobile = ''
   formDataAdd.password = ''

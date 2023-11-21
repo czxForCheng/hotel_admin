@@ -23,12 +23,19 @@ const getWithdrawNumber = async () => {
   await withdrawStore.getWithdraeNumber()
 }
 getWithdrawNumber()
+let timer:any = null
+timer = setInterval(() => {
+  getWithdrawNumber()
+}, 60000)
 const toWithdraw = () => {
   router.push('/finance/withdraw')
 }
 const toRecharge = () => {
   router.push('/finance/recharge')
 }
+onUnmounted(async () => {
+  clearInterval(timer)
+})
 </script>
 <style scoped>
   .withdraw-number, .recharge-number{
