@@ -81,6 +81,7 @@
                   v-model="formData.writingRatio"
                   placeholder="填写连单比例（如：0.6）"
                   clearable
+                  disabled
               />
             </el-form-item>
             <div  style="float:left ;padding: 20px 0">

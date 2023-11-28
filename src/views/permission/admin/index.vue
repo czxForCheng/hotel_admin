@@ -107,7 +107,7 @@
                               <div style="padding: 5px 20px;">
                                 <el-dropdown-menu>
                                   <el-button type="primary" @click="handleWhite(row)">ip白名单设置</el-button>
-<!--                                  <el-button type="primary" @click="handleGlooge(row)">{{row.googleEnable === '0' ? '开启' : '关闭'}}谷歌验证码</el-button>-->
+                                  <el-button type="primary" @click="handleGlooge(row)" v-if="row.googleEnable === '1'">关闭谷歌验证码</el-button>
                                 </el-dropdown-menu>
                               </div>
                             </template>
@@ -205,7 +205,7 @@ import { useDictOptions } from '@/hooks/useDictOptions'
 import { usePaging } from '@/hooks/usePaging'
 import feedback from '@/utils/feedback'
 import EditPopup from './edit.vue'
-import {googleReset, proxyEdit} from "@/api/member";
+import {googleReset, proxyEdit, googleEdit} from "@/api/member";
 const editRef = shallowRef<InstanceType<typeof EditPopup>>()
 // 表单数据
 const formData = reactive({
@@ -268,11 +268,13 @@ const handleWhite = (row: any) => {
   dialogWhiteVisible.value = true
   formData.id = row.id
   formData.whiteIp = row.whiteIp
+  formData.isWhite = row.isWhite
 }
 const handleWhiteClose = () => {
   dialogWhiteVisible.value = false
   formData.id = ''
   formData.whiteIp = ''
+  formData.isWhite = ''
 }
 const handleWhiteSubmit = async () => {
   await proxyEdit({
@@ -293,10 +295,17 @@ const formDataGoogle = reactive({
 })
 
 const handleGlooge = async (row: any) => {
-  dialogGoogleVisible.value = true
-  formDataGoogle.id = row.id
-  formDataGoogle.googleCode = row.googleCode
-  formDataGoogle.googleEnable = row.googleEnable
+  await feedback.confirm( `确定要关闭他的谷歌验证码？`)
+  await googleEdit({
+    id: row.id,
+    googleEnable: '0',
+  })
+  feedback.msgSuccess(`关闭成功`)
+  getLists()
+  // dialogGoogleVisible.value = true
+  // formDataGoogle.id = row.id
+  // formDataGoogle.googleCode = row.googleCode
+  // formDataGoogle.googleEnable = row.googleEnable
 }
 const handleGoogleClose = () => {
   dialogGoogleVisible.value = false
@@ -306,7 +315,7 @@ const handleGoogleClose = () => {
 }
 const handleGoogleSubmit = async () => {
   const tipText = formDataGoogle.googleEnable === '0' ? '关闭' : '开启'
-  await proxyEdit({
+  await googleEdit({
     id: formDataGoogle.id,
     googleEnable: formDataGoogle.googleEnable,
   })

@@ -141,6 +141,16 @@
               <material-picker v-model="formData.iconAddress" :limit="1" />
             </div>
           </el-form-item>
+          <el-form-item label="网站大图标" label-width="120" prop="websiteBigLogo">
+            <div>
+              <material-picker v-model="formData.websiteBigLogo" :limit="1" />
+            </div>
+          </el-form-item>
+          <el-form-item label="网站小图标" label-width="120" prop="websiteSmallLogo">
+            <div>
+              <material-picker v-model="formData.websiteSmallLogo" :limit="1" />
+            </div>
+          </el-form-item>
           <el-form-item label="客服链接地址" label-width="120" prop="linkAddress">
             <el-input v-model="formData.linkAddress" placeholder="请输入客服链接地址" clearable/>
           </el-form-item>
@@ -172,6 +182,8 @@ const formData = reactive({
   copyrightInformation: '',
   homeRotationWord: '',
   iconAddress: '',
+  websiteBigLogo: '',
+  websiteSmallLogo: '',
   ipIsOrNot:'',
   isOrNot: '',
   linkAddress: '',
@@ -231,6 +243,20 @@ const rules = {
       trigger: ['change']
     }
   ],
+  websiteBigLogo: [
+    {
+      required: true,
+      message: '请选择网站大图标',
+      trigger: ['change']
+    }
+  ],
+  websiteSmallLogo: [
+    {
+      required: true,
+      message: '请选择网站小图标',
+      trigger: ['change']
+    }
+  ],
   linkAddress: [
     {
       required: true,
@@ -250,7 +276,7 @@ const getWebsiteInfo = async () => {
   const res = await websiteInfoApi()
   for(const key in res){
     //@ts-ignore
-    formData[key] = res[key]
+    formData[key] = res[key] || ''
   }
 }
 getWebsiteInfo()
@@ -264,6 +290,19 @@ const handleUpdateSys = () => {
 /* 提交菜单 */
 const handleSubmit = async () => {
   await formRef.value?.validate()
+  const reg = /^\/api/
+  if(!reg.test(formData.iconAddress)){
+    const arr = formData.iconAddress.split('/api')
+    formData.iconAddress = '/api' + arr[1]
+  }
+  if(!reg.test(formData.websiteBigLogo)){
+    const arr = formData.websiteBigLogo.split('/api')
+    formData.websiteBigLogo = '/api' + arr[1]
+  }
+  if(!reg.test(formData.websiteSmallLogo)){
+    const arr = formData.websiteSmallLogo.split('/api')
+    formData.websiteSmallLogo = '/api' + arr[1]
+  }
   await websiteInfoEdit(formData)
   feedback.msgSuccess('修改成功')
   getWebsiteInfo()
@@ -298,20 +337,35 @@ const handleUpdateLange = async () => {
 const formRefZoom = ref<FormInstance>()
 const timeZoneAll = [
   { id: 1, label: '中国上海', value: 'Asia/Shanghai', zoomi: 8 },
-  { id: 2, label: '美国东部', value: 'America/Detroit', zoomi: -5 },
-  { id: 3, label: '英国', value: 'Europe/London', zoomi: 0},
-  { id: 4, label: '巴西', value: 'America/Sao_Paulo', zoomi: -3 },
-  { id: 5, label: '墨西哥', value: 'America/Mexico_City', zoomi: -6 },
-  { id: 6, label: '印度尼西亚', value: 'Asia/Jakarta', zoomi: 7 },
-  { id: 7, label: '越南', value: 'Asia/Ho_Chi_Minh', zoomi: 7 },
-  { id: 8, label: '土耳其', value: 'Europe/Istanbul', zoomi: 3 },
-  { id: 9, label: '澳大利亚', value: 'Australia/Sydney', zoomi: 9 },
-  { id: 10, label: '泰国', value: 'Asia/Bangkok', zoomi: 7 },
-  { id: 11, label: '俄罗斯', value: 'Europe/Moscow', zoomi: 3 },
-  { id: 12, label: '波兰', value: 'Europe/Warsaw', zoomi: 1 },
-  { id: 13, label: '日本', value: 'Asia/Tokyo', zoomi: 9 },
-  { id: 14, label: '西班牙', value: 'Europe/Madrid', zoomi: 1 },
-  { id: 15, label: '加拿大', value: 'America/Toronto', zoomi: -5 }
+  { id: 2, label: '印度尼西亚', value: 'Asia/Jakarta', zoomi: 7 },
+  { id: 3, label: '越南', value: 'Asia/Ho_Chi_Minh', zoomi: 7 },
+  { id: 4, label: '泰国', value: 'Asia/Bangkok', zoomi: 7 },
+  { id: 5, label: '日本', value: 'Asia/Tokyo', zoomi: 9 },
+  { id: 6, label: '墨西哥', value: 'America/Mexico_City', zoomi: -6 },
+  { id: 7, label: '美国东部', value: 'America/Detroit', zoomi: -5 },
+  { id: 8, label: '哥伦比亚', value: 'America/Colombia', zoomi: -5 },
+  { id: 9, label: '古巴', value: 'America/Cuba', zoomi: -5 },
+  { id: 10, label: '秘鲁', value: 'America/Peru', zoomi: -5 },
+  { id: 11, label: '智利', value: 'America/Detroit', zoomi: -4 },
+  { id: 12, label: '委内瑞拉', value: 'America/Venezuela', zoomi: -4 },
+  { id: 13, label: '巴西', value: 'America/Sao_Paulo', zoomi: -3 },
+  { id: 14, label: '阿根廷', value: 'America/Argentina', zoomi: -3 },
+  { id: 15, label: '乌拉圭', value: 'America/Uruguay', zoomi: -3 },
+  { id: 30, label: '苏里南', value: 'America/Suriname', zoomi: -3 },
+  { id: 16, label: '巴拉圭', value: 'America/Paraguay', zoomi: -4 },
+  { id: 17, label: '加拿大', value: 'America/Toronto', zoomi: -5 },
+  { id: 18, label: '英国', value: 'Europe/London', zoomi: 0},
+  { id: 19, label: '葡萄牙', value: 'Europe/Portuguese', zoomi: 0 },
+  { id: 20, label: '西班牙', value: 'Europe/Madrid', zoomi: 1 },
+  { id: 21, label: '波兰', value: 'Europe/Warsaw', zoomi: 1 },
+  { id: 22, label: '荷兰', value: 'Europe/Netherlands', zoomi: 1 },
+  { id: 23, label: '瑞士', value: 'Europe/Swiss', zoomi: 1 },
+  { id: 24, label: '意大利', value: 'Europe/Repubblica', zoomi: 1 },
+  { id: 25, label: '德国', value: 'Europe/Bundesrepublik', zoomi: 1 },
+  { id: 26, label: '法国', value: 'Europe/French', zoomi: 1 },
+  { id: 27, label: '土耳其', value: 'Europe/Istanbul', zoomi: 3 },
+  { id: 28, label: '俄罗斯', value: 'Europe/Moscow', zoomi: 3 },
+  { id: 29, label: '澳大利亚', value: 'Australia/Sydney', zoomi: 9 }
 ]
 // 系统时区配置 表单数据
 const formDataZoom = reactive({

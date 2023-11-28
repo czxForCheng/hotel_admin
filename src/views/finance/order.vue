@@ -180,6 +180,9 @@ const fundType = computed(() => {
       case 10:
         type = '冻结返还'
         break
+      case 11:
+        type = '下级佣金'
+        break
     }
     return type
   }

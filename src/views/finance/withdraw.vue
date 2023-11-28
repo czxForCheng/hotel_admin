@@ -79,12 +79,11 @@
           </template>
         </el-table-column>
         <el-table-column label="驳回理由" prop="reject" min-width="200" />
-        <el-table-column label="操作" width="160" fixed="right">
+        <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
-            <template v-if="!row.auditStatus">
-              <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleAgree(row)">同意</el-button>
-              <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleReject(row)">拒绝</el-button>
-            </template>
+              <el-button v-if="!row.auditStatus" v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleAgree(row)">同意</el-button>
+              <el-button v-if="!row.auditStatus" v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleReject(row)">拒绝</el-button>
+              <el-button v-perms="['withdrawalRecord:del']" type="primary" @click="handleDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -124,10 +123,11 @@
 </template>
 <script lang="ts" setup name="withdrawLists">
 import { usePaging } from '@/hooks/usePaging'
-import { withdrawalRecord, withdrawalAudit } from '@/api/finance/withdraw'
+import {withdrawalRecord, withdrawalAudit, withdrawalDelete} from '@/api/finance/withdraw'
 import useWithdrawStore from '@/stores/modules/withdraw'
 import feedback from "@/utils/feedback";
 import type { FormInstance } from 'element-plus'
+import {rechargeDelete} from "@/api/finance/recharge";
 const withdrawStore = useWithdrawStore()
 const queryParams = reactive({
   orderNo: null,
@@ -201,5 +201,10 @@ const handleClose = () => {
   formData.reject = ''
   formData.money = 0
 }
-
+const handleDelete = async (id: number) => {
+  await feedback.confirm('确定要删除这条数据？')
+  await withdrawalDelete({ id })
+  feedback.msgSuccess('删除成功')
+  getLists()
+}
 </script>

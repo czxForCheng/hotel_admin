@@ -1,7 +1,7 @@
 <template>
     <template v-if="!route.meta?.hidden">
         <app-link v-if="!hasShowChild" :to="`${routePath}?${queryStr}`">
-            <el-menu-item :index="routePath" @click="handlePageJump">
+            <el-menu-item :index="routePath">
                 <icon
                     class="menu-item-icon"
                     :size="16"
@@ -75,10 +75,10 @@ const queryStr = computed<string>(() => {
         return query
     }
 })
-const handlePageJump = () => {
-  console.log(11111111111)
-  withdrawStore.getWithdraeNumber()
-}
+// @click="handlePageJump"
+// const handlePageJump = () => {
+//   withdrawStore.getWithdraeNumber()
+// }
 </script>
 <style lang="scss" scoped>
 .el-menu-item,

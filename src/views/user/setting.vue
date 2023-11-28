@@ -89,7 +89,7 @@
       <div>
         <el-dialog
             v-model="dialogGoogleVisible"
-            title="开启谷歌验证码"
+            :title="(formDataGoogle.googleEnable === '0' ? '开启' : '关闭')+'谷歌验证码'"
             width="50%"
         >
           <div style="display: flex;justify-content: center;">
@@ -112,7 +112,7 @@
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="handleGoogleClose">取消</el-button>
-              <el-button type="primary" @click="handleGoogleSubmit">确认开启</el-button>
+              <el-button type="primary" @click="handleGoogleSubmit">确认{{formDataGoogle.googleEnable === '0' ? '开启' : '关闭'}}</el-button>
             </span>
           </template>
         </el-dialog>
@@ -125,7 +125,7 @@ import { setUserInfo } from '@/api/user'
 import useUserStore from '@/stores/modules/user'
 import feedback from '@/utils/feedback'
 import type { FormInstance } from 'element-plus'
-import {googleReset, proxyEdit, googleQrCode} from "@/api/member";
+import {googleReset, proxyEdit, googleQrCode, googleEdit} from "@/api/member";
 const formRef = ref<FormInstance>()
 const userStore = useUserStore()
 // 表单数据
@@ -204,6 +204,7 @@ const rulesGoogleCode = reactive({
 const userInfo = ref({})
 // 获取个人设置
 const getUser = async () => {
+  await userStore.getUserInfo()
   userInfo.value = userStore.userInfo
   for (const key in formData) {
     //@ts-ignore
@@ -222,6 +223,7 @@ const getGoogleQrCode = async () => {
     qrcode.value = res
   }).catch(err => {})
 }
+getUser()
 const handleResetGoogle = async () => {
   const res = await googleReset({
     //@ts-ignore
@@ -232,37 +234,51 @@ const handleResetGoogle = async () => {
   feedback.msgSuccess(`重置谷歌验证码成功`)
 }
 const changeGoogleStatus = async () => {
-  //@ts-ignore
-  if(userInfo.value.googleEnable === '1') {
-    await feedback.confirm( `确定要关闭谷歌验证码？`)
-    await proxyEdit({
-      //@ts-ignore
-      id: userInfo.value.id,
-      googleEnable: '0',
-    })
-    await userStore.getUserInfo()
-    getUser()
-    feedback.msgSuccess(`关闭谷歌验证码成功`)
-    handleGoogleClose()
-  }else{
-    dialogGoogleVisible.value = true
-  }
+  // //@ts-ignore
+  // if(userInfo.value.googleEnable === '1') {
+  //   await feedback.confirm( `确定要关闭谷歌验证码？`)
+  //   await proxyEdit({
+  //     //@ts-ignore
+  //     id: userInfo.value.id,
+  //     googleEnable: '0',
+  //   })
+  //   await userStore.getUserInfo()
+  //   getUser()
+  //   feedback.msgSuccess(`关闭谷歌验证码成功`)
+  //   handleGoogleClose()
+  // }else{
+  //   dialogGoogleVisible.value = true
+  // }
+  dialogGoogleVisible.value = true
 }
 const handleGoogleClose = () => {
   dialogGoogleVisible.value = false
   formDataGoogle.checkGoogleCode = ''
 }
 const handleGoogleSubmit = async () => {
-  await proxyEdit({
-    //@ts-ignore
-    id: userInfo.value.id,
-    googleEnable: '1',
-    checkGoogleCode: formDataGoogle.checkGoogleCode,
-    googleCode: userStore.userInfo.googleCode
-  })
+  //@ts-ignore
+  if(userInfo.value.googleEnable === '1') {
+    await googleEdit({
+      //@ts-ignore
+      id: userInfo.value.id,
+      googleEnable: '0',
+      checkGoogleCode: formDataGoogle.checkGoogleCode,
+      googleCode: userStore.userInfo.googleCode
+    })
+  }else{
+    await googleEdit({
+      //@ts-ignore
+      id: userInfo.value.id,
+      googleEnable: '1',
+      checkGoogleCode: formDataGoogle.checkGoogleCode,
+      googleCode: userStore.userInfo.googleCode
+    })
+  }
+  //@ts-ignore
+  const tipText = userInfo.value.googleEnable === '1' ? '关闭' : '开启'
   await userStore.getUserInfo()
   getUser()
-  feedback.msgSuccess(`开启谷歌验证码成功`)
+  feedback.msgSuccess(tipText+`谷歌验证码成功`)
   handleGoogleClose()
 }
 
@@ -278,8 +294,6 @@ const handleSubmit = async () => {
     await formRef.value?.validate()
     setUser()
 }
-
-getUser()
 </script>
 
 <style lang="scss" scoped>

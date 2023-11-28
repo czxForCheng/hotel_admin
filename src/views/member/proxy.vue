@@ -122,9 +122,16 @@
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="formData.email" placeholder="请输入邮箱" clearable/>
           </el-form-item>
-<!--          <el-form-item label="谷歌验证码状态" prop="email">-->
-<!--            <el-input v-model="formData.email" placeholder="请输入邮箱" clearable/>-->
-<!--          </el-form-item>-->
+          <el-form-item label="多处登录">
+            <div>
+              <el-switch
+                  v-model="formData.isMultipoint"
+                  :active-value="1"
+                  :inactive-value="0"
+              />
+              <div class="form-tips">允许多人同时在线登录</div>
+            </div>
+          </el-form-item>
         </el-form>
         <template #footer>
             <span class="dialog-footer">
@@ -260,7 +267,8 @@ let formData = reactive({
   isWhite: '',
   googleEnable: '',
   parentId: '',
-  parentName: ''
+  parentName: '',
+  isMultipoint: 1
 })
 const rules = reactive({
   username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
@@ -343,6 +351,7 @@ const handleEdit = async (row: any) => {
   formData.inviteCode = row.inviteCode
   formData.customerServiceLink = row.customerServiceLink
   formData.email = row.email
+  formData.isMultipoint = row.isMultipoint
   dialogVisible.value = true
 }
 
@@ -370,6 +379,7 @@ const handleClose = () => {
   formData.email = ''
   formData.parentId = ''
   formData.parentName = ''
+  formData.isMultipoint = 1
 }
 
 const handleBan = async (row: any) => {
@@ -385,11 +395,13 @@ const handleWhite = (row: any) => {
   dialogWhiteVisible.value = true
   formData.id = row.id
   formData.whiteIp = row.whiteIp
+  formData.isWhite = row.isWhite
 }
 const handleWhiteClose = () => {
   dialogWhiteVisible.value = false
   formData.id = ''
   formData.whiteIp = ''
+  formData.isWhite = ''
 }
 const handleWhiteSubmit = async () => {
   await proxyEdit({

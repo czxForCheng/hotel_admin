@@ -124,7 +124,6 @@ const queryParams = reactive({
     name: '',
     status: ''
 })
-
 const { optionsData } = useDictOptions<{
     dictType: any[]
 }>({
@@ -132,12 +131,10 @@ const { optionsData } = useDictOptions<{
         api: dictTypeAll
     }
 })
-
 const { pager, getLists, resetPage, resetParams } = usePaging({
     fetchFun: dictDataLists,
     params: queryParams
 })
-
 const selectData = ref<any[]>([])
 
 const handleSelectionChange = (val: any[]) => {
