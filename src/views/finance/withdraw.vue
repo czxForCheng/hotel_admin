@@ -81,10 +81,8 @@
         <el-table-column label="驳回理由" prop="reject" min-width="200" />
         <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
-            <template v-if="!row.auditStatus">
-              <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleAgree(row)">同意</el-button>
-              <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleReject(row)">拒绝</el-button>
-            </template>
+            <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleAgree(row)" v-show="!row.auditStatus">同意</el-button>
+            <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleReject(row)" v-show="!row.auditStatus">拒绝</el-button>
             <el-button v-perms="['withdrawalRecord:del']" type="primary" @click="handleDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>
