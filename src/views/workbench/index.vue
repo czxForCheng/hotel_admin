@@ -116,8 +116,6 @@ const getShowData = async () => {
 }
 getShowData()
 const queryParams = reactive({
-  pageNo: 1,
-  pageSize: 15,
   startTime: '',
   endTime: ''
 })
@@ -125,9 +123,6 @@ const queryParams = reactive({
 const { pager, getLists, resetPage, resetParams } = usePaging({
   fetchFun: countAgent,
   params: queryParams
-})
-onActivated(() => {
-  getLists()
 })
 
 getLists()

@@ -74,8 +74,8 @@
             {{!row.auditStatus ? '未审核' : (row.auditStatus === 1 ? '审核通过' : '审核不通过')}}
           </template>
         </el-table-column>
-        <el-table-column label="申请时间" prop="addTime" min-width="200" />
-        <el-table-column label="处理时间" prop="auditTime" min-width="200" />
+        <el-table-column label="申请时间" prop="createTime" min-width="200" />
+        <el-table-column label="处理时间" prop="createTime" min-width="200" />
         <el-table-column label="操作" width="150" fixed="right">
           <template #default="{ row }">
             <el-button v-perms="['rechargeRecord:del']" type="primary" @click="handleDelete(row.id)">删除</el-button>

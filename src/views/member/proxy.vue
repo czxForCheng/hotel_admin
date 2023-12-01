@@ -52,7 +52,7 @@
         </el-table-column>
         <el-table-column label="客服链接" prop="customerServiceLink" min-width="160" />
 <!--        <el-table-column label="上级代理" prop="parentAgent" min-width="160" />-->
-        <el-table-column label="添加时间" prop="createTime" min-width="180" />
+        <el-table-column label="添加时间" prop="createTimeStr" min-width="180" />
         <el-table-column label="操作" width="320" fixed="right">
           <template #default="{ row }">
             <el-button v-perms="['agentManage:editPwd']" type="primary" @click="handlePassword(row.id)">密码</el-button>

@@ -1,5 +1,5 @@
 import { getConfig } from '@/api/app'
-import {  websiteInfoApi } from '@/api/setting/config'
+import { websiteInfoApi } from '@/api/setting/config'
 import { defineStore } from 'pinia'
 interface AppSate {
     config: Record<string, any>
@@ -24,7 +24,7 @@ const useAppStore = defineStore({
         },
         getConfig() {
             return new Promise((resolve, reject) => {
-                getConfig()
+                websiteInfoApi()
                     .then((data) => {
                         this.config = data
                         resolve(data)

@@ -53,7 +53,7 @@
                   preview-teleported
                   fit="contain"
               />
-              {{ row.nickname }}
+<!--              {{ row.nickname }}-->
             </div>
           </template>
         </el-table-column>

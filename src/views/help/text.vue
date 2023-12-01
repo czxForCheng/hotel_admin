@@ -9,7 +9,7 @@
           新增文本
         </el-button>
       </div>
-      <el-table size="large" v-loading="isLoading" :data="homePage">
+      <el-table size="large" v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="ID" prop="id" min-width="60" />
         <el-table-column label="标题" prop="title" min-width="100" />
         <el-table-column label="类型" prop="type" min-width="100" >
@@ -35,6 +35,9 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="flex justify-end mt-4">
+        <pagination v-model="pager" @change="getLists" />
+      </div>
     </el-card>
     <div>
       <el-dialog
@@ -92,6 +95,8 @@ import {getHomePage, homeUpdate, homeAdd} from '@/api/help'
 import { useDictOptions } from '@/hooks/useDictOptions'
 import feedback from "@/utils/feedback";
 import {dictDataAll} from "@/api/setting/dict";
+import {usePaging} from "@/hooks/usePaging";
+import {countAgent} from "@/api/app";
 const queryParams = reactive({})
 let formData = reactive({
   id: '',
@@ -108,12 +113,21 @@ const rules = reactive({
 })
 const isLoading = ref(true)
 const homePage = ref([])
-const getHomeData = async () => {
-  const res = await getHomePage()
-  homePage.value = res.list
-  isLoading.value = false
-}
-getHomeData()
+// const getHomeData = async () => {
+//   const res = await getHomePage()
+//   homePage.value = res.list
+//   isLoading.value = false
+// }
+// getHomeData()
+const { pager, getLists, resetPage, resetParams } = usePaging({
+  fetchFun: getHomePage,
+  params: queryParams
+})
+onActivated(() => {
+  getLists()
+})
+
+getLists()
 const languageDict = ref([])
 const getLanguageDict = async () => {
   languageDict.value = await dictDataAll({ dictType: 'yuyan' })
@@ -160,7 +174,7 @@ const handleSubmit = async () => {
     await homeAdd(formData)
     feedback.msgSuccess('新增成功')
   }
-  getHomeData()
+  getLists()
   handleClose()
 }
 

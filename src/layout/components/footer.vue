@@ -1,15 +1,7 @@
 <template>
     <footer class="layout-footer">
         <div class="text-center p-2 text-xs text-tx-secondary max-w-[900px] mx-auto">
-            <a
-                class="mx-1 hover:underline"
-                :href="item.link"
-                target="_blank"
-                v-for="item in copyright"
-                :key="item.name"
-            >
-                {{ item.name }} {{config.version}}
-            </a>
+          v{{config.version}}
         </div>
     </footer>
 </template>

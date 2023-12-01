@@ -107,7 +107,7 @@
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
                 <el-table-column label="注册ip" prop="registerIp" min-width="150" />
                 <el-table-column label="最后登录ip" prop="lastLoginIp" min-width="150" />
-              <el-table-column label="注册时间" prop="addTime" min-width="180" />
+              <el-table-column label="注册时间" prop="createTime" min-width="180" />
                 <el-table-column label="交易状态" prop="tradingStatus" min-width="100" >
 
                   <template #default="{ row }">

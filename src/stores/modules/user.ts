@@ -56,7 +56,6 @@ const useUserStore = defineStore({
                         resolve(data)
                     })
                     .catch((error) => {
-                        console.log('error', error)
                         reject(error)
                     })
             })

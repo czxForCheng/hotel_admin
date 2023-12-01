@@ -66,8 +66,8 @@
         <el-table-column label="银行信息/usdt" prop="usdt" min-width="150" />
         <el-table-column label="发起/处理/回调" prop="" min-width="240" >
           <template #default="{ row }">
-            <p>发起时间 {{row.addTime}}</p>
-            <p>处理时间 {{row.auditTime}}</p>
+            <p>发起时间 {{row.createTime}}</p>
+            <p>处理时间 {{row.auditTimeStr}}</p>
 <!--            <p>发起时间 {{formatterTime(row.addTime)}}</p>-->
 <!--            <p>处理时间 {{formatterTime(row.auditTime)}}</p>-->
             <p>回调时间 -</p>
@@ -81,9 +81,11 @@
         <el-table-column label="驳回理由" prop="reject" min-width="200" />
         <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
-              <el-button v-if="!row.auditStatus" v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleAgree(row)">同意</el-button>
-              <el-button v-if="!row.auditStatus" v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleReject(row)">拒绝</el-button>
-              <el-button v-perms="['withdrawalRecord:del']" type="primary" @click="handleDelete(row.id)">删除</el-button>
+            <template v-if="!row.auditStatus">
+              <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleAgree(row)">同意</el-button>
+              <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleReject(row)">拒绝</el-button>
+            </template>
+            <el-button v-perms="['withdrawalRecord:del']" type="primary" @click="handleDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

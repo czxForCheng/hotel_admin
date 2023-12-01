@@ -14,7 +14,7 @@
         <el-table-column label="分类名称" prop="name" min-width="100" />
         <el-table-column label="比例" prop="proportion" min-width="100" />
         <el-table-column label="简介" prop="introduction" min-width="100" />
-        <el-table-column label="添加时间" prop="addTime" min-width="160" />
+        <el-table-column label="添加时间" prop="createTime" min-width="160" />
         <el-table-column label="操作" width="160" fixed="right">
           <template #default="{ row }">
             <el-button v-perms="['productType:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>

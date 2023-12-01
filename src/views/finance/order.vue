@@ -115,7 +115,7 @@
               {{row.status === 1 ? '收入' : '支出'}}
             </template>
           </el-table-column>
-          <el-table-column label="交易时间" prop="addTime" min-width="100" />
+          <el-table-column label="交易时间" prop="createTime" min-width="100" />
         </el-table>
       </el-dialog>
     </div>
@@ -182,6 +182,12 @@ const fundType = computed(() => {
         break
       case 11:
         type = '下级佣金'
+        break
+      case 12:
+        type = '清空体验金'
+        break
+      case 13:
+        type = '注册体验金'
         break
     }
     return type

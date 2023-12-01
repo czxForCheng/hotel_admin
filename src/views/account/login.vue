@@ -2,15 +2,13 @@
     <div class="login flex flex-col">
         <div class="flex-1 flex items-center justify-center">
             <div class="login-card flex rounded-md">
-                <div class="flex-1 h-full hidden md:inline-block">
-<!--                    <image-contain :src="config.webBackdrop" :width="400" height="100%" />-->
-<!--                  <image-contain src="../../assets/images/backend_backdrop.png" :width="400" height="100%"/>-->
-                  <img src="../../assets/images/backend_backdrop.png" style="width: 400px;height: 100%" alt="">
+                <div class="flex-1 h-full hidden md:inline-block" style="display: flex;">
+                    <image-contain :src="config.websiteBigLogo" :width="400" />
                 </div>
                 <div
                     class="login-form bg-body flex flex-col justify-center px-10 py-10 md:w-[400px] w-[375px] flex-none mx-auto"
                 >
-                    <div class="text-center text-3xl font-medium mb-8">KAKAYK后台</div>
+                    <div class="text-center text-3xl font-medium mb-8">{{config.websiteName}}后台</div>
                     <el-form ref="formRef" :model="formData" size="large" :rules="rules">
                         <el-form-item prop="account">
                             <el-input
@@ -36,25 +34,6 @@
                                 </template>
                             </el-input>
                         </el-form-item>
-<!--                        <el-form-item prop="code">-->
-<!--                            <div class="flex items-center">-->
-<!--                                <el-input-->
-<!--                                    v-model="formData.glCode"-->
-<!--                                    placeholder="请输入验证码"-->
-<!--                                    @keyup.enter="handleLogin"-->
-<!--                                >-->
-<!--                                    <template #prepend>-->
-<!--                                        <icon name="local-icon-anquan" />-->
-<!--                                    </template>-->
-<!--                                </el-input>-->
-<!--                                <div-->
-<!--                                    class="ml-4 w-[100px] flex-none cursor-pointer"-->
-<!--                                    @click="getLoginCaptcha"-->
-<!--                                >-->
-<!--                                    <img class="w-full" :src="codeImg" alt="" />-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </el-form-item>-->
                       <el-form-item prop="googleCode">
                         <el-input
                             ref="Ref"

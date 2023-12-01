@@ -1,7 +1,6 @@
 <template>
     <div class="logo">
-<!--        <image-contain :width="szie" :height="szie" :src="config.webLogo" />-->
-      <img src="../../../../assets/images/backend_logo.png" style="height: 34px" alt="">
+        <image-contain :width="szie" :height="szie" :src="config.websiteSmallLogo" />
         <transition name="title-width">
             <div
                 v-show="showTitle"
@@ -10,7 +9,7 @@
                 :style="{ left: `${szie + 16}px` }"
             >
                 <overflow-tooltip
-                    content="KAKAYK后台"
+                    :content="config.websiteName+''"
                     :teleported="true"
                     placement="bottom"
                     overflo-type="unset"

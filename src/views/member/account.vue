@@ -60,6 +60,14 @@
                 label="下级佣金"
                 :value="11"
             />
+            <el-option
+                label="清空体验金"
+                :value="12"
+            />
+            <el-option
+                label="注册体验金"
+                :value="13"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="发生时间">
@@ -93,7 +101,7 @@
             {{row.status ? '支出' : '收入'}}
           </template>
         </el-table-column>
-        <el-table-column label="发生时间" prop="addTime" min-width="180" />
+        <el-table-column label="发生时间" prop="createTime" min-width="180" />
       </el-table>
       <div class="flex justify-end mt-4">
         <pagination v-model="pager" @change="getLists" />
@@ -171,6 +179,12 @@ const fundType = computed(() => {
         break
       case 11:
         type = '下级佣金'
+        break
+      case 12:
+        type = '清空体验金'
+        break
+      case 13:
+        type = '注册体验金'
         break
     }
     return type

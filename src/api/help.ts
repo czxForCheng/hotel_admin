@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
 // 首页文本列表
-export function getHomePage() {
-    return request.get({ url: '/help/home/page' })
+export function getHomePage(params: any) {
+    return request.get({ url: '/help/home/page', params })
 }
 
 // 新增首页文本

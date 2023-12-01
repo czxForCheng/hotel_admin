@@ -173,8 +173,12 @@
 import type { FormInstance } from 'element-plus'
 import {getTime, nowLanguage, setLanguage, updateTime, websiteInfoApi, websiteInfoEdit} from '@/api/setting/config'
 import feedback from "@/utils/feedback";
+import useAppStore from '@/stores/modules/app'
 import useTimeStore from '@/stores/modules/timeZoom'
+import {computed} from "vue";
+const appStore = useAppStore()
 const timeStore = useTimeStore()
+const config = computed(() => appStore.config)
 const timeZoom = computed(() => timeStore.timeZoom)
 
 /* 修改系统配置 */
@@ -273,10 +277,14 @@ const rules = {
   ]
 }
 const getWebsiteInfo = async () => {
-  const res = await websiteInfoApi()
-  for(const key in res){
+  // const res = await websiteInfoApi()
+  // for(const key in res){
+  //   //@ts-ignore
+  //   formData[key] = res[key] || ''
+  // }
+  for(const key in formData){
     //@ts-ignore
-    formData[key] = res[key] || ''
+    formData[key] = config.value[key] || ''
   }
 }
 getWebsiteInfo()
@@ -305,9 +313,12 @@ const handleSubmit = async () => {
   }
   await websiteInfoEdit(formData)
   feedback.msgSuccess('修改成功')
-  getWebsiteInfo()
+  appStore.getConfig()
   dialogVisible.value = false
 }
+watch(config, () => {
+  getWebsiteInfo()
+})
 
 const handleClose = () => {
   dialogVisible.value = false
@@ -359,9 +370,9 @@ const timeZoneAll = [
   { id: 20, label: '西班牙', value: 'Europe/Madrid', zoomi: 1 },
   { id: 21, label: '波兰', value: 'Europe/Warsaw', zoomi: 1 },
   { id: 22, label: '荷兰', value: 'Europe/Netherlands', zoomi: 1 },
-  { id: 23, label: '瑞士', value: 'Europe/Swiss', zoomi: 1 },
-  { id: 24, label: '意大利', value: 'Europe/Repubblica', zoomi: 1 },
-  { id: 25, label: '德国', value: 'Europe/Bundesrepublik', zoomi: 1 },
+  { id: 23, label: '瑞士', value: 'Europe/Zurich', zoomi: 1 },
+  { id: 24, label: '意大利', value: 'Europe/Rome', zoomi: 1 },
+  { id: 25, label: '德国', value: 'Europe/Berlin', zoomi: 1 },
   { id: 26, label: '法国', value: 'Europe/French', zoomi: 1 },
   { id: 27, label: '土耳其', value: 'Europe/Istanbul', zoomi: 3 },
   { id: 28, label: '俄罗斯', value: 'Europe/Moscow', zoomi: 3 },
@@ -390,7 +401,6 @@ const handleGetTime = () => {
 }
 handleGetTime()
 watch(timeZoom,(newvalue, oldvalue) => {
-  console.log(newvalue, oldvalue)
   //@ts-ignore
   formDataZoom.timeZone = timeZoom.value
 })

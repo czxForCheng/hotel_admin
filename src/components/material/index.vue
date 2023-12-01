@@ -222,7 +222,7 @@
                                 >
                                     <el-button type="primary" link> 重命名 </el-button>
                                 </popover-input>
-                                <el-button type="primary" link @click="handlePreview(item.uri)">
+                                <el-button type="primary" link @click="handlePreview('/'+item.path)">
                                     查看
                                 </el-button>
                             </div>
