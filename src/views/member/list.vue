@@ -193,16 +193,6 @@
                    :model="formDataAdd"
                    label-width="85px"
                    :rules="rulesAdd">
-<!--            <el-form-item label="代理" prop="parentName">-->
-<!--              <el-select class="w-[280px]" @change="handleProxyChange" v-model="formDataAdd.parentName" placeholder="请选择代理">-->
-<!--                <el-option-->
-<!--                    v-for="(item, key) in memberProxyAll"-->
-<!--                    :key="item.id"-->
-<!--                    :label="item.username"-->
-<!--                    :value="item.username"-->
-<!--                />-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
             <el-form-item label="用户名称" prop="username">
               <el-input
                   v-model="formDataAdd.username"
@@ -259,6 +249,26 @@
                          :model="formData"
                          label-width="85px"
                          :rules="rules">
+                        <el-form-item label="代理" prop="parentName">
+                          <el-select class="w-[280px]" @change="handleProxyChange" v-model="formData.firstAgentId" placeholder="请选择代理">
+                            <el-option
+                                v-for="(item, key) in memberProxyAll"
+                                :key="item.id"
+                                :label="item.username"
+                                :value="item.id"
+                            />
+                          </el-select>
+                        </el-form-item>
+                  <el-form-item label="二级代理" prop="parentAgentId">
+                    <el-select class="w-[280px]" v-model="formData.parentAgentId" placeholder="请选择二级代理">
+                      <el-option
+                          v-for="(item, key) in secondProxyAll"
+                          :key="item.id"
+                          :label="item.username"
+                          :value="item.id"
+                      />
+                    </el-select>
+                  </el-form-item>
                     <el-form-item label="用户名称" prop="username">
                         <el-input
                                 v-model="formData.username"
@@ -339,14 +349,7 @@
                         />
                     </el-form-item>
                     <el-form-item label="上级ID" prop="parentId">
-                      <el-select class="w-[280px]" v-model="formData.parentId" placeholder="请选择一级代理">
-                        <el-option
-                            v-for="(item, key) in memberProxyAll"
-                            :key="item.id"
-                            :label="item.username"
-                            :value="item.id"
-                        />
-                      </el-select>
+                      <el-input v-model="formData.parentId" placeholder="请输入上级ID"></el-input>
                         <p style="margin-right: 10px;">无特殊情况，不需要修改</p>
                     </el-form-item>
                 </el-form>
@@ -432,7 +435,8 @@ import {
   userManageBeDummy,
   userManageDel,
   userManageDisable, userReset, usdtUpdate,
-  frozenAmount
+  frozenAmount,
+  secondAgentList
 } from '@/api/member'
 import type { FormInstance } from 'element-plus'
 import Popup from './dislodge.vue'
@@ -577,15 +581,19 @@ const getMemberProxyAll = async () => {
   memberProxyAll.value = await getProxyList()
 }
 getMemberProxyAll()
-
-
-const handleProxyChange = (e: any) => {
-  const info:any = memberProxyAll.value.find(item => {
-    return item['username'] === e
-  })
-  formDataAdd.agentId = info.id
-  formDataAdd.inviteCode = info.inviteCode
+const secondProxyAll = ref([])
+const getSecondProxyAll = async (id: any) => {
+  secondProxyAll.value = await secondAgentList({ id })
 }
+
+const handleProxyChange = async (e: any) => {
+  const info:any = memberProxyAll.value.find(item => {
+    return item['id'] === e
+  })
+  formData.parentAgentId = ''
+  await getSecondProxyAll(info.id)
+}
+
 const handleOpenNum = async (id: number) => {
   await feedback.confirm(`确定要重置抢单数量？`)
   await userReset({ id })
@@ -661,7 +669,6 @@ const handleOpenMoney = (id: any, action: number) => {
   }
   formDataYue.userId = id
   formDataYue.action = action
-  console.log(formDataYue.action)
 }
 const handleYueSubmit = async () => {
   await formRefYue.value?.validate()
@@ -705,8 +712,8 @@ const handleYueClose = () => {
 /* 修改用户 */
 let formData = reactive({
   id: '',
-  parentAgentName: '',
-  secondAgentName: '',
+  firstAgentId: '',
+  parentAgentId: '',
   username: '',
   mobile: '',
   balanceMoney: 0,
@@ -720,6 +727,7 @@ let formData = reactive({
   parentId: ''
 })
 const rules = reactive({
+  parentAgentId: [{ required: true, message: '二级代理必选', trigger: 'blur' }],
   username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
   mobile: [{ required: true, message: '手机号码必填', trigger: 'blur' }],
   balanceMoney: [{ required: true, message: '账号余额必填', trigger: 'blur' }],
@@ -747,8 +755,8 @@ const handleEdit = async (row: any) => {
   dialogTitle.value = '修改用户信息'
   // formData = row
   formData.id = row.id
-  formData.parentAgentName = row.parentAgentName
-  formData.secondAgentName = row.secondAgentName
+  formData.firstAgentId = row.firstAgentId
+  formData.parentAgentId = row.parentAgentId
   formData.username = row.username
   formData.mobile = row.mobile
   formData.balanceMoney = row.balanceMoney
@@ -760,6 +768,10 @@ const handleEdit = async (row: any) => {
   formData.taskNum = row.taskNum
   formData.creditScore = row.creditScore
   formData.parentId = row.parentId
+  const info:any = memberProxyAll.value.find(item => {
+    return item['id'] === formData.firstAgentId
+  })
+  await getSecondProxyAll(info.id)
   dialogVisible.value = true
 }
 /* 提交菜单 */
@@ -778,8 +790,8 @@ const handleSubmit = async () => {
 const handleClose = () => {
   dialogVisible.value = false
   formData.id = ''
-  formData.parentAgentName = ''
-  formData.secondAgentName = ''
+  formData.firstAgentId = ''
+  formData.parentAgentId = ''
   formData.username = ''
   formData.mobile = ''
   formData.balanceMoney = 0

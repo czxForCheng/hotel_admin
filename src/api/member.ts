@@ -160,3 +160,8 @@ export function googleQrCode(params: any) {
 export function googleEdit(params: any) {
     return request.post({ url: '/agentManage/editGoogle', params })
 }
+
+// 获取一级代理下的二级代理
+export function secondAgentList(params: any) {
+    return request.get({ url: '/agentManage/secondAgentList', params })
+}
