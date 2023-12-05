@@ -18,6 +18,22 @@
               clearable
           />
         </el-form-item>
+        <el-form-item label="类型">
+          <el-select class="w-[280px]" v-model="queryParams.type" placeholder="请选择类型">
+            <el-option
+                label="会员充值"
+                :value="0"
+            />
+            <el-option
+                label="彩金"
+                :value="1"
+            />
+            <el-option
+                label="存款"
+                :value="2"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="审核状态">
           <el-select class="w-[280px]" v-model="queryParams.auditStatus" placeholder="请选择审核状态">
             <el-option
@@ -96,6 +112,7 @@ import {userManageDel} from "@/api/member";
 const queryParams = reactive({
   orderNo: '',
   userName: '',
+  type: '',
   auditStatus: null
 })
 
