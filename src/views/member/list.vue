@@ -591,7 +591,7 @@ const handleProxyChange = async (e: any) => {
     return item['id'] === e
   })
   formData.parentAgentId = ''
-  await getSecondProxyAll(info.id)
+  await getSecondProxyAll(info&&info.id || 0)
 }
 
 const handleOpenNum = async (id: number) => {
@@ -727,7 +727,6 @@ let formData = reactive({
   parentId: ''
 })
 const rules = reactive({
-  parentAgentId: [{ required: true, message: '二级代理必选', trigger: 'blur' }],
   username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
   mobile: [{ required: true, message: '手机号码必填', trigger: 'blur' }],
   balanceMoney: [{ required: true, message: '账号余额必填', trigger: 'blur' }],
@@ -771,7 +770,7 @@ const handleEdit = async (row: any) => {
   const info:any = memberProxyAll.value.find(item => {
     return item['id'] === formData.firstAgentId
   })
-  await getSecondProxyAll(info.id)
+  await getSecondProxyAll(info&&info.id || 0)
   dialogVisible.value = true
 }
 /* 提交菜单 */
