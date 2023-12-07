@@ -12,6 +12,8 @@ import { PageEnum } from './enums/pageEnum'
 import useTabsStore from './stores/modules/multipleTabs'
 import { clearAuthInfo } from './utils/auth'
 import config from './config'
+import useAppStore from '@/stores/modules/app'
+import {computed} from "vue";
 
 // NProgress配置
 NProgress.configure({ showSpinner: false })
@@ -23,7 +25,9 @@ const whiteList: string[] = [PageEnum.LOGIN, PageEnum.ERROR_403]
 router.beforeEach(async (to, from, next) => {
     // 开始 Progress Bar
     NProgress.start()
-    document.title = to.meta.title ?? config.title
+    const appStore = useAppStore()
+    const configApp = computed(() => appStore.config)
+    document.title = to.meta.title ? `${configApp.value.copyrightInformation} - ` + to.meta.title : config.title
     const userStore = useUserStore()
     const tabsStore = useTabsStore()
     if (whiteList.includes(to.path)) {
