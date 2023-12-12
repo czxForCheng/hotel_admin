@@ -56,12 +56,6 @@
                 clearable
             />
           </el-form-item>
-<!--          <el-form-item label="注册时间">-->
-<!--            <daterange-picker-->
-<!--                v-model:startTime="queryParams.startTime"-->
-<!--                v-model:endTime="queryParams.endTime"-->
-<!--            />-->
-<!--          </el-form-item>-->
           <el-form-item>
             <el-button type="primary" @click="resetPage">查询</el-button>
             <el-button @click="resetParams">重置</el-button>
@@ -107,7 +101,7 @@
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
                 <el-table-column label="注册ip" prop="registerIp" min-width="150" />
                 <el-table-column label="最后登录ip" prop="lastLoginIp" min-width="150" />
-              <el-table-column label="注册时间" prop="createTime" min-width="180" />
+                <el-table-column label="注册时间" prop="createTime" min-width="180" />
                 <el-table-column label="交易状态" prop="tradingStatus" min-width="100" >
 
                   <template #default="{ row }">
@@ -170,6 +164,8 @@
                                 <el-button v-perms="['userManage:disable']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-button>
                                 <el-button v-perms="['userManage:del']" @click="handleDelete(row.id)">删除</el-button>
                                 <el-button v-perms="['userManage:beDummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-button>
+                                <el-button v-perms="['userManage:updatePwd']" @click="handleUpdatePwd(row)" v-show="userInfo.agentLevel !== 2">登录密码</el-button>
+                                <el-button v-perms="['userManage:updateTradingPwd']" @click="handleUpdateTradingPwd(row)" v-show="userInfo.agentLevel !== 2">交易密码</el-button>
                               </el-dropdown-menu>
                             </div>
                           </template>
@@ -283,20 +279,6 @@
                                 clearable
                         />
                     </el-form-item>
-<!--                    <el-form-item label="账号余额" prop="balanceMoney">-->
-<!--                        <el-input-->
-<!--                                v-model="formData.balanceMoney"-->
-<!--                                placeholder="请输入账户余额"-->
-<!--                                clearable-->
-<!--                        />-->
-<!--                    </el-form-item>-->
-<!--                    <el-form-item label="冻结金额" prop="frozenAmount">-->
-<!--                        <el-input-->
-<!--                                v-model="formData.frozenAmount"-->
-<!--                                placeholder="请输入冻结金额"-->
-<!--                                clearable-->
-<!--                        />-->
-<!--                    </el-form-item>-->
                     <el-form-item label="会员等级" prop="userLevelId">
                       <el-select class="w-[280px]" v-model="formData.userLevelId" placeholder="请选择会员等级">
                         <el-option
@@ -416,6 +398,33 @@
             </template>
           </el-dialog>
         </div>
+        <div>
+          <el-dialog
+              v-model="dialogPasswordVisible"
+              :title="`修改${formDataPassword.type === '1' ? '登录' : '交易'}密码`"
+              width="50%"
+          >
+            <el-form ref="formRefPassword"
+                     class="ls-form"
+                     :model="formDataPassword"
+                     label-width="85px"
+                     :rules="rulesPassword">
+              <el-form-item label="新密码" prop="password">
+                <el-input
+                    v-model="formDataPassword.password"
+                    placeholder="请输入新密码"
+                    clearable
+                />
+              </el-form-item>
+            </el-form>
+            <template #footer>
+            <span class="dialog-footer">
+               <el-button @click="handlePasswordClose">取消</el-button>
+               <el-button type="primary" @click="handlePasswordEdit">确认</el-button>
+            </span>
+            </template>
+          </el-dialog>
+        </div>
       </div>
 
       <Popup @close-ticket="closeTicket" v-if="isTicket" :is-ticket="isTicket" title="连单" :ticket-value="ticketValue"></Popup>
@@ -436,17 +445,22 @@ import {
   userManageDel,
   userManageDisable, userReset, usdtUpdate,
   frozenAmount,
-  secondAgentList
+  secondAgentList,
+  updatePwd,
+  updateTradingPwd
 } from '@/api/member'
 import type { FormInstance } from 'element-plus'
 import Popup from './dislodge.vue'
 import feedback from "@/utils/feedback";
+import user from "@/stores/modules/user";
 
 const userStore = useUserStore()
 const userInfo = reactive({
-  isAgent: 0
+  isAgent: 0,
+  agentLevel: 0
 })
 userInfo.isAgent = userStore.userInfo.isAgent
+userInfo.agentLevel = userStore.userInfo.agentLevel
 const isTicket = ref(false)
 const ticketValue = ref('')
 
@@ -868,9 +882,46 @@ const handleBeDummy = async (row: any) => {
   getLists()
 }
 
-// 会员详情
+const dialogPasswordVisible = ref(false)
+const formRefPassword = shallowRef<FormInstance>()
+let formDataPassword = reactive({
+  id: '',
+  type: '',
+  password: ''
+})
+const rulesPassword = reactive({
+  password: [{ required: true, message: '密码必填', trigger: 'blur' }]
+})
+/* 登录密码 */
+const handleUpdatePwd = (row: any) => {
+  formDataPassword.type = '1'
+  formDataPassword.id = row.id
+  dialogPasswordVisible.value = true
+}
 
+/* 交易密码 */
+const handleUpdateTradingPwd = (row: any) => {
+  formDataPassword.type = '2'
+  formDataPassword.id = row.id
+  dialogPasswordVisible.value = true
+}
 
+const handlePasswordClose = () => {
+  dialogPasswordVisible.value = false
+  formDataPassword.id = ''
+  formDataPassword.password = ''
+}
+const handlePasswordEdit = async () => {
+  await formRefPassword.value?.validate()
+  let obj = {
+    id: ''
+  }
+  obj.id = formDataPassword.id
+  formDataPassword.type === '1' ? Object.assign(obj, { password: formDataPassword.password }) : Object.assign(obj, { tradingPwd: formDataPassword.password })
+  formDataPassword.type === '1' ? await updatePwd(obj) : await updateTradingPwd(obj)
+  feedback.msgSuccess(`修改${formDataPassword.type === '1' ? '登录' : '交易'}密码成功`)
+  handlePasswordClose()
+}
 </script>
 <style scoped lang="scss">
   :deep(.el-select){

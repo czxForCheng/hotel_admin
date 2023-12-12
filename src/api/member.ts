@@ -165,3 +165,12 @@ export function googleEdit(params: any) {
 export function secondAgentList(params: any) {
     return request.get({ url: '/agentManage/secondAgentList', params })
 }
+
+// 修改登录密码
+export function updatePwd(params: any) {
+    return request.post({ url: '/userManage/updatePwd', params })
+}
+// 修改交易密码
+export function updateTradingPwd(params: any) {
+    return request.post({ url: '/userManage/updateTradingPwd', params })
+}

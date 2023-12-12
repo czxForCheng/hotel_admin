@@ -12,7 +12,15 @@
                         @keyup.enter="resetPage"
                     />
                 </el-form-item>
-
+              <el-form-item label="操作">
+                <el-input
+                    class="w-[280px]"
+                    placeholder="请输入"
+                    v-model="formData.title"
+                    clearable
+                    @keyup.enter="resetPage"
+                />
+              </el-form-item>
                 <el-form-item label="访问方式">
                     <el-select class="w-[280px]" v-model="formData.type" placeholder="请选择">
                         <el-option
@@ -67,6 +75,7 @@
                     <el-table-column label="访问链接" prop="url" min-width="160" />
                     <el-table-column label="访问方式" prop="type" min-width="100" />
                     <el-table-column label="来源IP" prop="ip" min-width="160" />
+                    <el-table-column label="详细信息" prop="args" min-width="300" show-overflow-tooltip />
                     <el-table-column label="错误信息" prop="error" min-width="160" />
                     <el-table-column label="执行耗时(毫秒)" prop="taskTime" min-width="100" />
                     <el-table-column label="日志时间" prop="createTime" min-width="180" />
@@ -86,6 +95,7 @@ import { usePaging } from '@/hooks/usePaging'
 // 查询表单
 const formData = ref({
     username: '',
+    title: '',
     url: '',
     ip: '',
     type: '',

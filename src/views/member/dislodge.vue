@@ -95,6 +95,15 @@
         <el-col  v-if="formData.isLink===1" :span="14">
           <div style="padding: 0 0 0 3%;box-sizing: border-box">
             <el-form style="margin: 20px 0" class="mb-[-16px]" :model="queryParams" :inline="true">
+              <el-form-item label="商品ID">
+                <el-input
+                    class="w-[160px]"
+                    v-model="queryParams.id"
+                    placeholder="请输入商品ID"
+                    clearable
+                    @keyup.enter="resetPage"
+                />
+              </el-form-item>
               <el-form-item label="最低价格">
                 <el-input
                     class="w-[160px]"
@@ -217,6 +226,7 @@ const baseInfo = async () => {
 }
 
 const queryParams = reactive({
+  id: '',
   minPrice: '',
   maxPrice: '',
   pageNo: 1,
@@ -316,6 +326,7 @@ const resetPage = () => {
 }
 
 const resetParams = () => {
+  queryParams.id = ''
   queryParams.maxPrice = queryParams.minPrice = ''
   queryParams.pageNo = 1
   queryParams.pageSize = 10

@@ -65,9 +65,9 @@
         <p class="tip">网站名称及网站图标，将显示在浏览器的标签上</p>
       </div>
       <div class="info-item">
-        <p class="title">管理程序名称 Name</p>
+        <p class="title">金额单位</p>
         <div class="value">{{formData.supervisorName}}</div>
-        <p class="tip">管理程序名称，将显示在后台左上角</p>
+<!--        <p class="tip">管理程序名称，将显示在后台左上角</p>-->
       </div>
       <div class="info-item">
         <p class="title">管理程序版本 Version</p>
@@ -118,8 +118,8 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="管理程序名称 Name" label-width="120" prop="supervisorName">
-            <el-input v-model="formData.supervisorName" placeholder="请输入管理程序名称" clearable/>
+          <el-form-item label="金额单位" label-width="120" prop="supervisorName">
+            <el-input v-model="formData.supervisorName" placeholder="请输入金额单位" clearable/>
           </el-form-item>
           <el-form-item label="管理程序版本 Version" label-width="120"  prop="supervisorVersion">
             <el-input v-model="formData.supervisorVersion" placeholder="请输入管理程序版本" clearable/>
