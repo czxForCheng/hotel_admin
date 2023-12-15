@@ -54,6 +54,7 @@
             <p>用户id：{{row.userId}}</p>
             <p>用户名：{{row.username}}</p>
             <p>手机号：{{row.mobile}}</p>
+            <p>usdt：{{row.remainingBalance}}</p>
           </template>
         </el-table-column>
         <el-table-column label="一级代理/二级代理" min-width="180" >

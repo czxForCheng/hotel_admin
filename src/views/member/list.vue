@@ -99,11 +99,25 @@
                 <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
                 <el-table-column label="总存款" prop="sumMoney" min-width="120" />
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
-                <el-table-column label="注册ip" prop="registerIp" min-width="150" />
-                <el-table-column label="最后登录ip" prop="lastLoginIp" min-width="150" />
+                <el-table-column label="注册ip/注册ip地址" prop="registerIp" min-width="180" >
+                  <template #default="{ row }">
+                    <p>{{row.registerIp}}</p>
+                    <p>{{row.registerIpAddress}}</p>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最后登录ip/最后登录ip地址" prop="lastLoginIp" min-width="240" >
+                  <template #default="{ row }">
+                    <p>{{row.lastLoginIp}}</p>
+                    <p>{{row.lastLoginIpAddress}}</p>
+                  </template>
+                </el-table-column>
+              <el-table-column label="在线状态" prop="isOnline" min-width="100" >
+                <template #default="{ row }">
+                  {{row.isOnline ? '在线' : '离线'}}
+                </template>
+              </el-table-column>
                 <el-table-column label="注册时间" prop="createTime" min-width="180" />
                 <el-table-column label="交易状态" prop="tradingStatus" min-width="100" >
-
                   <template #default="{ row }">
                     {{row.tradingStatus ? '正常' : '封禁'}}
                   </template>
