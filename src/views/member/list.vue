@@ -83,7 +83,11 @@
                     <p>{{row.parentAgentName}}</p>
                   </template>
                 </el-table-column>
-                <el-table-column label="账号" prop="username" min-width="120" />
+              <el-table-column label="账号" prop="username" min-width="120" >
+                <template #default="{ row }">
+                  <span :class="{'online': row.isOnline}">{{row.username}}</span>
+                </template>
+              </el-table-column>
                 <el-table-column label="手机号码" prop="mobile" min-width="150" />
                 <el-table-column :show-overflow-tooltip="true" label="会员等级" prop="userLevel" min-width="120" />
                 <el-table-column label="信誉分" prop="creditScore" min-width="100" />
@@ -115,11 +119,6 @@
                     <p>{{row.lastLoginIpAddress}}</p>
                   </template>
                 </el-table-column>
-              <el-table-column label="在线状态" prop="isOnline" min-width="100" >
-                <template #default="{ row }">
-                  {{row.isOnline ? '在线' : '离线'}}
-                </template>
-              </el-table-column>
                 <el-table-column label="注册时间" prop="createTime" min-width="180" />
                 <el-table-column label="交易状态" prop="tradingStatus" min-width="100" >
                   <template #default="{ row }">
@@ -969,5 +968,8 @@ const handlePasswordEdit = async () => {
     display: block;
     width: 100%;
     height: 100%;
+  }
+  .online{
+    color: green;
   }
 </style>
