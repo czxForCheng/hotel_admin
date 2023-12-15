@@ -62,6 +62,10 @@
           </el-form-item>
         </el-form>
       </el-card>
+      <el-card class="!border-none mt-4" shadow="never">
+        <p>总人数：{{userManageNum.sumNumber}}</p>
+        <p>在线人数：{{userManageNum.onlineNum}}</p>
+      </el-card>
         <el-card class="!border-none mt-4" shadow="never">
           <div>
             <el-button v-perms="['userManage:add']" type="primary" class="mb-4" @click="handleOpenAdd">
@@ -461,7 +465,8 @@ import {
   frozenAmount,
   secondAgentList,
   updatePwd,
-  updateTradingPwd
+  updateTradingPwd,
+  userManageNumApi
 } from '@/api/member'
 import type { FormInstance } from 'element-plus'
 import Popup from './dislodge.vue'
@@ -498,6 +503,17 @@ onActivated(() => {
 })
 
 getLists()
+
+const userManageNum = reactive({
+  sumNumber: 0,
+  onlineNum: 0
+})
+const getUserManageNum = async () => {
+  const result = await userManageNumApi({})
+  userManageNum.sumNumber = result.sumNumber
+  userManageNum.onlineNum = result.onlineNum
+}
+getUserManageNum()
 
 const validateUsername = (rule: any, value: any, callback: any) => {
   if(value.length < 5) {

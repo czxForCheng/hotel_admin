@@ -174,3 +174,7 @@ export function updatePwd(params: any) {
 export function updateTradingPwd(params: any) {
     return request.post({ url: '/userManage/updateTradingPwd', params })
 }
+// 总人数、在线人数
+export function userManageNumApi(params: any) {
+    return request.get({ url: '/userManage/getNum', params })
+}
