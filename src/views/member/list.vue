@@ -56,6 +56,18 @@
                 clearable
             />
           </el-form-item>
+          <el-form-item label="是否在线">
+            <el-select class="w-[280px]" v-model="queryParams.isOnline" placeholder="请选择是否在线">
+              <el-option
+                  label="离线"
+                  :value="0"
+              />
+              <el-option
+                  label="在线"
+                  :value="1"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="resetPage">查询</el-button>
             <el-button @click="resetParams">重置</el-button>
@@ -490,7 +502,8 @@ const queryParams = reactive({
   inviteCode: '',
   lastLoginIp: '',
   startTime: '',
-  endTime: ''
+  endTime: '',
+  isOnline: ''
 })
 
 const { pager, getLists, resetPage, resetParams } = usePaging({
