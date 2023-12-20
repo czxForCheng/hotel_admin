@@ -19,3 +19,13 @@ export function statisticsData() {
 export function countAgent(params: any) {
     return request.get({ url: '/statistics/count/agent', params })
 }
+
+// 商城刷新
+export function mallRefresh(params: any) {
+    return request.get({ url: '/statistics/count/mall', params })
+}
+
+// 列表刷新
+export function agentRefresh(params: any) {
+    return request.get({ url: '/statistics/count/agency', params })
+}

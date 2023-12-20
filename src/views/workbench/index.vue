@@ -2,7 +2,13 @@
   <div class="home">
     <div style="margin-bottom: 20px;">
       <el-card>
-        <div class="title">商城统计</div>
+        <div class="title" style="display: flex;align-items: center;">
+          <div class="lef" style="display: flex;align-items: center;cursor: pointer;" @click="handleRefresh">
+            <span style="margin-right: 6px;">商城统计</span>
+            <icon name="el-icon-Refresh" :size="18" />
+          </div>
+          <span style="font-size: 14px;margin-left: 12px;">上次刷新时间：{{showData['refreshTime'] || getNowTime()}}</span>
+        </div>
         <div class="dataList" v-loading="isLoading">
           <div class="data-item">
             <p class="dataTitle">首充人数</p>
@@ -64,18 +70,21 @@
     <el-card>
       <div style="margin-bottom: 15px;">
         <p class="title">代理统计</p>
-        <el-form ref="formRef" class="mb-[-16px]" :model="queryParams" :inline="true">
-          <el-form-item label="统计时间">
-            <daterange-picker
-                v-model:startTime="queryParams.startTime"
-                v-model:endTime="queryParams.endTime"
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="resetPage">查询</el-button>
-            <el-button @click="resetParams">重置</el-button>
-          </el-form-item>
-        </el-form>
+        <div style="display: flex;">
+          <el-form ref="formRef" class="mb-[-16px]" :model="queryParams" :inline="true">
+            <el-form-item label="统计时间">
+              <daterange-picker
+                  v-model:startTime="queryParams.startTime"
+                  v-model:endTime="queryParams.endTime"
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="handleAgentRefresh">查询</el-button>
+              <el-button @click="resetParams">重置</el-button>
+            </el-form-item>
+          </el-form>
+          <span style="font-size: 14px;line-height: 32px;">上次刷新时间: {{pager[0]?.refreshTime || getNowTime()}}</span>
+        </div>
       </div>
       <el-table size="large" v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="姓名" prop="agentName" min-width="120" />
@@ -101,17 +110,16 @@
 </template>
 
 <script lang="ts" setup name="home">
-import { ref, reactive } from 'vue'
+import {ref, reactive, computed} from 'vue'
 import { usePaging } from '@/hooks/usePaging'
-import { statisticsData , countAgent} from '@/api/app'
+import { statisticsData , countAgent, mallRefresh, agentRefresh} from '@/api/app'
 import type { FormInstance } from 'element-plus'
 const formRef = shallowRef<FormInstance>()
 let showData:any = ref({})
 const isLoading = ref(false)
 const getShowData = async () => {
   isLoading.value = true
-  const res = await statisticsData()
-  showData.value = res
+  showData.value = await statisticsData()
   isLoading.value = false
 }
 getShowData()
@@ -120,12 +128,48 @@ const queryParams = reactive({
   endTime: ''
 })
 
-const { pager, getLists, resetPage, resetParams } = usePaging({
+const { pager, getLists, resetPage } = usePaging({
   fetchFun: countAgent,
-  params: queryParams
+  params: queryParams,
+  afterRequest: (res) => {
+    queryParams.startTime = res.list[0] && res.list[0].startTime || ''
+    queryParams.endTime = res.list[0] && res.list[0].endTime || ''
+  }
 })
 
 getLists()
+
+const resetParams = async () => {
+  queryParams.startTime = ''
+  queryParams.endTime = ''
+  await agentRefresh(queryParams)
+  getLists()
+}
+
+const handleRefresh = async () => {
+  await mallRefresh({})
+  await getShowData()
+}
+const handleAgentRefresh = async () => {
+  await agentRefresh(queryParams)
+  await resetPage()
+}
+
+const getNowTime = () => {
+  const nowTime = new Date()
+  let year:any = nowTime.getFullYear()
+  let month:any = nowTime.getMonth() + 1
+  month = month < 10 ? '0' + month : '' +month
+  let day:any = nowTime.getDate()
+  day = day < 10 ? '0' + day : '' +day
+  let hour:any = nowTime.getHours()
+  hour = hour < 10 ? '0' + hour : '' +hour
+  let minute:any = nowTime.getMinutes()
+  minute = minute < 10 ? '0' + minute : '' +minute
+  let second:any = nowTime.getSeconds()
+  second = second < 10 ? '0' + second : '' +second
+  return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' +second
+}
 </script>
 
 <style lang="scss" scoped>

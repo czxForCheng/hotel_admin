@@ -46,8 +46,8 @@ export function usePaging(options: Options) {
             ...requestParams
         })
             .then((res: any) => {
-                pager.count = res?.count
-                pager.lists = res?.lists
+                pager.count = res?.count || res?.total
+                pager.lists = res?.lists || res?.list
                 pager.extend = res?.extend
                 if (isFunction(afterRequest)) {
                     afterRequest(res)
