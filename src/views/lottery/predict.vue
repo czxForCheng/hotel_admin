@@ -31,6 +31,11 @@
         <el-table-column label="用户名" prop="userName" min-width="100" />
         <el-table-column label="抽奖活动ID" prop="drawId" min-width="100" />
         <el-table-column label="中奖金额" prop="prizeAmount" min-width="100" />
+        <el-table-column label="中奖状态" prop="status" min-width="100" >
+          <template #default="{ row }">
+            <el-tag :type="row.status == 0 ? 'danger' : 'success'" >{{row.status == 0 ? '未中奖' : '中奖'}}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
             <el-button v-perms="['lotteryPredict:edit']" type="primary" @click="handleEdit(row)">编辑</el-button>
@@ -61,15 +66,6 @@
                 clearable
             />
           </el-form-item>
-<!--          <el-form-item label="活动名称" prop="drawName">-->
-<!--            <el-select class="w-[280px]" v-model="formData.drawId" placeholder="请选择活动名称">-->
-<!--              <el-option-->
-<!--                  v-for="(item, index) in lotteryAll" :key="index"-->
-<!--                  :label="item.drawName"-->
-<!--                  :value="item.id"-->
-<!--              />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
           <el-form-item label="中奖金额" prop="prizeAmount">
             <el-input
                 v-model="formData.prizeAmount"

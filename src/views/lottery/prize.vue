@@ -11,6 +11,9 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="余额最小限制">
+          <el-input class="w-[280px]" v-model="queryParams.minAmount" placeholder="请输入余额最小限制"/>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="resetPage">查询</el-button>
           <el-button @click="resetParams">重置</el-button>
@@ -28,7 +31,7 @@
       </div>
       <el-table size="large" v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="ID" prop="id" min-width="60" />
-        <el-table-column label="抽奖活动ID" prop="drawId" min-width="120" />
+        <el-table-column label="活动名称" prop="drawName" min-width="120" />
         <el-table-column label="奖品名称" prop="prizeName" min-width="100" />
         <el-table-column label="奖金金额" prop="prizeAmount" min-width="100" />
         <el-table-column label="中奖百分比" prop="winningRatio" min-width="120" />
@@ -126,7 +129,8 @@ import {
 import feedback from "@/utils/feedback";
 import {getRoutePath} from "@/router";
 const queryParams = reactive({
-  drawId: ''
+  drawId: '',
+  minAmount: null
 })
 let formData = reactive({
   id: '',

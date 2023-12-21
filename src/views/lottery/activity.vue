@@ -50,8 +50,8 @@
             {{row.drawType == 0 ? '转盘活动' : '其它活动'}}
           </template>
         </el-table-column>
-        <el-table-column label="完成任务组数限制" prop="taskNumLimit" min-width="100" />
-        <el-table-column label="每天抽奖次数限制" prop="lottoNumLimit" min-width="100" />
+        <el-table-column label="完成任务组数限制" prop="taskNumLimit" min-width="120" />
+        <el-table-column label="每天抽奖次数限制" prop="lottoNumLimit" min-width="120" />
         <el-table-column label="用户余额限制" prop="userMoneyLimit" min-width="100" />
         <el-table-column label="开始时间" prop="startTimeStr" min-width="120" />
         <el-table-column label="结束时间" prop="endTimeStr" min-width="100" />

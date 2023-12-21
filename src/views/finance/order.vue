@@ -189,6 +189,9 @@ const fundType = computed(() => {
       case 13:
         type = '注册体验金'
         break
+      case 14:
+        type = '活动抽奖'
+        break
     }
     return type
   }

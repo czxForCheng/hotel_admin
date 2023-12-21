@@ -68,6 +68,10 @@
                 label="注册体验金"
                 :value="13"
             />
+            <el-option
+                label="活动抽奖"
+                :value="14"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="发生时间">
@@ -185,6 +189,9 @@ const fundType = computed(() => {
         break
       case 13:
         type = '注册体验金'
+        break
+      case 14:
+        type = '活动抽奖'
         break
     }
     return type
