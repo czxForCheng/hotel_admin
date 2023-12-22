@@ -116,12 +116,7 @@
             />
           </el-form-item>
           <el-form-item label="活动内容" prop="drawContent">
-            <el-input
-                type="textarea"
-                v-model="formData.drawContent"
-                placeholder="请输入活动内容"
-                clearable
-            />
+            <editor v-model="formData.drawContent" :height="500" />
           </el-form-item>
           <el-form-item label="活动类型" prop="drawType">
             <el-select class="w-[280px]" v-model="formData.drawType" placeholder="请选择活动类型">

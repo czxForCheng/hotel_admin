@@ -2,6 +2,14 @@
   <div>
     <el-card class="!border-none" shadow="never">
       <el-form ref="formRef" class="mb-[-16px]" :model="queryParams" :inline="true">
+        <el-form-item label="用户名">
+          <el-input
+              class="w-[280px]"
+              v-model="queryParams.userName"
+              placeholder="请输入用户名"
+              clearable
+          />
+        </el-form-item>
         <el-form-item label="抽奖活动">
           <el-select class="w-[280px]" v-model="queryParams.drawId" placeholder="请选择抽奖活动">
             <el-option
@@ -41,7 +49,8 @@ import {
 import feedback from "@/utils/feedback";
 import {getRoutePath} from "@/router";
 const queryParams = reactive({
-  drawId: ''
+  drawId: '',
+  userName: ''
 })
 let formData = reactive({
   id: '',
