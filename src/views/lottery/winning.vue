@@ -24,6 +24,7 @@
         <el-table-column label="活动名称" prop="drawName" min-width="100" />
         <el-table-column label="奖品名称" prop="prizeName" min-width="100" />
         <el-table-column label="奖金金额" prop="prizeAmount" min-width="100" />
+        <el-table-column label="中奖时间" prop="createTimeStr" min-width="100" />
       </el-table>
       <div class="flex justify-end mt-4">
         <pagination v-model="pager" @change="getLists" />
