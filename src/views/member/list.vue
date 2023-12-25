@@ -808,6 +808,7 @@ const handleAdd = () => {
 }
 const handleEdit = async (row: any) => {
   dialogTitle.value = '修改用户信息'
+  console.log(row)
   // formData = row
   formData.id = row.id
   formData.firstAgentId = row.firstAgentId

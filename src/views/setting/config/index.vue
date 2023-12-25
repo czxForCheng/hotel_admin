@@ -47,15 +47,14 @@
         <el-form-item label="是否开启邮箱" prop="timeZone">
           <div class="w-80">
             <el-switch
-                v-model="row.isShow"
+                v-model="isEmail"
                 :active-value="1"
                 :inactive-value="0"
-                @change="changeStatus(row.id)"
+                @change="changeStatus"
             />
           </div>
         </el-form-item>
       </el-form>
-      <el-button type="primary" @click="handleUpdateLange">保存语言</el-button>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
       <el-form ref="formRefZoom" :rules="rulesZoom" :model="formDataZoom" label-width="120px">
@@ -187,11 +186,20 @@
 
 <script lang="ts" setup name="webInformation">
 import type { FormInstance } from 'element-plus'
-import {getTime, nowLanguage, setLanguage, updateTime, websiteInfoApi, websiteInfoEdit} from '@/api/setting/config'
+import {
+  getTime,
+  nowLanguage,
+  selectEmail, setEmail,
+  setLanguage,
+  updateTime,
+  websiteInfoApi,
+  websiteInfoEdit
+} from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
 import useTimeStore from '@/stores/modules/timeZoom'
 import {computed} from "vue";
+import {orderPay} from "@/api/finance/order";
 const appStore = useAppStore()
 const timeStore = useTimeStore()
 const config = computed(() => appStore.config)
@@ -307,6 +315,7 @@ getWebsiteInfo()
 const formRef = shallowRef<FormInstance>()
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
+const isEmail=ref(0)
 const handleUpdateSys = () => {
   dialogVisible.value = true
 }
@@ -335,6 +344,28 @@ const handleSubmit = async () => {
 watch(config, () => {
   getWebsiteInfo()
 })
+
+const changeStatus =async (item:any) => {
+  console.log(item)
+  switch (item){
+    case 0:{
+      await feedback.confirm('是否要关闭邮箱？')
+      await setEmail({ mailboxSwitch:item })
+      feedback.msgSuccess('操作成功')
+      getEmailStatus()
+      break
+    }
+    case 1:{
+      await feedback.confirm('是否要开启邮箱？')
+      await setEmail({ mailboxSwitch:item })
+      feedback.msgSuccess('操作成功')
+      getEmailStatus()
+      break
+    }
+  }
+
+}
+
 
 const handleClose = () => {
   dialogVisible.value = false
@@ -443,6 +474,15 @@ const rulesEmail = {
     }
   ]
 }
+
+const getEmailStatus = () => {
+  selectEmail().then(res=>{
+    isEmail.value = res.mailboxSwitch ? parseInt(res.mailboxSwitch):0
+  }).catch(err=>{})
+}
+
+getEmailStatus()
+
 </script>
 
 <style lang="scss" scoped>

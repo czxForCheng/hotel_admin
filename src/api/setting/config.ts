@@ -29,4 +29,12 @@ export function nowLanguage() {
 export function setLanguage(params: any) {
     return request.post({ url: '/configuration/update/language', params })
 }
+// 是否需要邮箱
+export function setEmail(params: any) {
+    return request.post({ url: '/configuration/update/mailbox', params })
+}
 
+// 查询邮箱信息
+export function selectEmail() {
+    return request.get({ url: '/configuration/sel/mailbox' })
+}
