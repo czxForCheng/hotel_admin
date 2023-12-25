@@ -42,6 +42,22 @@
       <el-button type="primary" @click="handleUpdateLange">保存语言</el-button>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
+      <p>注册是否开启邮箱：</p>
+      <el-form ref="formRefEmail" :rules="rulesEmail" :model="formDataEmail" label-width="120px">
+        <el-form-item label="是否开启邮箱" prop="timeZone">
+          <div class="w-80">
+            <el-switch
+                v-model="row.isShow"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeStatus(row.id)"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" @click="handleUpdateLange">保存语言</el-button>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
       <el-form ref="formRefZoom" :rules="rulesZoom" :model="formDataZoom" label-width="120px">
         <el-form-item label="系统时区配置" prop="timeZone">
           <div class="w-80">
@@ -409,13 +425,24 @@ watch(timeZoom,(newvalue, oldvalue) => {
 const handleUpdateTime = async () => {
   await formRefZoom.value?.validate()
   timeStore.setTimeZoom(formDataZoom.timeZone)
-  // await updateTime({
-  //     setTimeZone: formDataZoom.timeZone
-  // })
   feedback.msgSuccess('操作成功')
 }
 
-
+/* 是否开启邮箱 */
+const formRefEmail = ref<FormInstance>()
+const formDataEmail = reactive({
+  switch: ''
+})
+/*系统时区配置 表单验证*/
+const rulesEmail = {
+  timeZone: [
+    {
+      required: true,
+      message: '请选择系统时区',
+      trigger: ['blur']
+    }
+  ]
+}
 </script>
 
 <style lang="scss" scoped>

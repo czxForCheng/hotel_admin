@@ -83,7 +83,7 @@
               <el-button @click="resetParams">重置</el-button>
             </el-form-item>
           </el-form>
-          <span style="font-size: 14px;line-height: 32px;">上次刷新时间: {{pager[0]?.refreshTime || getNowTime()}}</span>
+          <span style="font-size: 14px;line-height: 32px;">上次刷新时间: {{refreshTime}}</span>
         </div>
       </div>
       <el-table size="large" v-loading="pager.loading" :data="pager.lists">
@@ -127,13 +127,14 @@ const queryParams = reactive({
   startTime: '',
   endTime: ''
 })
-
+const refreshTime = ref('')
 const { pager, getLists, resetPage } = usePaging({
   fetchFun: countAgent,
   params: queryParams,
   afterRequest: (res) => {
     queryParams.startTime = res.list[0] && res.list[0].startTime || ''
     queryParams.endTime = res.list[0] && res.list[0].endTime || ''
+    refreshTime.value = res.list[0] && res.list[0].refreshTime || getNowTime()
   }
 })
 
