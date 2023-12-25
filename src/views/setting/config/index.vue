@@ -346,7 +346,7 @@ watch(config, () => {
 })
 
 const changeStatus =async (item:any) => {
-  console.log(item)
+
   switch (item){
     case 0:{
       await feedback.confirm('是否要关闭邮箱？')

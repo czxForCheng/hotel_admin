@@ -89,20 +89,27 @@
           </div>
             <el-table max-height="550px" size="large" v-loading="pager.loading" :data="pager.lists">
                 <el-table-column label="UID" prop="id" min-width="60" />
-                <el-table-column label="一级代理/二级代理" min-width="180" >
-                  <template #default="{ row }">
-                    <p>{{row.firstAgentName}}</p>
-                    <p>{{row.parentAgentName}}</p>
-                  </template>
-                </el-table-column>
               <el-table-column label="账号" prop="username" min-width="120" >
                 <template #default="{ row }">
                   <span :class="{'online': row.isOnline}">{{row.username}}</span>
                 </template>
               </el-table-column>
+                <el-table-column label="一级代理/二级代理" min-width="180" >
+                  <template #default="{ row }">
+                    <p>一级代理：{{row.firstAgentName}}</p>
+                    <p>二级代理：{{row.parentAgentName}}</p>
+                  </template>
+                </el-table-column>=
                 <el-table-column label="手机号码" prop="mobile" min-width="150" />
                 <el-table-column :show-overflow-tooltip="true" label="会员等级" prop="userLevel" min-width="120" />
-                <el-table-column label="信誉分" prop="creditScore" min-width="100" />
+<!--              <el-table-column :show-overflow-tooltip="true" label="邮箱" prop="mailbox" min-width="120" />-->
+                <el-table-column label="信誉分" prop="creditScore" min-width="100" >
+                  <template #default="{row}">
+                    <b v-if="row.creditScore>=90" style="color: #669900">{{row.creditScore}}</b>
+                    <b v-else-if="row.creditScore>=60 && row.creditScore<90" style="color: #e6a23c">{{row.creditScore}}</b>
+                    <b v-else style="color: #b31d28">{{row.creditScore}}</b>
+                  </template>
+                </el-table-column>
                 <el-table-column label="已完成订单总数" prop="nowOrderNum" min-width="100" />
                 <el-table-column label="全部订单总数" prop="robOrderNum" min-width="120" />
                 <el-table-column label="是否连单" min-width="120">
@@ -250,6 +257,13 @@
               <el-input
                   v-model="formDataAdd.inviteCode"
                   placeholder="邀请码"
+                  clearable
+              />
+            </el-form-item>
+            <el-form-item v-if="isEmail===1" label="邮箱" :prop="isEmail===0 ? null:'mailbox'">
+              <el-input
+                  v-model="formDataAdd.mailbox"
+                  placeholder="邮箱"
                   clearable
               />
             </el-form-item>
@@ -483,6 +497,7 @@ import type { FormInstance } from 'element-plus'
 import Popup from './dislodge.vue'
 import feedback from "@/utils/feedback";
 import user from "@/stores/modules/user";
+import {selectEmail} from "@/api/setting/config";
 
 const userStore = useUserStore()
 const userInfo = reactive({
@@ -581,8 +596,10 @@ let formDataAdd  = reactive({
   mobile: '',
   password: '',
   tradingPwd: '',
-  inviteCode: ''
+  inviteCode: '',
+  mailbox:''
 })
+const isEmail = ref(<any>0)
 const rulesAdd  = reactive({
   username: [
       { required: true, message: '用户名称必填', trigger: 'blur' },
@@ -600,18 +617,38 @@ const rulesAdd  = reactive({
       { required: true, message: '交易密码必填', trigger: 'blur' },
       { validator: validateTrading, trigger: 'blur' }
   ],
-  inviteCode: [{ required: true, message: '邀请码必填', trigger: 'blur' }]
+  inviteCode: [{ required: true, message: '邀请码必填', trigger: 'blur' }],
+  mailbox: [{ required: true, message: '邮箱为必填', trigger: 'blur' }],
 })
 const dialogAddVisible = ref(false)
 const handleOpenAdd = () => {
   dialogAddVisible.value = true
 }
 const handleAddSubmit = async () => {
-  await formRefAdd.value?.validate()
-  await userAdd(formDataAdd)
-  feedback.msgSuccess('新增成功')
-  getLists()
-  handleAddClose()
+  switch (isEmail.value){
+    case 0:{
+      formDataAdd.mailbox = ''
+      await formRefAdd.value?.validate()
+      await userAdd(formDataAdd)
+      feedback.msgSuccess('新增成功')
+      getLists()
+      handleAddClose()
+      break
+    }
+    case 1:{
+      if (formDataAdd.mailbox === ''){
+        feedback.msgWarning('邮箱为必填')
+      }else{
+        await formRefAdd.value?.validate()
+        await userAdd(formDataAdd)
+        feedback.msgSuccess('新增成功')
+        getLists()
+        handleAddClose()
+        break
+      }
+    }
+  }
+
 }
 const handleAddClose = () => {
   dialogAddVisible.value = false
@@ -621,7 +658,14 @@ const handleAddClose = () => {
   formDataAdd.tradingPwd = ''
   formDataAdd.inviteCode = ''
 }
+// 查询邮箱状态
+const getEmailStatus = () => {
+  selectEmail().then(res=>{
+    isEmail.value = res.mailboxSwitch ? parseInt(res.mailboxSwitch):0
+  }).catch(err=>{})
+}
 
+getEmailStatus()
 
 
 
@@ -808,7 +852,6 @@ const handleAdd = () => {
 }
 const handleEdit = async (row: any) => {
   dialogTitle.value = '修改用户信息'
-  console.log(row)
   // formData = row
   formData.id = row.id
   formData.firstAgentId = row.firstAgentId
