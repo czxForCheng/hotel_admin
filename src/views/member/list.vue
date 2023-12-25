@@ -102,7 +102,7 @@
                 </el-table-column>=
                 <el-table-column label="手机号码" prop="mobile" min-width="150" />
                 <el-table-column :show-overflow-tooltip="true" label="会员等级" prop="userLevel" min-width="120" />
-<!--              <el-table-column :show-overflow-tooltip="true" label="邮箱" prop="mailbox" min-width="120" />-->
+              <el-table-column :show-overflow-tooltip="true" label="邮箱" prop="mailbox" min-width="120" />
                 <el-table-column label="信誉分" prop="creditScore" min-width="100" >
                   <template #default="{row}">
                     <b v-if="row.creditScore>=90" style="color: #669900">{{row.creditScore}}</b>
@@ -358,6 +358,13 @@
                                 clearable
                         />
                     </el-form-item>
+                  <el-form-item label="邮箱">
+                    <el-input
+                        v-model="formData.mailbox"
+                        placeholder="请输入邮箱地址"
+                        clearable
+                    />
+                  </el-form-item>
                     <el-form-item label="级别任务数" label-width="120" prop="taskNum">
                         <el-input
                                 v-model="formData.taskNum"
@@ -824,7 +831,8 @@ let formData = reactive({
   tradingPwd: '',
   taskNum: 0,
   creditScore: '',
-  parentId: ''
+  parentId: '',
+  mailbox:''
 })
 const rules = reactive({
   username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
@@ -867,6 +875,7 @@ const handleEdit = async (row: any) => {
   formData.taskNum = row.taskNum
   formData.creditScore = row.creditScore
   formData.parentId = row.parentId
+  formData.mailbox=row.mailbox
   const info:any = memberProxyAll.value.find(item => {
     return item['id'] === formData.firstAgentId
   })
