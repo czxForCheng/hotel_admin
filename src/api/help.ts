@@ -15,4 +15,9 @@ export function homeUpdate(params: any) {
     return request.post({ url: '/help/home/update', params })
 }
 
+// 删除首页文本
+export function homeDelete(id: any) {
+    return request.get({ url: `/help/home/del/${id}` })
+}
+
 

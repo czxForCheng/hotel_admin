@@ -29,9 +29,10 @@
         </el-table-column>
         <el-table-column label="更新时间" prop="updateTime" min-width="150" />
         <el-table-column label="最后编辑" prop="updateName" min-width="100" />
-        <el-table-column label="操作" width="100" fixed="right">
+        <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
             <el-button v-perms="['help:home:update']" type="primary" @click="handleEdit(row)">编辑</el-button>
+            <el-button v-perms="['help:home:update']" type="primary" @click="handleDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -91,12 +92,13 @@
 </template>
 <script lang="ts" setup name="textLists">
 import type { FormInstance } from 'element-plus'
-import {getHomePage, homeUpdate, homeAdd} from '@/api/help'
+import {getHomePage, homeUpdate, homeAdd, homeDelete} from '@/api/help'
 import { useDictOptions } from '@/hooks/useDictOptions'
 import feedback from "@/utils/feedback";
 import {dictDataAll} from "@/api/setting/dict";
 import {usePaging} from "@/hooks/usePaging";
 import {countAgent} from "@/api/app";
+import {withdrawalDelete} from "@/api/finance/withdraw";
 const queryParams = reactive({})
 let formData = reactive({
   id: '',
@@ -162,6 +164,12 @@ const handleEdit = async (row: any) => {
   formData.type = row.type
   formData.status = row.status
   dialogVisible.value = true
+}
+const handleDelete = async (id:number) => {
+  await feedback.confirm('确定要删除这条数据？')
+  await homeDelete(id)
+  feedback.msgSuccess('删除成功')
+  getLists()
 }
 
 /* 提交菜单 */
