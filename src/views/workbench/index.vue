@@ -117,6 +117,26 @@ import type { FormInstance } from 'element-plus'
 const formRef = shallowRef<FormInstance>()
 let showData:any = ref({})
 const isLoading = ref(false)
+const getNowTime = (type = 0) => {
+  const nowTime = new Date()
+  let year:any = nowTime.getFullYear()
+  let month:any = nowTime.getMonth() + 1
+  month = month < 10 ? '0' + month : '' +month
+  let day:any = nowTime.getDate()
+  day = day < 10 ? '0' + day : '' +day
+  let hour:any = nowTime.getHours()
+  hour = hour < 10 ? '0' + hour : '' +hour
+  let minute:any = nowTime.getMinutes()
+  minute = minute < 10 ? '0' + minute : '' +minute
+  let second:any = nowTime.getSeconds()
+  second = second < 10 ? '0' + second : '' +second
+  if(type === 0) {
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' +second
+  }else{
+    return year + '-' + month + '-' + day
+  }
+
+}
 const getShowData = async () => {
   isLoading.value = true
   showData.value = await statisticsData()
@@ -127,13 +147,15 @@ const queryParams = reactive({
   startTime: '',
   endTime: ''
 })
+queryParams.startTime = getNowTime(1)
+queryParams.endTime = getNowTime(1)
 const refreshTime = ref('')
 const { pager, getLists, resetPage } = usePaging({
   fetchFun: countAgent,
   params: queryParams,
   afterRequest: (res) => {
-    queryParams.startTime = res.list[0] && res.list[0].startTime || ''
-    queryParams.endTime = res.list[0] && res.list[0].endTime || ''
+    queryParams.startTime = res.list[0] && res.list[0].startTime || getNowTime(1)
+    queryParams.endTime = res.list[0] && res.list[0].endTime || getNowTime(1)
     refreshTime.value = res.list[0] && res.list[0].refreshTime || getNowTime()
   }
 })
@@ -141,8 +163,8 @@ const { pager, getLists, resetPage } = usePaging({
 getLists()
 
 const resetParams = async () => {
-  queryParams.startTime = ''
-  queryParams.endTime = ''
+  queryParams.startTime = getNowTime(1)
+  queryParams.endTime = getNowTime(1)
   await agentRefresh(queryParams)
   getLists()
 }
@@ -156,21 +178,6 @@ const handleAgentRefresh = async () => {
   await resetPage()
 }
 
-const getNowTime = () => {
-  const nowTime = new Date()
-  let year:any = nowTime.getFullYear()
-  let month:any = nowTime.getMonth() + 1
-  month = month < 10 ? '0' + month : '' +month
-  let day:any = nowTime.getDate()
-  day = day < 10 ? '0' + day : '' +day
-  let hour:any = nowTime.getHours()
-  hour = hour < 10 ? '0' + hour : '' +hour
-  let minute:any = nowTime.getMinutes()
-  minute = minute < 10 ? '0' + minute : '' +minute
-  let second:any = nowTime.getSeconds()
-  second = second < 10 ? '0' + second : '' +second
-  return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' +second
-}
 </script>
 
 <style lang="scss" scoped>
