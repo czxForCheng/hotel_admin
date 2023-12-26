@@ -32,7 +32,7 @@
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
             <el-button v-perms="['help:home:update']" type="primary" @click="handleEdit(row)">编辑</el-button>
-            <el-button v-perms="['help:home:update']" type="primary" @click="handleDelete(row.id)">删除</el-button>
+            <el-button v-perms="['help:home:del']" type="primary" @click="handleDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
