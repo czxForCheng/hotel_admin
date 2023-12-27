@@ -63,7 +63,7 @@
           <div class="w-80">
             <el-input
                 v-model="formDataDomain.domainLimit"
-                placeholder="请输入限制域名"
+                placeholder="请输入域名"
                 type="textarea"
             />
           </div>
