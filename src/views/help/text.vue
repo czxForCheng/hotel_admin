@@ -27,7 +27,7 @@
             {{row.status === 0 ? '开启' : (row.status === 1 ? '关闭' : '')}}
           </template>
         </el-table-column>
-        <el-table-column label="更新时间" prop="updateTime" min-width="150" />
+        <el-table-column label="更新时间" prop="updateTime" min-width="160" />
         <el-table-column label="最后编辑" prop="updateName" min-width="100" />
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
@@ -167,7 +167,7 @@ const handleEdit = async (row: any) => {
 }
 const handleDelete = async (id:number) => {
   await feedback.confirm('确定要删除这条数据？')
-  await homeDelete(id)
+  await homeDelete({id})
   feedback.msgSuccess('删除成功')
   getLists()
 }
