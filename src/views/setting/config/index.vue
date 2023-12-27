@@ -67,7 +67,7 @@
                 type="textarea"
             />
           </div>
-          <p style="font-size: 12px;color: #999;margin-left: 10px;">多个域名请用“｜”隔开</p>
+          <p style="font-size: 12px;color: #999;margin-left: 10px;">多个域名请用“,”隔开</p>
         </el-form-item>
       </el-form>
       <el-button v-perms="['update:domainLimit']" type="primary" @click="changeDomainStatus">保存</el-button>
