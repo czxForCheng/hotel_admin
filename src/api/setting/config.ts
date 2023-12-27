@@ -38,3 +38,13 @@ export function setEmail(params: any) {
 export function selectEmail() {
     return request.get({ url: '/configuration/sel/mailbox' })
 }
+
+// 修改域名限制
+export function setDomain(params: any) {
+    return request.post({ url: '/configuration/update/domainLimit', params })
+}
+
+// 查询域名限制
+export function getDomain() {
+    return request.get({ url: '/configuration/sel/domainLimit' })
+}

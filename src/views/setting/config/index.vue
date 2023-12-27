@@ -44,7 +44,7 @@
     <el-card shadow="never" class="!border-none mt-4">
       <p>注册是否开启邮箱：</p>
       <el-form ref="formRefEmail" :rules="rulesEmail" :model="formDataEmail" label-width="120px">
-        <el-form-item label="是否开启邮箱" prop="timeZone">
+        <el-form-item label="是否开启邮箱">
           <div class="w-80">
             <el-switch
                 v-model="isEmail"
@@ -55,6 +55,20 @@
           </div>
         </el-form-item>
       </el-form>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
+      <p>设置域名限制：</p>
+      <el-form ref="formRefDomain" :model="formDataDomain" label-width="120px">
+        <el-form-item label="限制域名" prop="domainLimit">
+          <div class="w-80">
+            <el-input
+                v-model="formDataDomain.domainLimit"
+                placeholder="请输入限制域名,多个域名请用“｜”隔开"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+      <el-button v-perms="['update:domainLimit']" type="primary" @click="changeDomainStatus">保存</el-button>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
       <el-form ref="formRefZoom" :rules="rulesZoom" :model="formDataZoom" label-width="120px">
@@ -193,7 +207,8 @@ import {
   setLanguage,
   updateTime,
   websiteInfoApi,
-  websiteInfoEdit
+  websiteInfoEdit,
+  setDomain, getDomain
 } from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
@@ -464,6 +479,19 @@ const formRefEmail = ref<FormInstance>()
 const formDataEmail = reactive({
   switch: ''
 })
+/* 是否开启域名限制 */
+const formRefDomain = ref<FormInstance>()
+const formDataDomain  = reactive({
+  domainLimit: ''
+})
+const getDomainLimit = async () => {
+  formDataDomain.domainLimit = await getDomain()
+}
+getDomainLimit()
+const changeDomainStatus = async () => {
+  await setDomain(formDataDomain)
+  feedback.msgSuccess('操作成功')
+}
 /*系统时区配置 表单验证*/
 const rulesEmail = {
   timeZone: [
