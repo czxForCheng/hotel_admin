@@ -57,15 +57,17 @@
       </el-form>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
-      <p>设置域名限制：</p>
+      <p>设置域名授权：</p>
       <el-form ref="formRefDomain" :model="formDataDomain" label-width="120px">
-        <el-form-item label="限制域名" prop="domainLimit">
+        <el-form-item label="授权域名" prop="domainLimit">
           <div class="w-80">
             <el-input
                 v-model="formDataDomain.domainLimit"
-                placeholder="请输入限制域名,多个域名请用“｜”隔开"
+                placeholder="请输入限制域名"
+                type="textarea"
             />
           </div>
+          <p style="font-size: 12px;color: #999;margin-left: 10px;">多个域名请用“｜”隔开</p>
         </el-form-item>
       </el-form>
       <el-button v-perms="['update:domainLimit']" type="primary" @click="changeDomainStatus">保存</el-button>
