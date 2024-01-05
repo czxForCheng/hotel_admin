@@ -33,7 +33,7 @@
     <div>
       <el-dialog
           v-model="dialogVisible"
-          title="修改信息"
+          :title="dialogTitle"
           width="50%"
           :before-close="handleClose"
       >
@@ -43,7 +43,7 @@
                  :model="formData"
                  label-width="85px"
                  :rules="rules">
-          <el-form-item label="用户名" prop="executionTime">
+          <el-form-item label="执行时间" prop="executionTime">
             <el-input
                 v-model="formData.executionTime"
                 placeholder="请输入执行时间（格式如：12:00）"
@@ -93,8 +93,10 @@ const rules = reactive({
 })
 const formRef = shallowRef<FormInstance>()
 const dialogVisible = ref(false)
+const dialogTitle = ref('')
 const handleEdit = (row:any) => {
   dialogVisible.value = true
+  dialogTitle.value = '编辑 ' + row.jobName
   formData.id = row.id
   formData.executionTime = row.executionTime
   formData.status = row.status
