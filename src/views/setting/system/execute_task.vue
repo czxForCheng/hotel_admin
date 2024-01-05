@@ -43,13 +43,13 @@
                  :model="formData"
                  label-width="85px"
                  :rules="rules">
-          <el-form-item label="用户名" prop="executionTime">
-            <el-input
-                v-model="formData.executionTime"
-                placeholder="请输入执行时间（格式如：12:00）"
-                clearable
-            />
-          </el-form-item>
+              <el-form-item label="用户名" prop="executionTime">
+                <el-input
+                    v-model="formData.executionTime"
+                    placeholder="请输入执行时间（格式如：12:00）"
+                    clearable
+                />
+              </el-form-item>
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="formData.status">
               <el-radio :label="1">开启</el-radio>
