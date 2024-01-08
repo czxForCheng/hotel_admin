@@ -35,6 +35,11 @@
         <el-table-column label="ID" prop="id" min-width="60" />
         <el-table-column label="用户名" prop="userName" min-width="100" />
         <el-table-column label="代理" prop="agentName" min-width="100" />
+        <el-table-column label="类型" prop="linkUrl" min-width="100" >
+          <template #default="{ row }">
+            {{row.type === 0 ? '文本' : '链接'}}
+          </template>
+        </el-table-column>
         <el-table-column label="链接" prop="linkUrl" min-width="100" />
         <el-table-column label="上班时间" prop="workStartTime" min-width="100" />
         <el-table-column label="下班时间" prop="workEndTime" min-width="100" />
@@ -80,12 +85,34 @@
                 clearable
             />
           </el-form-item>
-          <el-form-item label="链接" prop="linkUrl">
+          <el-form-item label="类型" prop="type">
+            <el-select class="w-[280px]" v-model="formData.type" placeholder="请选择类型">
+              <el-option
+                  label="文本"
+                  :value="0"
+              />
+              <el-option
+                  label="链接"
+                  :value="1"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="链接" prop="linkUrl" v-if="formData.type === 1">
             <el-input
                 v-model="formData.linkUrl"
                 placeholder="请输入链接"
                 clearable
             />
+          </el-form-item>
+          <el-form-item label="语言类型" v-if="formData.type === 0">
+            <el-table size="small" :data="formData.languageList" border>
+              <el-table-column label="语言" prop="name" min-width="60" />
+              <el-table-column label="联系电话" prop="mobile" min-width="100" >
+                <template #default="{ row }">
+                  <el-input type="text" placeholder="请输入联系电话" v-model="row.mobile" />
+                </template>
+              </el-table-column>
+            </el-table>
           </el-form-item>
           <el-form-item label="上班时间" prop="workStartTime">
             <el-input
@@ -118,6 +145,7 @@ import { usePaging } from '@/hooks/usePaging'
 import {getServiceList, addService, delService, editService} from '@/api/service'
 import { getProxyList } from '@/api/member'
 import feedback from "@/utils/feedback";
+import {dictDataAll} from "@/api/setting/dict";
 const queryParams = reactive({
   userName: '',
   // startTime: '',
@@ -126,22 +154,31 @@ const queryParams = reactive({
 let formData = reactive({
   id: '',
   userName: '',
+  type: 1,
   linkUrl: '',
   agentId: '',
   workStartTime: '',
-  workEndTime: ''
+  workEndTime: '',
+  languageList: []
 })
 const rules = reactive({
   agentId: [{ required: true, message: '代理必选', trigger: 'blur' }],
   userName: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
+  type: [{ required: true, message: '类型必选', trigger: 'blur' }],
   linkUrl: [{ required: true, message: '链接必填', trigger: 'blur' }],
   workStartTime: [{ required: true, message: '上班时间必填', trigger: 'blur' }],
   workEndTime: [{ required: true, message: '下班时间必填', trigger: 'blur' }]
 })
-
+const defaultProps = {
+  children: 'children',
+  label: 'name',
+}
 const { pager, getLists, resetPage, resetParams } = usePaging({
   fetchFun: getServiceList,
-  params: queryParams
+  params: queryParams,
+  afterRequest(res: Record<any, any>) {
+    getLanguageDict()
+  }
 })
 onActivated(() => {
   getLists()
@@ -153,9 +190,36 @@ const getMemberProxyAll = async () => {
   memberProxyAll.value = await getProxyList()
 }
 getMemberProxyAll()
+const languageDict = ref([])
+const getLanguageDict = async () => {
+  languageDict.value = await dictDataAll({ dictType: 'yuyan' })
+  languageDict.value.forEach((item, index) => {
+    // @ts-ignore
+    formData.languageList[index] = {}
+    // @ts-ignore
+    formData.languageList[index].languageType = item.value
+    // @ts-ignore
+    formData.languageList[index].name = item.name
+    // @ts-ignore
+    formData.languageList[index].mobile = item.mobile
+  })
+}
 const formRef = shallowRef<FormInstance>()
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
+const handleTypeChange = () => {
+  switch(formData.type) {
+    case 0:
+      formData.linkUrl = ''
+        console.log('formData.languageList',formData.languageList)
+      break
+    case 1:
+      formData.languageList.forEach(item => {
+        // @ts-ignore
+        item.mobile = ''
+      })
+  }
+}
 // 新增产品分类
 const handleAdd = () => {
   dialogVisible.value = true
@@ -176,7 +240,11 @@ const handleEdit = async (row: any) => {
   formData.id = row.id
   formData.agentId = row.agentId
   formData.userName = row.userName
+  formData.type = row.type
   formData.linkUrl = row.linkUrl
+  if(row.languageList && row.languageList.length){
+    formData.languageList = row.languageList
+  }
   formData.workStartTime = row.workStartTime
   formData.workEndTime = row.workEndTime
   dialogVisible.value = true
@@ -185,6 +253,16 @@ const handleEdit = async (row: any) => {
 /* 提交菜单 */
 const handleSubmit = async () => {
   await formRef.value?.validate()
+  if(formData.type === 0) {
+    for(let i=0; i<formData.languageList.length; i++) {
+      // @ts-ignore
+      if(!formData.languageList[i].mobile) {
+        // @ts-ignore
+        feedback.msgError(`每个语言的联系电话都要填`)
+        return
+      }
+    }
+  }
   if (formData.id) {
     await editService(formData)
     feedback.msgSuccess('修改成功')
@@ -201,9 +279,20 @@ const handleClose = () => {
   formData.id = ''
   formData.agentId = ''
   formData.userName = ''
+  formData.type = 1
   formData.linkUrl = ''
   formData.workStartTime = ''
   formData.workEndTime = ''
+  languageDict.value.forEach((item, index) => {
+    // @ts-ignore
+    formData.languageList[index] = {}
+    // @ts-ignore
+    formData.languageList[index].languageType = item.value
+    // @ts-ignore
+    formData.languageList[index].name = item.name
+    // @ts-ignore
+    formData.languageList[index].mobile = item.mobile
+  })
 }
 
 </script>

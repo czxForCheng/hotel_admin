@@ -182,6 +182,31 @@
               <material-picker v-model="formData.websiteSmallLogo" :limit="1" />
             </div>
           </el-form-item>
+          <el-form-item label="登录背景图" label-width="120" prop="loginBackground">
+            <div>
+              <material-picker v-model="formData.loginBackground" :limit="1" />
+            </div>
+          </el-form-item>
+          <el-form-item label="登录logo" label-width="120" prop="loginLogo">
+            <div>
+              <material-picker v-model="formData.loginLogo" :limit="1" />
+            </div>
+          </el-form-item>
+          <el-form-item label="注册背景图" label-width="120" prop="registrationBackground">
+            <div>
+              <material-picker v-model="formData.registrationBackground" :limit="1" />
+            </div>
+          </el-form-item>
+          <el-form-item label="注册logo" label-width="120" prop="registrationLogo">
+            <div>
+              <material-picker v-model="formData.registrationLogo" :limit="1" />
+            </div>
+          </el-form-item>
+          <el-form-item label="首页头部背景图" label-width="120" prop="homeHeaderBackground">
+            <div>
+              <material-picker v-model="formData.homeHeaderBackground" :limit="1" />
+            </div>
+          </el-form-item>
           <el-form-item label="客服链接地址" label-width="120" prop="linkAddress">
             <el-input v-model="formData.linkAddress" placeholder="请输入客服链接地址" clearable/>
           </el-form-item>
@@ -234,7 +259,12 @@ const formData = reactive({
   linkAddress: '',
   supervisorName: '',
   supervisorVersion: '',
-  websiteName: ''
+  websiteName: '',
+  loginBackground: '',
+  loginLogo: '',
+  registrationBackground: '',
+  registrationLogo: '',
+  homeHeaderBackground: ''
 })
 
 // 表单验证
@@ -302,6 +332,41 @@ const rules = {
       trigger: ['change']
     }
   ],
+  loginBackground: [
+    {
+      required: true,
+      message: '请选择登录背景图',
+      trigger: ['change']
+    }
+  ],
+  loginLogo: [
+    {
+      required: true,
+      message: '请选择登录logo',
+      trigger: ['change']
+    }
+  ],
+  registrationBackground: [
+    {
+      required: true,
+      message: '请选择注册背景图',
+      trigger: ['change']
+    }
+  ],
+  registrationLogo: [
+    {
+      required: true,
+      message: '请选择注册logo',
+      trigger: ['change']
+    }
+  ],
+  homeHeaderBackground: [
+    {
+      required: true,
+      message: '首页头部背景图',
+      trigger: ['change']
+    }
+  ],
   linkAddress: [
     {
       required: true,
@@ -340,19 +405,19 @@ const handleUpdateSys = () => {
 /* 提交菜单 */
 const handleSubmit = async () => {
   await formRef.value?.validate()
-  const reg = /^\/api/
-  if(!reg.test(formData.iconAddress)){
-    const arr = formData.iconAddress.split('/api')
-    formData.iconAddress = '/api' + arr[1]
-  }
-  if(!reg.test(formData.websiteBigLogo)){
-    const arr = formData.websiteBigLogo.split('/api')
-    formData.websiteBigLogo = '/api' + arr[1]
-  }
-  if(!reg.test(formData.websiteSmallLogo)){
-    const arr = formData.websiteSmallLogo.split('/api')
-    formData.websiteSmallLogo = '/api' + arr[1]
-  }
+  // const reg = /^\/api/
+  // if(!reg.test(formData.iconAddress)){
+  //   const arr = formData.iconAddress.split('/api')
+  //   formData.iconAddress = '/api' + arr[1]
+  // }
+  // if(!reg.test(formData.websiteBigLogo)){
+  //   const arr = formData.websiteBigLogo.split('/api')
+  //   formData.websiteBigLogo = '/api' + arr[1]
+  // }
+  // if(!reg.test(formData.websiteSmallLogo)){
+  //   const arr = formData.websiteSmallLogo.split('/api')
+  //   formData.websiteSmallLogo = '/api' + arr[1]
+  // }
   await websiteInfoEdit(formData)
   feedback.msgSuccess('修改成功')
   appStore.getConfig()
