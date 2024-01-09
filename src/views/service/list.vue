@@ -210,15 +210,24 @@ const languageDict = ref([])
 const getLanguageDict = async () => {
   languageDict.value = await dictDataAll({ dictType: 'yuyan' })
   languageDict.value.forEach((item, index) => {
-    // @ts-ignore
-    formData.languageList[index] = {}
-    // @ts-ignore
-    formData.languageList[index].languageType = item.value
-    // @ts-ignore
-    formData.languageList[index].name = item.name
-    // @ts-ignore
-    formData.languageList[index].mobile = item.mobile
+    if(item.value !== '-1') {
+      // @ts-ignore
+      formData.languageList[index] = {}
+      // @ts-ignore
+      formData.languageList[index].languageType = item.value
+      // @ts-ignore
+      formData.languageList[index].name = item.name
+      // @ts-ignore
+      formData.languageList[index].mobile = item.mobile
+    }
   })
+  let obj = {
+    value: '-1',
+    name: '全部语言',
+    mobile: null
+  }
+  // @ts-ignore
+  languageDict.value.unshift(obj)
 }
 const formRef = shallowRef<FormInstance>()
 const dialogVisible = ref(false)
