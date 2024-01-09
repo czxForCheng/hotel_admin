@@ -35,6 +35,11 @@
         <el-table-column label="ID" prop="id" min-width="60" />
         <el-table-column label="用户名" prop="userName" min-width="100" />
         <el-table-column label="代理" prop="agentName" min-width="100" />
+        <el-table-column label="语言" prop="languageType" min-width="100" >
+          <template #default="{ row }">
+            {{getLanguageText(row.languageType)}}
+          </template>
+        </el-table-column>
         <el-table-column label="类型" prop="linkUrl" min-width="100" >
           <template #default="{ row }">
             {{row.type === 0 ? '文本' : '链接'}}
@@ -97,6 +102,15 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="语言" prop="languageType" v-if="formData.type === 1">
+            <el-select class="w-[280px]" v-model="formData.languageType" placeholder="请选择语言">
+              <el-option
+                  v-for="(item, index) in languageDict" :key="index"
+                  :label="item.name"
+                  :value="Number(item.value)"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="链接" prop="linkUrl" v-if="formData.type === 1">
             <el-input
                 v-model="formData.linkUrl"
@@ -155,6 +169,7 @@ let formData = reactive({
   id: '',
   userName: '',
   type: 1,
+  languageType: '',
   linkUrl: '',
   agentId: '',
   workStartTime: '',
@@ -165,6 +180,7 @@ const rules = reactive({
   agentId: [{ required: true, message: '代理必选', trigger: 'blur' }],
   userName: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
   type: [{ required: true, message: '类型必选', trigger: 'blur' }],
+  languageType: [{ required: true, message: '语言必选', trigger: 'blur' }],
   linkUrl: [{ required: true, message: '链接必填', trigger: 'blur' }],
   workStartTime: [{ required: true, message: '上班时间必填', trigger: 'blur' }],
   workEndTime: [{ required: true, message: '下班时间必填', trigger: 'blur' }]
@@ -241,6 +257,7 @@ const handleEdit = async (row: any) => {
   formData.agentId = row.agentId
   formData.userName = row.userName
   formData.type = row.type
+  formData.languageType = row.languageType
   formData.linkUrl = row.linkUrl
   if(row.languageList && row.languageList.length){
     formData.languageList = row.languageList
@@ -280,6 +297,7 @@ const handleClose = () => {
   formData.agentId = ''
   formData.userName = ''
   formData.type = 1
+  formData.languageType = ''
   formData.linkUrl = ''
   formData.workStartTime = ''
   formData.workEndTime = ''
@@ -294,7 +312,17 @@ const handleClose = () => {
     formData.languageList[index].mobile = item.mobile
   })
 }
+const getLanguageText = computed(() => {
+  return (type: any) => {
+    const itemInfo = languageDict.value.find(item => {
+      // @ts-ignore
+      return item.value == type
+    })
 
+    // @ts-ignore
+    return itemInfo && itemInfo.name
+  }
+})
 </script>
 <style scoped lang="scss">
 :deep(.el-select){
