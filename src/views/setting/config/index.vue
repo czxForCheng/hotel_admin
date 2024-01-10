@@ -57,6 +57,22 @@
       </el-form>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
+      <p>设置黑名单：</p>
+      <el-form ref="formRefDomain" :model="formDataBlack" label-width="120px">
+        <el-form-item label="黑名单" prop="domainLimit">
+          <div class="w-80">
+            <el-input
+                v-model="formDataBlack.blackList"
+                placeholder="请输入黑名单"
+                type="textarea"
+            />
+          </div>
+          <p style="font-size: 12px;color: #999;margin-left: 10px;">多个域名请用“,”隔开</p>
+        </el-form-item>
+      </el-form>
+      <el-button v-perms="['update:blackList']" type="primary" @click="changeBlackStatus">保存</el-button>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
       <p>设置域名授权：</p>
       <el-form ref="formRefDomain" :model="formDataDomain" label-width="120px">
         <el-form-item label="授权域名" prop="domainLimit">
@@ -235,7 +251,8 @@ import {
   updateTime,
   websiteInfoApi,
   websiteInfoEdit,
-  setDomain, getDomain
+  setDomain, getDomain,
+  setBlack, getBlack
 } from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
@@ -405,19 +422,6 @@ const handleUpdateSys = () => {
 /* 提交菜单 */
 const handleSubmit = async () => {
   await formRef.value?.validate()
-  // const reg = /^\/api/
-  // if(!reg.test(formData.iconAddress)){
-  //   const arr = formData.iconAddress.split('/api')
-  //   formData.iconAddress = '/api' + arr[1]
-  // }
-  // if(!reg.test(formData.websiteBigLogo)){
-  //   const arr = formData.websiteBigLogo.split('/api')
-  //   formData.websiteBigLogo = '/api' + arr[1]
-  // }
-  // if(!reg.test(formData.websiteSmallLogo)){
-  //   const arr = formData.websiteSmallLogo.split('/api')
-  //   formData.websiteSmallLogo = '/api' + arr[1]
-  // }
   await websiteInfoEdit(formData)
   feedback.msgSuccess('修改成功')
   appStore.getConfig()
@@ -546,6 +550,19 @@ const formRefEmail = ref<FormInstance>()
 const formDataEmail = reactive({
   switch: ''
 })
+/* 黑名单限制 */
+const formRefBlack = ref<FormInstance>()
+const formDataBlack  = reactive({
+  blackList: ''
+})
+const getBlackList = async () => {
+  formDataBlack.blackList = await getBlack()
+}
+getBlackList()
+const changeBlackStatus = async () => {
+  await setBlack(formDataBlack)
+  feedback.msgSuccess('操作成功')
+}
 /* 是否开启域名限制 */
 const formRefDomain = ref<FormInstance>()
 const formDataDomain  = reactive({

@@ -48,3 +48,13 @@ export function setDomain(params: any) {
 export function getDomain() {
     return request.get({ url: '/configuration/sel/domainLimit' })
 }
+
+// 修改黑名单
+export function setBlack(params: any) {
+    return request.post({ url: '/configuration/update/blackList', params })
+}
+
+// 查询黑名单
+export function getBlack() {
+    return request.get({ url: '/configuration/sel/blackList' })
+}

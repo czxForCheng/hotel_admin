@@ -122,6 +122,9 @@
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="formData.email" placeholder="请输入邮箱" clearable/>
           </el-form-item>
+          <el-form-item label="邀请码" prop="inviteCode" v-if="formData.id">
+            <el-input v-model="formData.inviteCode" placeholder="请输入邀请码" clearable/>
+          </el-form-item>
           <el-form-item label="多处登录">
             <div>
               <el-switch
