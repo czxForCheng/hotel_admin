@@ -70,7 +70,7 @@
           <p style="font-size: 12px;color: #999;margin-left: 10px;">多个域名请用“,”隔开</p>
         </el-form-item>
       </el-form>
-      <el-button v-perms="['update:blackList']" type="primary" @click="changeBlackStatus">保存</el-button>
+      <el-button type="primary" @click="changeBlackStatus">保存</el-button>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
       <p>设置域名授权：</p>
