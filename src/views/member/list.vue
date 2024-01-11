@@ -32,6 +32,14 @@
                 clearable
             />
           </el-form-item>
+          <el-form-item label="邮箱">
+            <el-input
+                class="w-[280px]"
+                v-model.trim="queryParams.mailbox"
+                placeholder="请输入邮箱"
+                clearable
+            />
+          </el-form-item>
           <el-form-item label="邀请码">
             <el-input
                 class="w-[280px]"
@@ -521,6 +529,7 @@ const queryParams = reactive({
   isDummy: '',
   username: '',
   mobile: '',
+  mailbox: '',
   inviteCode: '',
   lastLoginIp: '',
   startTime: '',
