@@ -223,6 +223,11 @@
               <material-picker v-model="formData.homeHeaderBackground" :limit="1" />
             </div>
           </el-form-item>
+          <el-form-item label="交易页面背景图" label-width="120" prop="transactionBg">
+            <div>
+              <material-picker v-model="formData.transactionBg" :limit="1" />
+            </div>
+          </el-form-item>
           <el-form-item label="客服链接地址" label-width="120" prop="linkAddress">
             <el-input v-model="formData.linkAddress" placeholder="请输入客服链接地址" clearable/>
           </el-form-item>
@@ -281,6 +286,7 @@ const formData = reactive({
   loginLogo: '',
   registrationBackground: '',
   registrationLogo: '',
+  transactionBg: '',
   homeHeaderBackground: ''
 })
 
