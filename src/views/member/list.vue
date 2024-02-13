@@ -1041,7 +1041,7 @@ let formDataBan = reactive({
   reason: ''
 })
 const rulesBan = reactive({
-  reason: [{ required: true, message: '理由必填', trigger: 'blur' }]
+  // reason: [{ required: true, message: '理由必填', trigger: 'blur' }]
 })
 /* 启用/禁用 */
 const handleDisable = async (row: any) => {
