@@ -89,6 +89,7 @@ let formData = reactive({
   bannerUrl: '',
   sort: 0
 })
+
 const rules = reactive({
   bannerUrl: [{ required: true, message: '图标必传', trigger: 'blur' }]
 })
