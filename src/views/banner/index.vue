@@ -34,7 +34,7 @@
               编辑
             </el-button>
             <el-button
-                v-perms="['banner:del']"
+                v-perms="['banner:remove']"
                 type="primary"
                 @click="handleDelete(row.id)"
             >
