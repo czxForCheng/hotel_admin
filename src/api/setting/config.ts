@@ -39,6 +39,15 @@ export function selectEmail() {
     return request.get({ url: '/configuration/sel/mailbox' })
 }
 
+// 查询注册验证码开关
+export function selectCode() {
+    return request.get({ url: '/configuration/sel/ReCaptcha' })
+}
+// 开关注册验证码
+export function setCode(params: any) {
+    return request.post({ url: '/configuration/update/ReCaptcha', params })
+}
+
 // 修改域名限制
 export function setDomain(params: any) {
     return request.post({ url: '/configuration/update/domainLimit', params })

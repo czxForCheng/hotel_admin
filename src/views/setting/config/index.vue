@@ -57,6 +57,21 @@
       </el-form>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
+      <p>注册是否开启验证码：</p>
+      <el-form ref="formRefCode" :model="formDataCode" label-width="120px">
+        <el-form-item label="是否开启验证码">
+          <div class="w-80">
+            <el-switch
+                v-model="formDataCode.switch"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeCodeStatus"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
       <p>设置黑名单：</p>
       <el-form ref="formRefDomain" :model="formDataBlack" label-width="120px">
         <el-form-item label="黑名单" prop="domainLimit">
@@ -257,7 +272,9 @@ import {
   websiteInfoApi,
   websiteInfoEdit,
   setDomain, getDomain,
-  setBlack, getBlack
+  setBlack, getBlack,
+  selectCode,
+  setCode
 } from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
@@ -556,6 +573,22 @@ const formRefEmail = ref<FormInstance>()
 const formDataEmail = reactive({
   switch: ''
 })
+/* 是否开启验证码 */
+const formRefCode = ref<FormInstance>()
+const formDataCode = reactive({
+  switch: 0
+})
+const getCodeStatus = () => {
+  selectCode().then(res => {
+    formDataCode.switch = (res.captcha ? parseInt(res.captcha): 0)
+  }).catch(err => {})
+}
+getCodeStatus()
+const changeCodeStatus = () => {
+  setCode({captcha: formDataCode.switch}).then(res => {
+    feedback.msgSuccess(`${formDataCode.switch === 1 ? '开启' : '关闭'}注册验证码成功`)
+  }).catch(err => {})
+}
 /* 黑名单限制 */
 const formRefBlack = ref<FormInstance>()
 const formDataBlack  = reactive({
