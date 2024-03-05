@@ -47,6 +47,14 @@ export function selectCode() {
 export function setCode(params: any) {
     return request.post({ url: '/configuration/update/ReCaptcha', params })
 }
+// 查询提前任务数开关
+export function selectTask() {
+    return request.get({ url: '/configuration/sel/nowRobNum' })
+}
+// 开关提前任务数
+export function setTask(params: any) {
+    return request.post({ url: '/configuration/update/nowRobNum', params })
+}
 
 // 修改域名限制
 export function setDomain(params: any) {

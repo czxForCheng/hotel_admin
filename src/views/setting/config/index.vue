@@ -72,6 +72,21 @@
       </el-form>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
+      <p>是否开启提前订单数：</p>
+      <el-form :model="formDataTask" label-width="140px">
+        <el-form-item label="是否开启提前订单数">
+          <div class="w-80">
+            <el-switch
+                v-model="formDataTask.switch"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeTaskStatus"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
       <p>设置黑名单：</p>
       <el-form ref="formRefDomain" :model="formDataBlack" label-width="120px">
         <el-form-item label="黑名单" prop="domainLimit">
@@ -274,7 +289,9 @@ import {
   setDomain, getDomain,
   setBlack, getBlack,
   selectCode,
-  setCode
+  setCode,
+  selectTask,
+  setTask
 } from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
@@ -587,6 +604,22 @@ getCodeStatus()
 const changeCodeStatus = () => {
   setCode({captcha: formDataCode.switch}).then(res => {
     feedback.msgSuccess(`${formDataCode.switch === 1 ? '开启' : '关闭'}注册验证码成功`)
+  }).catch(err => {})
+}
+/* 是否开启提前订单数 */
+const formRefTask = ref<FormInstance>()
+const formDataTask = reactive({
+  switch: 0
+})
+const getTaskStatus = () => {
+  selectTask().then(res => {
+    formDataTask.switch = (res.nowRobNum ? parseInt(res.nowRobNum): 0)
+  }).catch(err => {})
+}
+getTaskStatus()
+const changeTaskStatus = () => {
+  setTask({nowRobNum: formDataTask.switch}).then(res => {
+    feedback.msgSuccess(`${formDataTask.switch === 1 ? '开启' : '关闭'}提前订单数成功`)
   }).catch(err => {})
 }
 /* 黑名单限制 */

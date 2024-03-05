@@ -134,7 +134,7 @@
                 <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
                 <el-table-column label="总存款" prop="sumMoney" min-width="120" />
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
-                <el-table-column label="登录地址" prop="loginUrl" min-width="100" />
+                <el-table-column label="登录地址" prop="loginUrl" min-width="200" />
                 <el-table-column label="注册ip/注册ip地址" prop="registerIp" min-width="180" >
                   <template #default="{ row }">
                     <p>{{row.registerIp}}</p>
