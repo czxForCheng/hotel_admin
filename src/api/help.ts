@@ -40,4 +40,24 @@ export function headerDelete(params: any) {
     return request.post({ url: `/homeHeadText/del`, params })
 }
 
+// 文本配置列表
+export function getTextConfigPage(params: any) {
+    return request.get({ url: '/textConfig/list', params })
+}
+
+// 新增文本配置
+export function textConfigAdd(params: any) {
+    return request.post({ url: '/textConfig/add', params })
+}
+
+// 修改文本配置
+export function textConfigUpdate(params: any) {
+    return request.post({ url: '/textConfig/edit', params })
+}
+
+// 删除文本配置
+export function textConfigDelete(params: any) {
+    return request.post({ url: `/textConfig/del`, params })
+}
+
 

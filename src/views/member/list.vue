@@ -134,6 +134,7 @@
                 <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
                 <el-table-column label="总存款" prop="sumMoney" min-width="120" />
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
+                <el-table-column label="登录地址" prop="loginUrl" min-width="200" />
                 <el-table-column label="注册ip/注册ip地址" prop="registerIp" min-width="180" >
                   <template #default="{ row }">
                     <p>{{row.registerIp}}</p>
@@ -157,6 +158,17 @@
                     {{row.isDummy ? '假人' : '真人'}}
                   </template>
                 </el-table-column>
+              <el-table-column label="是否禁用账号" prop="isDisabled" min-width="160" >
+                <template #default="{ row }">
+                  {{row.isDisable ? '禁用' : '启用'}}
+                </template>
+              </el-table-column>
+              <el-table-column label="禁用原因" prop="disableReason" min-width="160" />
+              <el-table-column label="是否禁止提现" prop="isWithdrawal" min-width="160" >
+                <template #default="{ row }">
+                  {{row.isWithdrawal ? '禁止' : '允许'}}
+                </template>
+              </el-table-column>
                 <el-table-column label="操作" width="350" fixed="right">
                     <template #default="{ row }">
                       <el-button v-perms="['userManage:linkOrder']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
@@ -206,6 +218,7 @@
                                   </router-link>
                                 </el-button>
                                 <el-button v-perms="['userManage:disable']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-button>
+                                <el-button v-perms="['userManage:disableWithdrawal']" @click="handleDisableWithdrawal(row)">{{ row.isWithdrawal ? '允许提现' : '禁止提现' }}</el-button>
                                 <el-button v-perms="['userManage:del']" @click="handleDelete(row.id)">删除</el-button>
                                 <el-button v-perms="['userManage:beDummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-button>
                                 <el-button v-perms="['userManage:updatePwd']" @click="handleUpdatePwd(row)" v-show="userInfo.agentLevel !== 2">登录密码</el-button>
@@ -268,7 +281,7 @@
                   clearable
               />
             </el-form-item>
-            <el-form-item v-if="isEmail===1" label="邮箱" :prop="isEmail===0 ? null:'mailbox'">
+            <el-form-item v-if="isEmail===1" label="邮箱" :prop="isEmail===0 ? '':'mailbox'">
               <el-input
                   v-model="formDataAdd.mailbox"
                   placeholder="邮箱"
@@ -483,6 +496,33 @@
             </template>
           </el-dialog>
         </div>
+        <div>
+          <el-dialog
+              v-model="dialogBanVisible"
+              :title="dialogBanTitle"
+              width="50%"
+          >
+            <el-form ref="formRefBan"
+                     class="ls-form"
+                     :model="formDataBan"
+                     label-width="120px"
+                     :rules="rulesBan">
+              <el-form-item :label="dialogBanLabel" prop="reason">
+                <el-input
+                    v-model="formDataBan.reason"
+                    :placeholder="`请输入${dialogBanLabel}`"
+                    clearable
+                />
+              </el-form-item>
+            </el-form>
+            <template #footer>
+            <span class="dialog-footer">
+               <el-button @click="handleBanClose">取消</el-button>
+               <el-button type="primary" @click="handleBanEdit">确认</el-button>
+            </span>
+            </template>
+          </el-dialog>
+        </div>
       </div>
 
       <Popup @close-ticket="closeTicket" v-if="isTicket" :is-ticket="isTicket" title="连单" :ticket-value="ticketValue"></Popup>
@@ -502,6 +542,7 @@ import {
   userManageBeDummy,
   userManageDel,
   userManageDisable, userReset, usdtUpdate,
+  userManageDisableWithdrawal,
   frozenAmount,
   secondAgentList,
   updatePwd,
@@ -962,13 +1003,6 @@ const closeTicket = (data:any)=>{
     getLists()
 }
 
-/* 启用/禁用 */
-const handleDisable = async (row: any) => {
-  await feedback.confirm(`确定要${row.isDisable ? '启用' : '禁用'}这条数据？`)
-  await userManageDisable({ id: row.id })
-  feedback.msgSuccess(`${row.isDisable ? '启用' : '禁用'}成功`)
-  getLists()
-}
 
 /* 删除 */
 const handleDelete = async (id: number) => {
@@ -996,6 +1030,89 @@ let formDataPassword = reactive({
 const rulesPassword = reactive({
   password: [{ required: true, message: '密码必填', trigger: 'blur' }]
 })
+/* 禁用、禁止提现理由 */
+const dialogBanVisible = ref(false)
+const dialogBanTitle = ref('')
+const dialogBanLabel = ref('')
+const formRefBan = shallowRef<FormInstance>()
+let formDataBan = reactive({
+  id: '',
+  type: '',
+  isDisable: '',
+  reason: ''
+})
+const rulesBan = reactive({
+  // reason: [{ required: true, message: '理由必填', trigger: 'blur' }]
+})
+/* 启用/禁用 */
+const handleDisable = async (row: any) => {
+  dialogBanTitle.value = `${row.isDisable ? '启用' : '禁用'}账号`
+  dialogBanLabel.value = `${row.isDisable ? '启用' : '禁用'}账号理由`
+  formDataBan.id = row.id
+  formDataBan.type = 'UserBan'
+  formDataBan.isDisable = row.isDisable
+  if(formDataBan.isDisable) {
+    await feedback.confirm(`确定要启用账号？`)
+    await userManageDisable({ id: formDataBan.id, disableReason: '' })
+    feedback.msgSuccess(`启用成功`)
+    getLists()
+    handleBanClose()
+  }else{
+    dialogBanVisible.value = true
+  }
+  // await feedback.confirm(`确定要${row.isDisable ? '启用' : '禁用'}这条数据？`)
+  // await userManageDisable({ id: row.id })
+  // feedback.msgSuccess(`${row.isDisable ? '启用' : '禁用'}成功`)
+  // getLists()
+}
+/*是否禁止提现*/
+const handleDisableWithdrawal = async (row: any) => {
+  dialogBanTitle.value = `${row.isWithdrawal ? '允许' : '禁止'}提现`
+  dialogBanLabel.value = `${row.isWithdrawal ? '允许' : '禁止'}提现理由`
+  formDataBan.id = row.id
+  formDataBan.type = 'WithdrawalBan'
+  if(row.isWithdrawal) {
+    await feedback.confirm(`确定要允许提现？`)
+    await userManageDisableWithdrawal({ id: formDataBan.id,
+      isWithdrawal: 0,
+      withdrawalDisableReason: ''
+    })
+    feedback.msgSuccess(`已允许提现`)
+    getLists()
+    handleBanClose()
+  }else{
+    dialogBanVisible.value = true
+  }
+
+}
+const handleBanClose = () => {
+  dialogBanVisible.value = false
+  dialogBanTitle.value = ''
+  dialogBanLabel.value = ''
+  formDataBan.id = ''
+  formDataBan.type = ''
+  formDataBan.reason = ''
+}
+const handleBanEdit = async () => {
+  if(formDataBan.type === 'UserBan') {
+    await formRefBan.value?.validate()
+    await userManageDisable({ id: formDataBan.id, disableReason: formDataBan.reason })
+    feedback.msgSuccess(`禁用成功`)
+    dialogBanVisible.value = false
+    getLists()
+    handleBanClose()
+  }else if(formDataBan.type === 'WithdrawalBan'){
+    await formRefBan.value?.validate()
+    await userManageDisableWithdrawal({ id: formDataBan.id,
+      isWithdrawal: 1,
+      withdrawalDisableReason: formDataBan.reason
+    })
+    feedback.msgSuccess(`已禁止提现`)
+    dialogBanVisible.value = false
+    getLists()
+    handleBanClose()
+  }
+}
 /* 登录密码 */
 const handleUpdatePwd = (row: any) => {
   formDataPassword.type = '1'

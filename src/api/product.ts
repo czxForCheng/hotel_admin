@@ -54,7 +54,6 @@ export async function linkOrder(data:any){
         url:'/userManage/linkOrder',
         data:data
     })
-
     return res
 }
 

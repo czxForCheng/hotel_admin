@@ -109,6 +109,7 @@
                 v-model="formData.reject"
                 placeholder="请输入驳回理由"
                 clearable
+                type="textarea"
             />
           </el-form-item>
         </el-form>
@@ -176,8 +177,12 @@ const formData = reactive({
   auditStatus: 2,
   money: 0
 })
+
 const rules = reactive({
-  reject: [{ required: true, message: '驳回理由必填', trigger: 'blur' }]
+  reject: [
+      { required: true, message: '驳回理由必填', trigger: 'blur' },
+      { max: 1000, message: '驳回理由最大长度1000', trigger: 'blur' },
+  ]
 })
 const handleReject = async (row: any) => {
   dialogReasonVisible.value = true

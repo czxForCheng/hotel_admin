@@ -143,13 +143,6 @@ const formData = reactive({
 
 // 表单校验规则
 const rules = reactive<object>({
-    avatar: [
-        {
-            required: true,
-            message: '头像不能为空',
-            trigger: ['change']
-        }
-    ],
     nickname: [
         {
             required: true,

@@ -76,6 +76,11 @@ export function userManageDisable(params: any) {
     return request.post({ url: '/userManage/disable', params })
 }
 
+// 是否禁止提现
+export function userManageDisableWithdrawal(params: any) {
+    return request.post({ url: '/userManage/disableWithdrawal', params })
+}
+
 // 删除
 export function userManageDel(params: any) {
     return request.post({ url: '/userManage/del', params })
