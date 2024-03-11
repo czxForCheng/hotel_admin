@@ -25,7 +25,7 @@
         <el-table-column label="用户登录数量" align="center" prop="loginNum" min-width="100" />
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
-            <el-button v-perms="['iprank:detail']" @click.stop="rankSocket(row)" type="primary" link>
+            <el-button v-perms="['userManage:listByIp']" @click.stop="rankSocket(row)" type="primary" link>
               查看详情
             </el-button>
           </template>

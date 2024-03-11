@@ -51,11 +51,16 @@ watch(props,(newValue,oldValue)=>{
   lists.value=[]
   queryParams.value={lastLoginIp:props.rankValue.lastLoginIp}
   // getLists()
-  loading.value=true
-  rankingDetails(queryParams.value).then(res=>{
-    lists.value=res.lists
+
+  if (props.dialogReasonVisible){
+    loading.value=true
+    rankingDetails(queryParams.value).then(res=>{
+      lists.value=res.lists
+      loading.value=false
+    }).catch(err=>{loading.value=false})
+  }else{
     loading.value=false
-  }).catch(err=>{loading.value=false})
+  }
 })
 </script>
 
