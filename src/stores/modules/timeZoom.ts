@@ -29,7 +29,7 @@ const useTimeStore = defineStore({
                 { id: 15, label: '乌拉圭', value: 'America/Uruguay', zoomi: -3 },
                 { id: 30, label: '苏里南', value: 'America/Suriname', zoomi: -3 },
                 { id: 16, label: '巴拉圭', value: 'America/Paraguay', zoomi: -4 },
-                { id: 17, label: '加拿大', value: 'America/Toronto', zoomi: -5 },
+                { id: 17, label: '加拿大', value: 'America/Toronto', zoomi: -4 },
                 { id: 18, label: '英国', value: 'Europe/London', zoomi: 0},
                 { id: 19, label: '葡萄牙', value: 'Europe/Portuguese', zoomi: 0 },
                 { id: 20, label: '西班牙', value: 'Europe/Madrid', zoomi: 1 },
