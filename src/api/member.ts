@@ -178,3 +178,11 @@ export function updateTradingPwd(params: any) {
 export function userManageNumApi(params: any) {
     return request.get({ url: '/userManage/getNum', params })
 }
+// ip排行榜
+export function ipRanking(params: any) {
+    return request.get({ url: '/userManage/rankList', params })
+}
+// 排行榜详情
+export function rankingDetails(params: any) {
+    return request.get({ url: '/userManage/listByIp', params })
+}
