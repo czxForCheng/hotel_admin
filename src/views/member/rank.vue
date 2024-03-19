@@ -30,6 +30,7 @@
         </el-table-column>
         <el-table-column label="升级价格" prop="upPrice" min-width="100" />
         <el-table-column label="自动升级需邀请人数" prop="upNumber" min-width="120" />
+        <el-table-column label="阅读次数限制" prop="readNumLimit" min-width="120" />
         <el-table-column label="佣金比例" prop="commiRatio" min-width="100" />
         <el-table-column label="连单佣金比例" prop="linkCommiRatio" min-width="120" />
         <el-table-column label="下级佣金比例" prop="nextCommiRatio" min-width="120" />
@@ -99,6 +100,13 @@
             <el-input
                 v-model="formData.upNumber"
                 placeholder="请输入自动升级需邀请人数"
+                clearable
+            />
+          </el-form-item>
+          <el-form-item label="阅读次数限制" label-width="120" prop="readNumLimit">
+            <el-input
+                v-model="formData.readNumLimit"
+                placeholder="请输入阅读次数限制"
                 clearable
             />
           </el-form-item>
@@ -208,6 +216,7 @@ let formData = reactive({
   lvImage: '',
   upPrice: '',
   upNumber: '',
+  readNumLimit: '',
   commiRatio: '',
   linkCommiRatio: '',
   nextCommiRatio: '',
@@ -226,6 +235,7 @@ const rules = reactive({
   lvImage: [{ required: true, message: '等级图标必上传', trigger: 'blur' }],
   upPrice: [{ required: true, message: '升级价格必填', trigger: 'blur' }],
   upNumber: [{ required: true, message: '自动升级需邀请人数必填', trigger: 'blur' }],
+  readNumLimit: [{ required: true, message: '阅读次数限制必填', trigger: 'blur' }],
   commiRatio: [{ required: true, message: '佣金比例必填', trigger: 'blur' }],
   linkCommiRatio: [{ required: true, message: '连单佣金比例必填', trigger: 'blur' }],
   nextCommiRatio: [{ required: true, message: '下级佣金比例必填', trigger: 'blur' }],
@@ -275,6 +285,7 @@ const handleEdit = async (row: any) => {
   formData.lvImage = row.lvImage || ''
   formData.upPrice = row.upPrice
   formData.upNumber = row.upNumber
+  formData.readNumLimit = row.readNumLimit
   formData.commiRatio = row.commiRatio
   formData.linkCommiRatio = row.linkCommiRatio
   formData.nextCommiRatio = row.nextCommiRatio
@@ -311,6 +322,7 @@ const handleClose = () => {
   formData.lvImage = ''
   formData.upPrice = ''
   formData.upNumber = ''
+  formData.readNumLimit = ''
   formData.commiRatio = ''
   formData.linkCommiRatio = ''
   formData.nextCommiRatio = ''
