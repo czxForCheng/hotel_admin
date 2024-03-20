@@ -169,10 +169,11 @@
                   {{row.isWithdrawal ? '禁止' : '允许'}}
                 </template>
               </el-table-column>
-                <el-table-column label="操作" width="350" fixed="right">
+                <el-table-column label="操作" width="480" fixed="right">
                     <template #default="{ row }">
                       <el-button v-perms="['userManage:linkOrder']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
-                      <el-button v-perms="['userManage:reset']" type="primary" size="small"  @click="handleOpenNum(row.id)">重置抢单数量</el-button>
+                      <el-button v-perms="['userManage:reset']" type="primary" size="small"  @click="resetHandleOpenNum(row.id)">重置抢单数量</el-button>
+                      <el-button v-perms="['userManage:resetInput']" type="primary" size="small"  @click="handleOpenNum(row.id)">修改抢单数量</el-button>
                         <el-button
                             v-perms="['userManage:addAmount']"
                             type="primary"
@@ -555,6 +556,7 @@ import feedback from "@/utils/feedback";
 import user from "@/stores/modules/user";
 import {selectEmail} from "@/api/setting/config";
 import {ElMessage, ElMessageBox} from "element-plus";
+import {modifyResetButton} from "@/api/banner";
 
 const userStore = useUserStore()
 const userInfo = reactive({
@@ -753,16 +755,15 @@ const handleProxyChange = async (e: any) => {
 }
 
 const handleOpenNum = async (id: number) => {
-
+    //ts-ignore
     ElMessageBox.prompt('', '重置抢单数量', {
       confirmButtonText: '提交',
       cancelButtonText: '取消',
       inputPattern: /^[0-9]*$/,
       inputErrorMessage: '请输入正确的单数',
       inputValue:0
-    })
-      .then(({ value }) => {
-        userReset({ id:id, nowOrderNum:value ? value:0})
+    }).then(({ value }) => {
+        modifyResetButton({ id:id, nowOrderNum:value ? value:0})
         feedback.msgSuccess(`重置抢单数量成功`)
         getLists()
       })
@@ -772,6 +773,13 @@ const handleOpenNum = async (id: number) => {
           message: '已取消',
         })
       })
+}
+
+const resetHandleOpenNum=async (id:number)=>{
+  await feedback.confirm('确定重置抢单数？')
+  await userReset({ id })
+  feedback.msgSuccess('重置抢单数量成功')
+  getLists()
 }
 
 // 调整余额

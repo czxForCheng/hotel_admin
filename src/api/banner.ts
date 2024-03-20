@@ -19,4 +19,8 @@ export function bannerRemoveApi(params?: any) {
 export function bannerEditApi(params?: any) {
     return request.post({ url: '/banner/edit', params })
 }
+// 修改重置按钮（输入框）
+export function modifyResetButton(params?: any) {
+    return request.post({ url: '/userManage/resetInput', params })
+}
 
