@@ -753,15 +753,16 @@ const handleProxyChange = async (e: any) => {
 }
 
 const handleOpenNum = async (id: number) => {
-  ElMessageBox.prompt('', '重置抢单数量', {
-    confirmButtonText: '提交',
-    cancelButtonText: '取消',
-    inputPattern:
-        /^[0-9]*$/,
-    inputErrorMessage: '请输入正确的单数',
-  })
+
+    ElMessageBox.prompt('', '重置抢单数量', {
+      confirmButtonText: '提交',
+      cancelButtonText: '取消',
+      inputPattern: /^[0-9]*$/,
+      inputErrorMessage: '请输入正确的单数',
+      inputValue:0
+    })
       .then(({ value }) => {
-        userReset({ id:id, nowOrderNum:value})
+        userReset({ id:id, nowOrderNum:value ? value:0})
         feedback.msgSuccess(`重置抢单数量成功`)
         getLists()
       })
