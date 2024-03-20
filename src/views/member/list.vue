@@ -554,6 +554,7 @@ import Popup from './dislodge.vue'
 import feedback from "@/utils/feedback";
 import user from "@/stores/modules/user";
 import {selectEmail} from "@/api/setting/config";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 const userStore = useUserStore()
 const userInfo = reactive({
@@ -752,10 +753,24 @@ const handleProxyChange = async (e: any) => {
 }
 
 const handleOpenNum = async (id: number) => {
-  await feedback.confirm(`确定要重置抢单数量？`)
-  await userReset({ id })
-  feedback.msgSuccess(`重置抢单数量成功`)
-  getLists()
+  ElMessageBox.prompt('', '重置抢单数量', {
+    confirmButtonText: '提交',
+    cancelButtonText: '取消',
+    inputPattern:
+        /^[0-9]*$/,
+    inputErrorMessage: '请输入正确的单数',
+  })
+      .then(({ value }) => {
+        userReset({ id:id, nowOrderNum:value})
+        feedback.msgSuccess(`重置抢单数量成功`)
+        getLists()
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '已取消',
+        })
+      })
 }
 
 // 调整余额
