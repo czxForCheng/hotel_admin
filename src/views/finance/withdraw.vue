@@ -84,7 +84,7 @@
           <template #default="{ row }">
             <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleAgree(row)" v-show="!row.auditStatus">同意</el-button>
             <el-button v-perms="['withdrawalRecord:withdrawal:audit']" type="primary" @click="handleReject(row)" v-show="!row.auditStatus">拒绝</el-button>
-            <el-button v-perms="['withdrawalRecord:del']" type="primary" @click="handleDelete(row.id)">删除</el-button>
+            <el-button v-perms="['withdrawalRecord:del']" type="primary" @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -207,9 +207,20 @@ const handleClose = () => {
   formData.reject = ''
   formData.money = 0
 }
-const handleDelete = async (id: number) => {
+const handleDelete = async (row: any) => {
   await feedback.confirm('确定要删除这条数据？')
-  await withdrawalDelete({ id })
+  await withdrawalDelete({
+    id: row.id,
+    userId: row.userId,
+    money: row.money,
+    addTime: row.addTime,
+    agentId: row.agentId,
+    auditStatus: row.auditStatus,
+    auditTime: row.auditTime,
+    orderNo: row.orderNo,
+    usdt: row.usdt
+
+  })
   feedback.msgSuccess('删除成功')
   getLists()
 }
