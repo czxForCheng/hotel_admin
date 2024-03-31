@@ -169,11 +169,18 @@
                   {{row.isWithdrawal ? '禁止' : '允许'}}
                 </template>
               </el-table-column>
-                <el-table-column label="操作" width="200" fixed="right">
+                <el-table-column label="操作" width="260" fixed="right">
                     <template #default="{ row }">
                       <el-button v-perms="['userManage:linkOrder']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
                       <el-button v-perms="['userManage:reset']" type="primary" size="small"  @click="resetHandleOpenNum(row.id)">重置抢单</el-button>
-                        <el-dropdown>
+                      <el-button
+                          v-perms="['userManage:addAmount']"
+                          type="primary"
+                          size="small"
+                          @click="handleOpenMoney(row.id, 0)"
+                          v-if="!(userInfo.isAgent===1&&!row.isDummy)"
+                      >余额</el-button>
+                      <el-dropdown>
                           <span class="el-dropdown-link" style="margin-left: 10px;">
 <!--                            更多操作-->
                            <icon name="el-icon-arrow-down" :size="18"/>
@@ -183,18 +190,11 @@
                               <el-dropdown-menu>
                                 <div>
                                   <el-button v-perms="['userManage:resetInput']" @click="handleOpenNum(row.id)">修改抢单数量</el-button>
-                                  <el-button
-                                      v-perms="['userManage:addAmount']"
-                                      @click="handleOpenMoney(row.id, 0)"
-                                      v-if="!(userInfo.isAgent===1&&!row.isDummy)"
-                                  >余额</el-button>
                                   <el-button v-perms="['userManage:addAmount']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-button>
                                   <el-button v-perms="['userManage:sendDeposit']" @click="handleOpenMoney(row.id, 2)">赠送存款</el-button>
                                   <el-button v-perms="['userManage:frozenAmount']" @click="handleOpenMoney(row.id, 3)">冻结余额</el-button>
                                   <el-button v-perms="['userManage:edit']" @click="handleEdit(row)">编辑</el-button>
                                   <el-button v-perms="['userManage:OSDT']" @click="handleOpenUsdt(row)">USDT信息</el-button>
-                                </div>
-                                <div style="margin-top: 10px;">
                                   <el-button v-perms="['userManage:teamList']">
                                     <router-link
                                         :to="{
@@ -208,6 +208,8 @@
                                       查看团队
                                     </router-link>
                                   </el-button>
+                                </div>
+                                <div style="margin-top: 10px;">
                                   <el-button v-perms="['userManage:billList']">
                                     <router-link
                                         :to="{
