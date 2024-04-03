@@ -191,3 +191,11 @@ export function ipRanking(params: any) {
 export function rankingDetails(params: any) {
     return request.get({ url: '/userManage/listByIp', params })
 }
+// 二级代理列表
+export function allSecondAgentList(params: any) {
+    return request.get({ url: '/agentManage/allSecondAgentList', params })
+}
+// 转移成功
+export function transferMember(data: any) {
+    return request.post({ url: '/agentManage/transferMember', data })
+}

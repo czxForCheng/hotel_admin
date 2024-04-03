@@ -66,8 +66,9 @@
               <template #dropdown>
                 <div style="padding: 5px 20px;">
                   <el-dropdown-menu>
-                    <el-button type="primary" @click="handleWhite(row)">ip白名单设置</el-button>
-                    <el-button type="primary" @click="handleGlooge(row)" v-if="row.googleEnable === '1'">关闭谷歌验证码</el-button>
+                    <el-button type="text" @click="handleWhite(row)">ip白名单设置</el-button>
+                    <el-button v-if="row.agentLevel === 2" type="text" @click="moveMembership(row)">转移会员</el-button>
+                    <el-button type="text" @click="handleGlooge(row)" v-if="row.googleEnable === '1'">关闭谷歌验证码</el-button>
 <!--                    <el-button type="primary" @click="handleGlooge(row)">{{row.googleEnable === '0' ? '开启' : '关闭'}}谷歌验证码</el-button>-->
                   </el-dropdown-menu>
                 </div>
@@ -171,6 +172,39 @@
       </span>
         </template>
         </el-dialog>
+      <el-dialog
+          v-model="transferMembership"
+          title="会员转移"
+          width="600px"
+          :before-close="MembershipClose"
+      >
+        <div class="title">
+<!--          <el-descriptions >-->
+<!--            <el-descriptions-item label="当前会员为">{{ formMembership.username }} </el-descriptions-item>-->
+<!--            <el-descriptions-item label="转移到">{{moveShip.username}}</el-descriptions-item>-->
+<!--          </el-descriptions>-->
+          请选择需要转移到的代理
+        </div>
+        <el-select
+            v-model="moveShip.newAgentId"
+            placeholder="请选择需要转移到的代理"
+            size="large"
+            style="width: 360px"
+        >
+          <el-option
+              v-for="item in memberList"
+              :key="item.id"
+              :label="item.username"
+              :value="item.id"
+          />
+        </el-select>
+        <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="MembershipClose">取消</el-button>
+              <el-button type="primary" @click="MembershipSubmit">确认</el-button>
+      </span>
+        </template>
+      </el-dialog>
   </div>
     <div>
       <el-dialog
@@ -251,7 +285,16 @@
 <script lang="ts" setup name="proxyLists">
 import type { FormInstance } from 'element-plus'
 import { usePaging } from '@/hooks/usePaging'
-import {agentManage, proxyAdd, getProxyList, proxyEdit, proxyEditPwd, proxyDisable, googleReset} from '@/api/member'
+import {
+  agentManage,
+  proxyAdd,
+  getProxyList,
+  proxyEdit,
+  proxyEditPwd,
+  proxyDisable,
+  googleReset,
+  allSecondAgentList, transferMember
+} from '@/api/member'
 import feedback from "@/utils/feedback";
 import {getRoutePath} from "@/router";
 const queryParams = reactive({
@@ -273,6 +316,9 @@ let formData = reactive({
   parentName: '',
   isMultipoint: 1
 })
+
+const transferMembership=ref(false)
+
 const rules = reactive({
   username: [{ required: true, message: '用户名称必填', trigger: 'blur' }],
   mobile: [{ required: true, message: '手机号必填', trigger: 'blur' }],
@@ -291,6 +337,30 @@ onActivated(() => {
 
 getLists()
 
+const formMembership=ref({})
+const memberList=ref([])
+const moveShip=ref({newAgentId:null,agentId:null})
+// 会员转移
+const MembershipClose=()=>{
+  transferMembership.value=false
+  moveShip.value.agentId=null
+  moveShip.value.newAgentId=null
+}
+
+const moveMembership=(item:any)=>{
+  transferMembership.value=true
+  formMembership.value=item
+  moveShip.value.agentId=item.id
+  allSecondAgentList().then(res=>{memberList.value = res ? res :[]}).catch(err=>{})
+}
+
+// 确定设置
+const MembershipSubmit= async ()=>{
+  await transferMember(moveShip.value)
+  feedback.msgSuccess('会员转移成功')
+  MembershipClose()
+  getLists()
+}
 const formRef = shallowRef<FormInstance>()
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
@@ -465,6 +535,12 @@ const handleResetGoogle = async () => {
 }
 
 </script>
+<style scoped lang="scss">
+.title{
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+</style>
 <style scoped>
 :deep(.el-select){
   width: 100%;
