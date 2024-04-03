@@ -178,26 +178,30 @@
           width="600px"
           :before-close="MembershipClose"
       >
-        <div class="title">
-<!--          <el-descriptions >-->
-<!--            <el-descriptions-item label="当前会员为">{{ formMembership.username }} </el-descriptions-item>-->
-<!--            <el-descriptions-item label="转移到">{{moveShip.username}}</el-descriptions-item>-->
-<!--          </el-descriptions>-->
-          请选择需要转移到的代理
+        <div v-loading="loadingMember"  element-loading-text="数据转换中...">
+          <div class="title">
+            <!--          <el-descriptions >-->
+            <!--            <el-descriptions-item label="当前会员为">{{ formMembership.username }} </el-descriptions-item>-->
+            <!--            <el-descriptions-item label="转移到">{{moveShip.username}}</el-descriptions-item>-->
+            <!--          </el-descriptions>-->
+            请选择需要转移到的代理
+          </div>
+          <el-select
+
+              v-model="moveShip.newAgentId"
+              placeholder="请选择需要转移到的代理"
+              size="large"
+              style="width: 360px"
+          >
+            <el-option
+                v-for="item in memberList"
+                :key="item.id"
+                :label="item.username"
+                :value="item.id"
+            />
+          </el-select>
         </div>
-        <el-select
-            v-model="moveShip.newAgentId"
-            placeholder="请选择需要转移到的代理"
-            size="large"
-            style="width: 360px"
-        >
-          <el-option
-              v-for="item in memberList"
-              :key="item.id"
-              :label="item.username"
-              :value="item.id"
-          />
-        </el-select>
+
         <template #footer>
             <span class="dialog-footer">
               <el-button @click="MembershipClose">取消</el-button>
@@ -340,22 +344,27 @@ getLists()
 const formMembership=ref({})
 const memberList=ref([])
 const moveShip=ref({newAgentId:null,agentId:null})
+const loadingMember=ref(false)
 // 会员转移
 const MembershipClose=()=>{
   transferMembership.value=false
   moveShip.value.agentId=null
   moveShip.value.newAgentId=null
+  loadingMember.value=false
 }
 
 const moveMembership=(item:any)=>{
   transferMembership.value=true
   formMembership.value=item
   moveShip.value.agentId=item.id
-  allSecondAgentList().then(res=>{memberList.value = res ? res :[]}).catch(err=>{})
+  allSecondAgentList().then(res=>{memberList.value = res ? res :[]}).catch(err=>{
+    MembershipClose()
+  })
 }
 
 // 确定设置
 const MembershipSubmit= async ()=>{
+  loadingMember.value=true
   await transferMember(moveShip.value)
   feedback.msgSuccess('会员转移成功')
   MembershipClose()

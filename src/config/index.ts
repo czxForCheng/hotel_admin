@@ -5,7 +5,7 @@ const config = {
     baseUrl: 'http://192.168.2.61:8082',
     assetsUrl: '',
     urlPrefix: 'api', //请求默认前缀x
-    timeout: 20 * 1000 //请求超时时长
+    timeout: 40 * 1000 //请求超时时长
 }
 
 export default config
