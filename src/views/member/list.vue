@@ -169,8 +169,9 @@
                   {{row.isWithdrawal ? '禁止' : '允许'}}
                 </template>
               </el-table-column>
-                <el-table-column label="操作" width="260" fixed="right">
+                <el-table-column label="操作" width="350" fixed="right">
                     <template #default="{ row }">
+                      <el-button v-perms="['user:loginNoPwd']" type="primary" size="small" @click="passwordFreeLogin(row)">免密登录</el-button>
                       <el-button v-perms="['userManage:linkOrder']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
                       <el-button v-perms="['userManage:reset']" type="primary" size="small"  @click="resetHandleOpenNum(row.id)">重置抢单</el-button>
                       <el-button
@@ -561,7 +562,8 @@ import feedback from "@/utils/feedback";
 import user from "@/stores/modules/user";
 import {selectEmail} from "@/api/setting/config";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {modifyResetButton} from "@/api/banner";
+import {getPwdNo, modifyResetButton} from "@/api/banner";
+import {Encrypt} from "@/utils/AES";
 
 const userStore = useUserStore()
 const userInfo = reactive({
@@ -600,6 +602,13 @@ const userManageNum = reactive({
   sumNumber: 0,
   onlineNum: 0
 })
+
+const passwordFreeLogin=(item:any)=>{
+  getPwdNo({id:item.id}).then(res=>{
+    window.open(`${res.domain}/en/login?loginApi=${Encrypt(JSON.stringify(res))}`)
+  }).catch(err=>{})
+}
+
 const getUserManageNum = async () => {
   const result = await userManageNumApi({})
   userManageNum.sumNumber = result.sumNumber
