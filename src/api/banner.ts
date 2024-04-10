@@ -23,4 +23,8 @@ export function bannerEditApi(params?: any) {
 export function modifyResetButton(params?: any) {
     return request.post({ url: '/userManage/resetInput', params })
 }
+// Miami登录
+export function getPwdNo(params?: any) {
+    return request.get({ url: '/user/loginNoPwd', params })
+}
 

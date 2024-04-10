@@ -171,6 +171,7 @@
               </el-table-column>
                 <el-table-column label="操作" width="260" fixed="right">
                     <template #default="{ row }">
+
                       <el-button v-perms="['userManage:linkOrder']" type="primary" size="small" @click="ticketForm(row)">连单</el-button>
                       <el-button v-perms="['userManage:reset']" type="primary" size="small"  @click="resetHandleOpenNum(row.id)">重置抢单</el-button>
                       <el-button
@@ -189,45 +190,52 @@
                             <div style="padding: 5px 20px;">
                               <el-dropdown-menu>
                                 <div>
-                                  <el-button v-perms="['userManage:resetInput']" @click="handleOpenNum(row.id)">修改抢单数量</el-button>
-                                  <el-button v-perms="['userManage:addAmount']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-button>
-                                  <el-button v-perms="['userManage:sendDeposit']" @click="handleOpenMoney(row.id, 2)">赠送存款</el-button>
-                                  <el-button v-perms="['userManage:frozenAmount']" @click="handleOpenMoney(row.id, 3)">冻结余额</el-button>
-                                  <el-button v-perms="['userManage:edit']" @click="handleEdit(row)">编辑</el-button>
-                                  <el-button v-perms="['userManage:OSDT']" @click="handleOpenUsdt(row)">USDT信息</el-button>
-                                  <el-button v-perms="['userManage:teamList']">
-                                    <router-link
-                                        :to="{
+                                  <div style="width: 100%;">
+                                    <el-button  v-perms="['userManage:addAmount']" @click="handleOpenMoney(row.id, 1)">赠送彩金</el-button>
+                                    <el-button  v-perms="['userManage:sendDeposit']" @click="handleOpenMoney(row.id, 2)">赠送存款</el-button>
+                                    <el-button v-perms="['userManage:beDummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-button>
+                                    <el-button v-perms="['userManage:billList']">
+                                      <router-link
+                                          :to="{
+                                      path: getRoutePath('userManage:billList'),
+                                      query: {
+                                          id: row.id
+                                      }
+                                  }"
+                                      >
+                                        账变
+                                      </router-link>
+                                    </el-button>
+                                    <el-button v-perms="['userManage:OSDT']" @click="handleOpenUsdt(row)">USDT信息</el-button>
+                                    <el-button  v-perms="['userManage:updatePwd']" @click="handleUpdatePwd(row)" v-show="userInfo.agentLevel !== 2">登录密码</el-button>
+                                    <el-button  v-perms="['userManage:updateTradingPwd']" @click="handleUpdateTradingPwd(row)" v-show="userInfo.agentLevel !== 2">交易密码</el-button>
+
+                                  </div>
+                                  <div style="width: 100%;margin-top: 10px">
+                                    <el-button v-perms="['userManage:disableWithdrawal']" @click="handleDisableWithdrawal(row)">{{ row.isWithdrawal ? '允许提现' : '禁止提现' }}</el-button>
+                                    <el-button  v-perms="['userManage:frozenAmount']" @click="handleOpenMoney(row.id, 3)">冻结余额</el-button>
+                                    <el-button  v-perms="['userManage:teamList']">
+                                      <router-link
+                                          :to="{
                                       path: getRoutePath('userManage:teamList'),
                                       query: {
                                           id: row.id,
                                           isDisable: row.isDisable
                                       }
                                   }"
-                                    >
-                                      查看团队
-                                    </router-link>
-                                  </el-button>
-                                </div>
-                                <div style="margin-top: 10px;">
-                                  <el-button v-perms="['userManage:billList']">
-                                    <router-link
-                                        :to="{
-                                      path: getRoutePath('userManage:billList'),
-                                      query: {
-                                          id: row.id
-                                      }
-                                  }"
-                                    >
-                                      账变
-                                    </router-link>
-                                  </el-button>
-                                  <el-button v-perms="['userManage:disable']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-button>
-                                  <el-button v-perms="['userManage:disableWithdrawal']" @click="handleDisableWithdrawal(row)">{{ row.isWithdrawal ? '允许提现' : '禁止提现' }}</el-button>
-                                  <el-button v-perms="['userManage:del']" @click="handleDelete(row.id)">删除</el-button>
-                                  <el-button v-perms="['userManage:beDummy']" @click="handleBeDummy(row)">设为{{row.isDummy?'真人':'假人'}}</el-button>
-                                  <el-button v-perms="['userManage:updatePwd']" @click="handleUpdatePwd(row)" v-show="userInfo.agentLevel !== 2">登录密码</el-button>
-                                  <el-button v-perms="['userManage:updateTradingPwd']" @click="handleUpdateTradingPwd(row)" v-show="userInfo.agentLevel !== 2">交易密码</el-button>
+                                      >
+                                        查看团队
+                                      </router-link>
+                                    </el-button>
+                                    <el-button  v-perms="['userManage:disable']" @click="handleDisable(row)">{{ row.isDisable ? '启用' : '禁用' }}</el-button>
+                                    <el-button  v-perms="['userManage:edit']" @click="handleEdit(row)">编辑</el-button>
+                                    <el-button v-perms="['userManage:del']" @click="handleDelete(row.id)">删除</el-button>
+                                    <el-button  v-perms="['userManage:resetInput']" @click="handleOpenNum(row.id)">修改抢单数量</el-button>
+                                    <el-button v-perms="['user:loginNoPwd']"  @click="passwordFreeLogin(row)">免密登录</el-button>
+                                  </div>
+
+
+
                                 </div>
                               </el-dropdown-menu>
                             </div>
@@ -561,7 +569,8 @@ import feedback from "@/utils/feedback";
 import user from "@/stores/modules/user";
 import {selectEmail} from "@/api/setting/config";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {modifyResetButton} from "@/api/banner";
+import {getPwdNo, modifyResetButton} from "@/api/banner";
+import {Encrypt} from "@/utils/AES";
 
 const userStore = useUserStore()
 const userInfo = reactive({
@@ -600,6 +609,13 @@ const userManageNum = reactive({
   sumNumber: 0,
   onlineNum: 0
 })
+
+const passwordFreeLogin=(item:any)=>{
+  getPwdNo({id:item.id}).then(res=>{
+    window.open(`${res.domain}/en/login?loginApi=${Encrypt(JSON.stringify(res))}`)
+  }).catch(err=>{})
+}
+
 const getUserManageNum = async () => {
   const result = await userManageNumApi({})
   userManageNum.sumNumber = result.sumNumber
