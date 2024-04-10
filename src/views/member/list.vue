@@ -110,6 +110,11 @@
                 </el-table-column>=
                 <el-table-column :show-overflow-tooltip="true" label="手机号码" prop="mobile" min-width="90" />
                 <el-table-column :show-overflow-tooltip="true" label="会员等级" prop="userLevel" min-width="120" />
+              <el-table-column label="账户余额" prop="balanceMoney" min-width="90" />
+              <el-table-column label="冻结余额" prop="frozenAmount" min-width="90" />
+              <el-table-column label="彩金" prop="colorMoney" min-width="100" />
+              <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
+              <el-table-column label="总存款" prop="sumMoney" min-width="120" />
               <el-table-column :show-overflow-tooltip="true" label="邮箱" prop="mailbox" min-width="90" />
                 <el-table-column label="信誉分" prop="creditScore" min-width="80" >
                   <template #default="{row}">
@@ -127,12 +132,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="已完成订单组数" prop="taskNum" min-width="90" />
-                <el-table-column label="账户余额" prop="balanceMoney" min-width="90" />
-                <el-table-column label="冻结余额" prop="frozenAmount" min-width="90" />
                 <el-table-column label="上级用户" :show-overflow-tooltip="true" prop="parentName" min-width="90" />
-                <el-table-column label="彩金" prop="colorMoney" min-width="100" />
-                <el-table-column label="佣金" prop="commissionMoney" min-width="120" />
-                <el-table-column label="总存款" prop="sumMoney" min-width="120" />
                 <el-table-column label="邀请码" prop="inviteCode" min-width="100" />
                 <el-table-column label="登录地址" prop="loginUrl" min-width="200" />
                 <el-table-column label="注册ip/注册ip地址" prop="registerIp" min-width="180" >
