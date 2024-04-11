@@ -527,7 +527,7 @@ const timeZoneAll = [
   { id: 5, label: '日本', value: 'Asia/Tokyo', zoomi: 9 },
   { id: 6, label: '墨西哥', value: 'America/Mexico_City', zoomi: -6 },
   { id: 7, label: '美国东部', value: 'America/Detroit', zoomi: -5 },
-  { id: 30, label: '太平洋时区', value: 'America/Pacific', zoomi: -7 },
+  { id: 30, label: '太平洋时区', value: 'America/Denver', zoomi: -7 },
   { id: 8, label: '哥伦比亚', value: 'America/Colombia', zoomi: -5 },
   { id: 9, label: '古巴', value: 'America/Cuba', zoomi: -5 },
   { id: 10, label: '秘鲁', value: 'America/Peru', zoomi: -5 },
