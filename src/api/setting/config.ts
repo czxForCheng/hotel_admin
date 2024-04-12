@@ -51,6 +51,18 @@ export function setCode(params: any) {
 export function selectTask() {
     return request.get({ url: '/configuration/sel/nowRobNum' })
 }
+
+// 查询悬浮客服
+export function serviceSwitch() {
+    return request.get({ url: '/configuration/serviceSwitch' })
+}
+
+// 修改悬浮客服
+export function updateServiceSwitch(params: any) {
+    return request.post({ url: '/configuration/updateServiceSwitch' ,params})
+}
+
+
 // 开关提前任务数
 export function setTask(params: any) {
     return request.post({ url: '/configuration/update/nowRobNum', params })

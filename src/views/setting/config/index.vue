@@ -87,6 +87,21 @@
       </el-form>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
+      <p>是否显示客服悬浮窗：</p>
+      <el-form :model="formDataChat" label-width="140px">
+        <el-form-item label="是否显示客服悬浮窗">
+          <div class="w-80">
+            <el-switch
+                v-model="formDataChat.switch"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeChatStatus"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
       <p>设置黑名单：</p>
       <el-form ref="formRefDomain" :model="formDataBlack" label-width="120px">
         <el-form-item label="黑名单" prop="domainLimit">
@@ -291,7 +306,7 @@ import {
   selectCode,
   setCode,
   selectTask,
-  setTask
+  setTask, serviceSwitch, updateServiceSwitch
 } from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
@@ -612,17 +627,36 @@ const formRefTask = ref<FormInstance>()
 const formDataTask = reactive({
   switch: 0
 })
+const formDataChat =reactive({
+  switch: 0
+})
+
 const getTaskStatus = () => {
   selectTask().then(res => {
     formDataTask.switch = (res.nowRobNum ? parseInt(res.nowRobNum): 0)
   }).catch(err => {})
 }
 getTaskStatus()
+
 const changeTaskStatus = () => {
   setTask({nowRobNum: formDataTask.switch}).then(res => {
     feedback.msgSuccess(`${formDataTask.switch === 1 ? '开启' : '关闭'}提前订单数成功`)
   }).catch(err => {})
 }
+
+const getChatStatus = () => {
+  serviceSwitch().then(res => {
+    formDataChat.switch = (res.serviceSwitch ? parseInt(res.serviceSwitch): 0)
+  }).catch(err => {})
+}
+getChatStatus()
+const changeChatStatus = () => {
+  updateServiceSwitch({serviceSwitch: formDataChat.switch}).then(res => {
+    feedback.msgSuccess(`${formDataChat.switch === 1 ? '开启' : '关闭'}客服悬浮窗口成功`)
+  }).catch(err => {})
+}
+
+
 /* 黑名单限制 */
 const formRefBlack = ref<FormInstance>()
 const formDataBlack  = reactive({
