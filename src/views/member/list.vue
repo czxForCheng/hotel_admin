@@ -182,7 +182,7 @@
                           type="primary"
                           size="small"
                           @click="handleOpenMoney(row.id, 0)"
-                          v-if="!(userInfo.isAgent===1&&!row.isDummy)||(btnSwitch.operation===1)"
+                          v-if="btnSwitch.operation===1 || row.isDummy"
                       >余额</el-button>
                       <el-dropdown>
                           <span class="el-dropdown-link" style="margin-left: 10px;">
