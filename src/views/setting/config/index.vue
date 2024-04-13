@@ -104,9 +104,9 @@
 
 
     <el-card shadow="never" class="!border-none mt-4">
-      <p>设置二级修改密码开关：</p>
+      <p>二级代理修改登录密码交易密码权限：</p>
       <el-form :model="formDataAllowPwd" label-width="140px">
-        <el-form-item label="二级修改密码开关">
+        <el-form-item label="二级代理修改登录密码交易密码权限">
           <div class="w-80">
             <el-switch
                 v-model="formDataAllowPwd.switch"
@@ -119,9 +119,9 @@
       </el-form>
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
-      <p>设置真假人都可以操作：</p>
+      <p>代理操作真人余额权限：</p>
       <el-form :model="formDataOperation" label-width="140px">
-        <el-form-item label="真假人都可以操作">
+        <el-form-item label="代理操作真人余额权限">
           <div class="w-80">
             <el-switch
                 v-model="formDataOperation.switch"

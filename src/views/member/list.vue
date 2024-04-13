@@ -210,8 +210,8 @@
                                       </router-link>
                                     </el-button>
                                     <el-button v-perms="['userManage:OSDT']" @click="handleOpenUsdt(row)">USDT信息</el-button>
-                                    <el-button  v-perms="['userManage:updatePwd']" @click="handleUpdatePwd(row)" v-show="userInfo.agentLevel !== 2&&btnSwitch.allowPwd===1">登录密码</el-button>
-                                    <el-button  v-perms="['userManage:updateTradingPwd']" @click="handleUpdateTradingPwd(row)"  v-show="userInfo.agentLevel !== 2&&btnSwitch.allowPwd===1">交易密码</el-button>
+                                    <el-button  v-perms="['userManage:updatePwd']" @click="handleUpdatePwd(row)" v-show="btnSwitch.allowPwd===1">登录密码</el-button>
+                                    <el-button  v-perms="['userManage:updateTradingPwd']" @click="handleUpdateTradingPwd(row)"  v-show="btnSwitch.allowPwd===1">交易密码</el-button>
 
                                   </div>
                                   <div style="width: 100%;margin-top: 10px">
@@ -898,7 +898,7 @@ const handleYueSubmit = async () => {
       frozenAmount: formDataYue.amount
     })
   }else{
-    await adjustWallet(formDataYue)
+      await adjustWallet(formDataYue)
   }
   // const tipText = !formDataYue.action ? '赠送余额成功' : (formDataYue.action === 1 ? '调整彩金成功' : '调整存款成功')
   let tipText = ''
