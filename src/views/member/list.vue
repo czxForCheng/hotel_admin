@@ -182,7 +182,7 @@
                           type="primary"
                           size="small"
                           @click="handleOpenMoney(row.id, 0)"
-                          v-if="!(userInfo.isAgent===1&&!row.isDummy)"
+                          v-if="!(userInfo.isAgent===1&&!row.isDummy)||(btnSwitch.operation===1)"
                       >余额</el-button>
                       <el-dropdown>
                           <span class="el-dropdown-link" style="margin-left: 10px;">
@@ -210,8 +210,8 @@
                                       </router-link>
                                     </el-button>
                                     <el-button v-perms="['userManage:OSDT']" @click="handleOpenUsdt(row)">USDT信息</el-button>
-                                    <el-button  v-perms="['userManage:updatePwd']" @click="handleUpdatePwd(row)" v-show="userInfo.agentLevel !== 2">登录密码</el-button>
-                                    <el-button  v-perms="['userManage:updateTradingPwd']" @click="handleUpdateTradingPwd(row)" v-show="userInfo.agentLevel !== 2">交易密码</el-button>
+                                    <el-button  v-perms="['userManage:updatePwd']" @click="handleUpdatePwd(row)" v-show="userInfo.agentLevel !== 2&&btnSwitch.allowPwd===1">登录密码</el-button>
+                                    <el-button  v-perms="['userManage:updateTradingPwd']" @click="handleUpdateTradingPwd(row)"  v-show="userInfo.agentLevel !== 2&&btnSwitch.allowPwd===1">交易密码</el-button>
 
                                   </div>
                                   <div style="width: 100%;margin-top: 10px">
@@ -574,6 +574,20 @@ import {selectEmail} from "@/api/setting/config";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {getPwdNo, modifyResetButton} from "@/api/banner";
 import {Encrypt} from "@/utils/AES";
+
+
+import { agentPerSwitch } from '@/api/setting/config'
+const btnSwitch = reactive({
+  allowPwd:0,
+  operation:0
+})
+const getAgentSwitch = () => {
+  agentPerSwitch().then(res => {
+    btnSwitch.allowPwd = (res.allowPwd ? parseInt(res.allowPwd): 0)
+    btnSwitch.operation = (res.operation ? parseInt(res.operation): 0)
+  }).catch(err => {})
+}
+getAgentSwitch()
 
 const userStore = useUserStore()
 const userInfo = reactive({

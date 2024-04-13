@@ -89,7 +89,7 @@
     <el-card shadow="never" class="!border-none mt-4">
       <p>是否显示客服悬浮窗：</p>
       <el-form :model="formDataChat" label-width="140px">
-        <el-form-item label="是否显示客服悬浮窗">
+        <el-form-item label="显示客服悬浮窗">
           <div class="w-80">
             <el-switch
                 v-model="formDataChat.switch"
@@ -101,6 +101,39 @@
         </el-form-item>
       </el-form>
     </el-card>
+
+
+    <el-card shadow="never" class="!border-none mt-4">
+      <p>设置二级修改密码开关：</p>
+      <el-form :model="formDataAllowPwd" label-width="140px">
+        <el-form-item label="二级修改密码开关">
+          <div class="w-80">
+            <el-switch
+                v-model="formDataAllowPwd.switch"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeAllowPwdStatus"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
+      <p>设置真假人都可以操作：</p>
+      <el-form :model="formDataOperation" label-width="140px">
+        <el-form-item label="真假人都可以操作">
+          <div class="w-80">
+            <el-switch
+                v-model="formDataOperation.switch"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeOperationStatus"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-card>
+
     <el-card shadow="never" class="!border-none mt-4">
       <p>设置黑名单：</p>
       <el-form ref="formRefDomain" :model="formDataBlack" label-width="120px">
@@ -306,7 +339,7 @@ import {
   selectCode,
   setCode,
   selectTask,
-  setTask, serviceSwitch, updateServiceSwitch
+  setTask, serviceSwitch, updateServiceSwitch, agentSwitch, updatePwd, updateOperation
 } from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
@@ -631,6 +664,16 @@ const formDataChat =reactive({
   switch: 0
 })
 
+
+const formDataAllowPwd =reactive({
+  switch: 0
+})
+const formDataOperation =reactive({
+  switch: 0
+})
+
+
+
 const getTaskStatus = () => {
   selectTask().then(res => {
     formDataTask.switch = (res.nowRobNum ? parseInt(res.nowRobNum): 0)
@@ -643,6 +686,26 @@ const changeTaskStatus = () => {
     feedback.msgSuccess(`${formDataTask.switch === 1 ? '开启' : '关闭'}提前订单数成功`)
   }).catch(err => {})
 }
+
+const getAgentSwitch = () => {
+  agentSwitch().then(res => {
+    formDataAllowPwd.switch = (res.allowPwd ? parseInt(res.allowPwd): 0)
+    formDataOperation.switch = (res.operation ? parseInt(res.operation): 0)
+  }).catch(err => {})
+}
+getAgentSwitch()
+const changeAllowPwdStatus = () => {
+  updatePwd({allowPwd: formDataAllowPwd.switch}).then(res => {
+    feedback.msgSuccess(`${formDataAllowPwd.switch === 1 ? '开启' : '关闭'}二级修改密码成功`)
+  }).catch(err => {})
+}
+
+const changeOperationStatus = () => {
+  updateOperation({operation: formDataOperation.switch}).then(res => {
+    feedback.msgSuccess(`${formDataOperation.switch === 1 ? '开启' : '关闭'}设置真假人都可以操作`)
+  }).catch(err => {})
+}
+
 
 const getChatStatus = () => {
   serviceSwitch().then(res => {
