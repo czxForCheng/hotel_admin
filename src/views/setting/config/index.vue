@@ -41,6 +41,7 @@
       </el-form>
       <el-button type="primary" @click="handleUpdateLange">保存语言</el-button>
     </el-card>
+
     <el-card shadow="never" class="!border-none mt-4">
       <p>注册是否开启邮箱：</p>
       <el-form ref="formRefEmail" :rules="rulesEmail" :model="formDataEmail" label-width="120px">
@@ -56,6 +57,8 @@
         </el-form-item>
       </el-form>
     </el-card>
+
+
     <el-card shadow="never" class="!border-none mt-4">
       <p>注册是否开启验证码：</p>
       <el-form ref="formRefCode" :model="formDataCode" label-width="120px">
@@ -65,11 +68,13 @@
                 v-model="formDataCode.switch"
                 :active-value="1"
                 :inactive-value="0"
+                @change="changeCodeStatus"
             />
           </div>
         </el-form-item>
       </el-form>
     </el-card>
+
     <el-card shadow="never" class="!border-none mt-4">
       <p>是否开启提前订单数：</p>
       <el-form :model="formDataTask" label-width="140px">
@@ -85,21 +90,11 @@
         </el-form-item>
       </el-form>
     </el-card>
+
     <el-card shadow="never" class="!border-none mt-4">
-<<<<<<< HEAD
-      <p>任务页总金额是否显示：</p>
-      <el-form :model="formDataDeposit" label-width="160px">
-        <el-form-item label="任务页总金额是否显示">
-          <div class="w-80">
-            <el-switch
-                v-model="formDataDeposit.switch"
-                :active-value="1"
-                :inactive-value="0"
-                @change="changeDepositStatus"
-=======
       <p>是否显示客服悬浮窗：</p>
       <el-form :model="formDataChat" label-width="140px">
-        <el-form-item label="显示客服悬浮窗">
+        <el-form-item label="是否显示客服悬浮窗">
           <div class="w-80">
             <el-switch
                 v-model="formDataChat.switch"
@@ -113,67 +108,7 @@
     </el-card>
 
 
-    <el-card shadow="never" class="!border-none mt-4">
-      <p>二级代理修改登录密码交易密码权限：</p>
-      <el-form :model="formDataAllowPwd" label-width="140px">
-        <el-form-item label="二级代理修改登录密码交易密码权限">
-          <div class="w-80">
-            <el-switch
-                v-model="formDataAllowPwd.switch"
-                :active-value="1"
-                :inactive-value="0"
-                @change="changeAllowPwdStatus"
->>>>>>> origin/main
-            />
-          </div>
-        </el-form-item>
-      </el-form>
-    </el-card>
-    <el-card shadow="never" class="!border-none mt-4">
-<<<<<<< HEAD
-      <p>彩金显示切换：</p>
-      <el-form :model="formDataColorMoney" label-width="140px">
-        <el-form-item label="彩金显示切换">
-          <div class="w-80">
-            <el-radio-group v-model="formDataColorMoney.switch">
-              <el-radio :label="0">总彩金</el-radio>
-              <el-radio :label="1">今日彩金</el-radio>
-            </el-radio-group>
-          </div>
-        </el-form-item>
-      </el-form>
-      <el-button type="primary" @click="changeColorMoneyStatus">修改彩金显示</el-button>
-    </el-card>
-    <el-card shadow="never" class="!border-none mt-4">
-      <p>是否显示假数据：</p>
-      <el-form :model="formDataFalseData" label-width="140px">
-        <el-form-item label="是否显示假数据">
-          <div class="w-80">
-            <el-switch
-                v-model="formDataFalseData.switch"
-                :active-value="1"
-                :inactive-value="0"
-                @change="changeFalseStatus"
-=======
-      <p>代理操作真人余额权限：</p>
-      <el-form :model="formDataOperation" label-width="140px">
-        <el-form-item label="代理操作真人余额权限">
-          <div class="w-80">
-            <el-switch
-                v-model="formDataOperation.switch"
-                :active-value="1"
-                :inactive-value="0"
-                @change="changeOperationStatus"
->>>>>>> origin/main
-            />
-          </div>
-        </el-form-item>
-      </el-form>
-    </el-card>
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/main
     <el-card shadow="never" class="!border-none mt-4">
       <p>设置黑名单：</p>
       <el-form ref="formRefDomain" :model="formDataBlack" label-width="120px">
@@ -379,17 +314,7 @@ import {
   selectCode,
   setCode,
   selectTask,
-<<<<<<< HEAD
-  setTask,
-  selectDeposit,
-  setDeposit,
-  selectColorMoney,
-  setColorMoney,
-  selectFalseData,
-  setFalseData
-=======
-  setTask, serviceSwitch, updateServiceSwitch, agentSwitch, updatePwd, updateOperation
->>>>>>> origin/main
+  setTask, serviceSwitch, updateServiceSwitch
 } from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
@@ -714,16 +639,6 @@ const formDataChat =reactive({
   switch: 0
 })
 
-
-const formDataAllowPwd =reactive({
-  switch: 0
-})
-const formDataOperation =reactive({
-  switch: 0
-})
-
-
-
 const getTaskStatus = () => {
   selectTask().then(res => {
     formDataTask.switch = (res.nowRobNum ? parseInt(res.nowRobNum): 0)
@@ -736,73 +651,6 @@ const changeTaskStatus = () => {
     feedback.msgSuccess(`${formDataTask.switch === 1 ? '开启' : '关闭'}提前订单数成功`)
   }).catch(err => {})
 }
-<<<<<<< HEAD
-/* 任务页总金额是否显示 */
-const formDataDeposit = reactive({
-  switch: 0
-})
-const getDepositStatus = () => {
-  selectDeposit().then(res => {
-    formDataDeposit.switch = (res.deposit ? parseInt(res.deposit): 0)
-  }).catch(err => {})
-}
-getDepositStatus()
-const changeDepositStatus = () => {
-  setDeposit({deposit: formDataDeposit.switch}).then(res => {
-    feedback.msgSuccess(`${formDataDeposit.switch === 1 ? '开启' : '关闭'}任务页总金额成功`)
-  }).catch(err => {})
-}
-/* 彩金显示切换 */
-const formDataColorMoney = reactive({
-  switch: 0
-})
-const getColorMoneyStatus = () => {
-  selectColorMoney().then(res => {
-    formDataColorMoney.switch = (res.colorMoney ? parseInt(res.colorMoney): 0)
-  }).catch(err => {})
-}
-getColorMoneyStatus()
-const changeColorMoneyStatus = () => {
-  setColorMoney({colorMoney: formDataColorMoney.switch}).then(res => {
-    feedback.msgSuccess(`修改彩金显示成功`)
-  }).catch(err => {})
-}
-/* 是否显示假数据 */
-const formDataFalseData = reactive({
-  switch: 0
-})
-const getFalseStatus = () => {
-  selectFalseData().then(res => {
-    formDataFalseData.switch = (res.falseData ? parseInt(res.falseData): 0)
-  }).catch(err => {})
-}
-getFalseStatus()
-const changeFalseStatus = () => {
-  setFalseData({falseData: formDataFalseData.switch}).then(res => {
-    feedback.msgSuccess(`${formDataFalseData.switch === 1 ? '开启' : '关闭'}假数据成功`)
-  }).catch(err => {})
-}
-=======
-
-const getAgentSwitch = () => {
-  agentSwitch().then(res => {
-    formDataAllowPwd.switch = (res.allowPwd ? parseInt(res.allowPwd): 0)
-    formDataOperation.switch = (res.operation ? parseInt(res.operation): 0)
-  }).catch(err => {})
-}
-getAgentSwitch()
-const changeAllowPwdStatus = () => {
-  updatePwd({allowPwd: formDataAllowPwd.switch}).then(res => {
-    feedback.msgSuccess(`${formDataAllowPwd.switch === 1 ? '开启' : '关闭'}二级修改密码成功`)
-  }).catch(err => {})
-}
-
-const changeOperationStatus = () => {
-  updateOperation({operation: formDataOperation.switch}).then(res => {
-    feedback.msgSuccess(`${formDataOperation.switch === 1 ? '开启' : '关闭'}设置真假人都可以操作`)
-  }).catch(err => {})
-}
-
 
 const getChatStatus = () => {
   serviceSwitch().then(res => {
@@ -817,7 +665,6 @@ const changeChatStatus = () => {
 }
 
 
->>>>>>> origin/main
 /* 黑名单限制 */
 const formRefBlack = ref<FormInstance>()
 const formDataBlack  = reactive({

@@ -62,54 +62,10 @@ export function updateServiceSwitch(params: any) {
     return request.post({ url: '/configuration/updateServiceSwitch' ,params})
 }
 
-// 代理余额权限-开放二级代理修改登陆和提款密码权限 ----同时判断是否是代理
-export function agentPerSwitch() {
-    return request.get({ url: '/configuration/agentPerSwitch' })
-}
-
-// 代理余额权限-开放二级代理修改登陆和提款密码权限
-export function agentSwitch() {
-    return request.get({ url: '/configuration/agentSwitch' })
-}
-
-// 设置二级修改密码开关
-export function updatePwd(params: any) {
-    return request.post({ url: '/configuration/update/pwd' ,params})
-}
-
-// 设置真假人都可以操作
-export function updateOperation(params: any) {
-    return request.post({ url: '/configuration/update/operation' ,params})
-}
-
 
 // 开关提前任务数
 export function setTask(params: any) {
     return request.post({ url: '/configuration/update/nowRobNum', params })
-}
-// 查询提前任务数开关
-export function selectDeposit() {
-    return request.get({ url: '/configuration/sel/deposit' })
-}
-// 开关提前任务数
-export function setDeposit(params: any) {
-    return request.post({ url: '/configuration/update/deposit', params })
-}
-// 查询提前任务数开关
-export function selectColorMoney() {
-    return request.get({ url: '/configuration/sel/colorMoney' })
-}
-// 开关提前任务数
-export function setColorMoney(params: any) {
-    return request.post({ url: '/configuration/update/colorMoney', params })
-}
-// 查询提前任务数开关
-export function selectFalseData() {
-    return request.get({ url: '/configuration/sel/falseData' })
-}
-// 开关提前任务数
-export function setFalseData(params: any) {
-    return request.post({ url: '/configuration/update/falseData', params })
 }
 
 // 修改域名限制

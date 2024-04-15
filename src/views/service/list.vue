@@ -33,6 +33,11 @@
       </div>
       <el-table size="large" v-loading="pager.loading" :data="pager.lists">
         <el-table-column label="ID" prop="id" min-width="60" />
+        <el-table-column label="客服LOGO" prop="userName" min-width="100" >
+          <template #default="{row}">
+            <el-avatar size="24" :src="row.linkLogo"></el-avatar>
+          </template>
+        </el-table-column>
         <el-table-column label="用户名" prop="userName" min-width="100" />
         <el-table-column label="代理" prop="agentName" min-width="100" />
         <el-table-column label="语言" prop="languageType" min-width="100" >
@@ -71,8 +76,12 @@
         <el-form ref="formRef"
                  class="ls-form"
                  :model="formData"
-                 label-width="85px"
+                 label-width="125px"
                  :rules="rules">
+          <el-form-item label="客服LOGO" prop="linkLogo">
+            <material-picker v-model="formData.linkLogo" :limit="1" />
+          </el-form-item>
+
           <el-form-item label="代理" prop="agentId">
             <el-select class="w-[280px]" v-model="formData.agentId" placeholder="请选择代理">
               <el-option
@@ -83,6 +92,7 @@
               />
             </el-select>
           </el-form-item>
+
           <el-form-item label="用户名称" prop="userName">
             <el-input
                 v-model="formData.userName"
@@ -173,6 +183,7 @@ let formData = reactive({
   linkUrl: '',
   agentId: '',
   workStartTime: '',
+  linkLogo:'',
   workEndTime: '',
   languageList: []
 })
@@ -183,7 +194,9 @@ const rules = reactive({
   languageType: [{ required: true, message: '语言必选', trigger: 'blur' }],
   linkUrl: [{ required: true, message: '链接必填', trigger: 'blur' }],
   workStartTime: [{ required: true, message: '上班时间必填', trigger: 'blur' }],
-  workEndTime: [{ required: true, message: '下班时间必填', trigger: 'blur' }]
+  workEndTime: [{ required: true, message: '下班时间必填', trigger: 'blur' }],
+  linkLogo: [{ required: true, message: '客服LOGO必传', trigger: 'blur' }],
+
 })
 const defaultProps = {
   children: 'children',

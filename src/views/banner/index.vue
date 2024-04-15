@@ -6,7 +6,7 @@
           <template #icon>
             <icon name="el-icon-Plus" />
           </template>
-          新增菜单
+          新增轮播图
         </el-button>
       </div>
       <el-table size="large" v-loading="isLoading" :data="lists">
@@ -24,6 +24,11 @@
             />
           </template>
         </el-table-column>
+        <el-table-column label="类型" prop="sort" min-width="100">
+          <template #default="{ row }">
+            {{row.bannerType===0 ? 'H5':'PC 端'}}
+          </template>
+        </el-table-column>>
         <el-table-column label="排序" prop="sort" min-width="100" />
         <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
@@ -59,7 +64,7 @@
                  :model="formData"
                  label-width="85px"
                  :rules="rules">
-          <el-form-item label="图标" prop="bannerUrl">
+          <el-form-item label="轮播图" prop="bannerUrl">
             <div>
               <material-picker v-model="formData.bannerUrl" :limit="1" />
             </div>
@@ -67,6 +72,18 @@
           <el-form-item label="排序" prop="sort">
             <div>
               <el-input-number v-model="formData.sort" :max="9999" />
+            </div>
+          </el-form-item>
+          <el-form-item label="选择类型" prop="sort">
+            <div>
+              <el-select v-model="formData.bannerType" placeholder="请选择">
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                </el-option>
+              </el-select>
             </div>
           </el-form-item>
         </el-form>
@@ -87,8 +104,13 @@ import feedback from '@/utils/feedback'
 let formData = reactive({
   id: '',
   bannerUrl: '',
+  bannerType:0,
   sort: 0
 })
+
+const options=ref([
+  {value: 0, label: 'H5'}, {value: 1, label: 'PC'}
+])
 
 const rules = reactive({
   bannerUrl: [{ required: true, message: '图标必传', trigger: 'blur' }]
