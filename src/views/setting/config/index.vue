@@ -65,7 +65,6 @@
                 v-model="formDataCode.switch"
                 :active-value="1"
                 :inactive-value="0"
-                @change="changeCodeStatus"
             />
           </div>
         </el-form-item>
@@ -81,6 +80,50 @@
                 :active-value="1"
                 :inactive-value="0"
                 @change="changeTaskStatus"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
+      <p>任务页总金额是否显示：</p>
+      <el-form :model="formDataDeposit" label-width="160px">
+        <el-form-item label="任务页总金额是否显示">
+          <div class="w-80">
+            <el-switch
+                v-model="formDataDeposit.switch"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeDepositStatus"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
+      <p>彩金显示切换：</p>
+      <el-form :model="formDataColorMoney" label-width="140px">
+        <el-form-item label="彩金显示切换">
+          <div class="w-80">
+            <el-radio-group v-model="formDataColorMoney.switch">
+              <el-radio :label="0">总彩金</el-radio>
+              <el-radio :label="1">今日彩金</el-radio>
+            </el-radio-group>
+          </div>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" @click="changeColorMoneyStatus">修改彩金显示</el-button>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
+      <p>是否显示假数据：</p>
+      <el-form :model="formDataFalseData" label-width="140px">
+        <el-form-item label="是否显示假数据">
+          <div class="w-80">
+            <el-switch
+                v-model="formDataFalseData.switch"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeFalseStatus"
             />
           </div>
         </el-form-item>
@@ -291,7 +334,13 @@ import {
   selectCode,
   setCode,
   selectTask,
-  setTask
+  setTask,
+  selectDeposit,
+  setDeposit,
+  selectColorMoney,
+  setColorMoney,
+  selectFalseData,
+  setFalseData
 } from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
@@ -621,6 +670,51 @@ getTaskStatus()
 const changeTaskStatus = () => {
   setTask({nowRobNum: formDataTask.switch}).then(res => {
     feedback.msgSuccess(`${formDataTask.switch === 1 ? '开启' : '关闭'}提前订单数成功`)
+  }).catch(err => {})
+}
+/* 任务页总金额是否显示 */
+const formDataDeposit = reactive({
+  switch: 0
+})
+const getDepositStatus = () => {
+  selectDeposit().then(res => {
+    formDataDeposit.switch = (res.deposit ? parseInt(res.deposit): 0)
+  }).catch(err => {})
+}
+getDepositStatus()
+const changeDepositStatus = () => {
+  setDeposit({deposit: formDataDeposit.switch}).then(res => {
+    feedback.msgSuccess(`${formDataDeposit.switch === 1 ? '开启' : '关闭'}任务页总金额成功`)
+  }).catch(err => {})
+}
+/* 彩金显示切换 */
+const formDataColorMoney = reactive({
+  switch: 0
+})
+const getColorMoneyStatus = () => {
+  selectColorMoney().then(res => {
+    formDataColorMoney.switch = (res.colorMoney ? parseInt(res.colorMoney): 0)
+  }).catch(err => {})
+}
+getColorMoneyStatus()
+const changeColorMoneyStatus = () => {
+  setColorMoney({colorMoney: formDataColorMoney.switch}).then(res => {
+    feedback.msgSuccess(`修改彩金显示成功`)
+  }).catch(err => {})
+}
+/* 是否显示假数据 */
+const formDataFalseData = reactive({
+  switch: 0
+})
+const getFalseStatus = () => {
+  selectFalseData().then(res => {
+    formDataFalseData.switch = (res.falseData ? parseInt(res.falseData): 0)
+  }).catch(err => {})
+}
+getFalseStatus()
+const changeFalseStatus = () => {
+  setFalseData({falseData: formDataFalseData.switch}).then(res => {
+    feedback.msgSuccess(`${formDataFalseData.switch === 1 ? '开启' : '关闭'}假数据成功`)
   }).catch(err => {})
 }
 /* 黑名单限制 */

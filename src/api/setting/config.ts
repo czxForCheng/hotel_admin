@@ -55,6 +55,30 @@ export function selectTask() {
 export function setTask(params: any) {
     return request.post({ url: '/configuration/update/nowRobNum', params })
 }
+// 查询提前任务数开关
+export function selectDeposit() {
+    return request.get({ url: '/configuration/sel/deposit' })
+}
+// 开关提前任务数
+export function setDeposit(params: any) {
+    return request.post({ url: '/configuration/update/deposit', params })
+}
+// 查询提前任务数开关
+export function selectColorMoney() {
+    return request.get({ url: '/configuration/sel/colorMoney' })
+}
+// 开关提前任务数
+export function setColorMoney(params: any) {
+    return request.post({ url: '/configuration/update/colorMoney', params })
+}
+// 查询提前任务数开关
+export function selectFalseData() {
+    return request.get({ url: '/configuration/sel/falseData' })
+}
+// 开关提前任务数
+export function setFalseData(params: any) {
+    return request.post({ url: '/configuration/update/falseData', params })
+}
 
 // 修改域名限制
 export function setDomain(params: any) {
