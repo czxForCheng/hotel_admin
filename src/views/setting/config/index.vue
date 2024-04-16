@@ -25,7 +25,7 @@
           </div>
         </el-form-item>
       </el-form>
-<!--      <el-button type="primary" @click="handleUpdateTime">确定清理</el-button>-->
+      <!--      <el-button type="primary" @click="handleUpdateTime">确定清理</el-button>-->
     </el-card>
     <el-card shadow="never" class="!border-none mt-4">
       <p>语言选择：</p>
@@ -58,6 +58,25 @@
       </el-form>
     </el-card>
 
+    <el-card shadow="never" class="!border-none mt-4">
+      <p>首页客服图标：</p>
+      <el-form ref="formRefZoom" :rules="rulesZoom" :model="formDataZoom" label-width="120px">
+        <el-form-item label="是否显示" prop="timeZone">
+          <div class="w-80">
+            <el-radio-group v-model="isCustomer">
+              <el-radio label="1">关闭</el-radio>
+              <el-radio label="0">开启</el-radio>
+            </el-radio-group>
+          </div>
+        </el-form-item>
+        <el-form-item v-if="isCustomer==='0'" label="文件上传" prop="timeZone">
+          <div >
+            <material-picker v-model="chatSave.customerSerIcon" :limit="3" />
+          </div>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" @click="homeChatSave">保存</el-button>
+    </el-card>
 
     <el-card shadow="never" class="!border-none mt-4">
       <p>注册是否开启验证码：</p>
@@ -92,7 +111,7 @@
     </el-card>
 
     <el-card shadow="never" class="!border-none mt-4">
-      <p>是否显示客服悬浮窗：</p>
+
       <el-form :model="formDataChat" label-width="140px">
         <el-form-item label="是否显示客服悬浮窗">
           <div class="w-80">
@@ -100,7 +119,47 @@
                 v-model="formDataChat.switch"
                 :active-value="1"
                 :inactive-value="0"
-                @change="changeChatStatus"
+                @change="changeChatStatus"/>
+          </div>
+        </el-form-item>
+      </el-form>
+      <el-form :model="formDataDeposit" label-width="160px">
+        <el-form-item label="任务页总金额是否显示">
+          <div class="w-80">
+            <el-switch
+                v-model="formDataDeposit.switch"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeDepositStatus"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
+      <p>彩金显示切换：</p>
+      <el-form :model="formDataColorMoney" label-width="140px">
+        <el-form-item label="彩金显示切换">
+          <div class="w-80">
+            <el-radio-group v-model="formDataColorMoney.switch">
+              <el-radio :label="0">总彩金</el-radio>
+              <el-radio :label="1">今日彩金</el-radio>
+            </el-radio-group>
+          </div>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" @click="changeColorMoneyStatus">修改彩金显示</el-button>
+    </el-card>
+    <el-card shadow="never" class="!border-none mt-4">
+      <p>是否显示假数据：</p>
+      <el-form :model="formDataFalseData" label-width="140px">
+        <el-form-item label="是否显示假数据">
+          <div class="w-80">
+            <el-switch
+                v-model="formDataFalseData.switch"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeFalseStatus"
             />
           </div>
         </el-form-item>
@@ -167,7 +226,7 @@
       <div class="info-item">
         <p class="title">金额单位</p>
         <div class="value">{{formData.supervisorName}}</div>
-<!--        <p class="tip">管理程序名称，将显示在后台左上角</p>-->
+        <!--        <p class="tip">管理程序名称，将显示在后台左上角</p>-->
       </div>
       <div class="info-item">
         <p class="title">管理程序版本 Version</p>
@@ -304,23 +363,35 @@ import type { FormInstance } from 'element-plus'
 import {
   getTime,
   nowLanguage,
-  selectEmail, setEmail,
+  selectEmail,
+  setEmail,
   setLanguage,
   updateTime,
   websiteInfoApi,
   websiteInfoEdit,
-  setDomain, getDomain,
-  setBlack, getBlack,
+  setDomain,
+  getDomain,
+  setBlack,
+  getBlack,
   selectCode,
   setCode,
   selectTask,
-  setTask, serviceSwitch, updateServiceSwitch
+  setTask,
+  serviceSwitch,
+  updateServiceSwitch,
+  selectDeposit,
+  setDeposit,
+  selectColorMoney,
+  setColorMoney,
+  selectFalseData,
+  setFalseData
 } from '@/api/setting/config'
 import feedback from "@/utils/feedback";
 import useAppStore from '@/stores/modules/app'
 import useTimeStore from '@/stores/modules/timeZoom'
 import {computed} from "vue";
 import {orderPay} from "@/api/finance/order";
+import {homeCustomerImage, uploadCSImg} from "@/api/banner";
 const appStore = useAppStore()
 const timeStore = useTimeStore()
 const config = computed(() => appStore.config)
@@ -462,6 +533,28 @@ const rules = {
     }
   ]
 }
+
+// 首页客服图标
+const chatSave=ref({customerSerIcon:''})
+const isCustomer=ref('0')
+
+// 首页客服图标
+const homeChatSave=()=>{
+  uploadCSImg({serviceEntrance:isCustomer.value,customerSerIcon:chatSave.value.customerSerIcon.toString()}).then(res=>{
+    feedback.msgSuccess('操作成功')
+  }).catch(err=>{})
+}
+
+const getCustomerImage = () => {
+  homeCustomerImage().then(res=>{
+    if (res.customerSerIcon){
+      chatSave.value.customerSerIcon=res.customerSerIcon.split(',')
+    }
+    isCustomer.value=res.serviceEntrance
+  }).catch(err=>{})
+}
+getCustomerImage()
+
 const getWebsiteInfo = async () => {
   // const res = await websiteInfoApi()
   // for(const key in res){
@@ -645,10 +738,54 @@ const getTaskStatus = () => {
   }).catch(err => {})
 }
 getTaskStatus()
-
 const changeTaskStatus = () => {
   setTask({nowRobNum: formDataTask.switch}).then(res => {
     feedback.msgSuccess(`${formDataTask.switch === 1 ? '开启' : '关闭'}提前订单数成功`)
+  }).catch(err => {})
+}
+/* 任务页总金额是否显示 */
+const formDataDeposit = reactive({
+  switch: 0
+})
+const getDepositStatus = () => {
+  selectDeposit().then(res => {
+    formDataDeposit.switch = (res.deposit ? parseInt(res.deposit): 0)
+  }).catch(err => {})
+}
+getDepositStatus()
+const changeDepositStatus = () => {
+  setDeposit({deposit: formDataDeposit.switch}).then(res => {
+    feedback.msgSuccess(`${formDataDeposit.switch === 1 ? '开启' : '关闭'}任务页总金额成功`)
+  }).catch(err => {})
+}
+/* 彩金显示切换 */
+const formDataColorMoney = reactive({
+  switch: 0
+})
+const getColorMoneyStatus = () => {
+  selectColorMoney().then(res => {
+    formDataColorMoney.switch = (res.colorMoney ? parseInt(res.colorMoney): 0)
+  }).catch(err => {})
+}
+getColorMoneyStatus()
+const changeColorMoneyStatus = () => {
+  setColorMoney({colorMoney: formDataColorMoney.switch}).then(res => {
+    feedback.msgSuccess(`修改彩金显示成功`)
+  }).catch(err => {})
+}
+/* 是否显示假数据 */
+const formDataFalseData = reactive({
+  switch: 0
+})
+const getFalseStatus = () => {
+  selectFalseData().then(res => {
+    formDataFalseData.switch = (res.falseData ? parseInt(res.falseData): 0)
+  }).catch(err => {})
+}
+getFalseStatus()
+const changeFalseStatus = () => {
+  setFalseData({falseData: formDataFalseData.switch}).then(res => {
+    feedback.msgSuccess(`${formDataFalseData.switch === 1 ? '开启' : '关闭'}假数据成功`)
   }).catch(err => {})
 }
 
@@ -713,24 +850,24 @@ getEmailStatus()
 </script>
 
 <style lang="scss" scoped>
-  :deep(.el-checkbox-group) {
-    width: 100%;
+:deep(.el-checkbox-group) {
+  width: 100%;
+}
+.info-item{
+  margin-bottom: 20px;
+  .title{
+    color: rgb(128, 142, 255);
   }
-  .info-item{
-    margin-bottom: 20px;
-    .title{
-      color: rgb(128, 142, 255);
-    }
-    .value{
-      line-height: 40px;
-      background: #f2f2f2;
-      padding-left: 10px;
-      margin: 5px 0;
-      font-size: 14px;
-    }
-    .tip{
-      font-size: 12px;
-      color: #999;
-    }
+  .value{
+    line-height: 40px;
+    background: #f2f2f2;
+    padding-left: 10px;
+    margin: 5px 0;
+    font-size: 14px;
   }
+  .tip{
+    font-size: 12px;
+    color: #999;
+  }
+}
 </style>

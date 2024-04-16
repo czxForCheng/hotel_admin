@@ -28,3 +28,12 @@ export function getPwdNo(params?: any) {
     return request.get({ url: '/user/loginNoPwd', params })
 }
 
+// 首页客服图片显示
+export function homeCustomerImage(params?: any) {
+    return request.get({ url: '/configuration/selServiceEntrance', params })
+}
+// 首页客服图片上传
+export function uploadCSImg(params?: any) {
+    return request.post({ url: '/configuration/updateServiceEntrance', params })
+}
+

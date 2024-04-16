@@ -26,7 +26,7 @@
         </el-table-column>
         <el-table-column label="类型" prop="sort" min-width="100">
           <template #default="{ row }">
-            {{row.bannerType===0 ? 'H5':'PC 端'}}
+            {{row.bannerType===0 ? 'H5':row.bannerType===1 ? 'PC 端':row.bannerType===2 ? '首页H5小轮播图':'首页PC小轮播图'}}
           </template>
         </el-table-column>>
         <el-table-column label="排序" prop="sort" min-width="100" />
@@ -56,7 +56,7 @@
       <el-dialog
           v-model="dialogVisible"
           :title="dialogTitle"
-          width="50%"
+          width="700px"
           :before-close="handleClose"
       >
         <el-form ref="formRef"
@@ -67,6 +67,10 @@
           <el-form-item label="轮播图" prop="bannerUrl">
             <div>
               <material-picker v-model="formData.bannerUrl" :limit="1" />
+              <p v-if="formData.bannerType===1">图片尺寸：1920*600</p>
+              <p v-else-if="formData.bannerType===3">图片尺寸：720×314</p>
+              <p v-else-if="formData.bannerType===0">图片尺寸：414×600</p>
+              <p v-else-if="formData.bannerType===2">图片尺寸：175×87</p>
             </div>
           </el-form-item>
           <el-form-item label="排序" prop="sort">
@@ -76,7 +80,7 @@
           </el-form-item>
           <el-form-item label="选择类型" prop="sort">
             <div>
-              <el-select v-model="formData.bannerType" placeholder="请选择">
+              <el-select style="width: 500px;" v-model="formData.bannerType" placeholder="请选择">
                 <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -84,6 +88,16 @@
                     :value="item.value">
                 </el-option>
               </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item v-if="formData.bannerType===3 || formData.bannerType===2 " label="标题" prop="sort">
+            <div>
+              <el-input style="width: 500px;" v-model="formData.title" placeholder="请输入标题"/>
+            </div>
+          </el-form-item>
+          <el-form-item v-if="formData.bannerType===3 || formData.bannerType===2 " label="标题内容" prop="sort">
+            <div>
+              <el-input type="textarea" style="width: 500px;" :rows="5" v-model="formData.content" placeholder="请输入标题内容"/>
             </div>
           </el-form-item>
         </el-form>
@@ -105,11 +119,16 @@ let formData = reactive({
   id: '',
   bannerUrl: '',
   bannerType:0,
+  content:'',
+  title:'',
   sort: 0
 })
 
 const options=ref([
-  {value: 0, label: 'H5'}, {value: 1, label: 'PC'}
+  {value: 0, label: 'H5'},
+  {value: 1, label: 'PC'},
+  {value: 2, label: '首页H5小轮播图'},
+  {value: 3, label: '首页PC小轮播图'},
 ])
 
 const rules = reactive({
@@ -143,6 +162,10 @@ const handleClose = () => {
 
 /* 新增菜单 */
 const handleAdd = () => {
+  for(const key in formData){
+    //@ts-ignore
+    formData[key] = ''
+  }
   dialogVisible.value = true
   dialogTitle.value = '新增轮播'
 }
