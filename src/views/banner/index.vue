@@ -184,13 +184,17 @@ const handleEdit = async (row: any) => {
   formData.id = row.id
   formData.bannerUrl = row.bannerUrl
   formData.sort = row.sort
+  formData.titke = row.title
+  formData.content = row.content
   dialogVisible.value = true
 }
 
 /* 提交菜单 */
 const handleSubmit = async () => {
+  console.log(formData)
   await formRef.value?.validate()
   if (formData.id) {
+
     await bannerEditApi(formData)
     feedback.msgSuccess('修改成功')
   } else {
